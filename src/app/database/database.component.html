@@ -1,1 +1,52 @@
-<p>Database works!</p>
+<div class="container-fluid" [ngStyle]="{backgroundColor: 'red'}" id="words-database">
+    <div class="row database-header-row">
+        <div class="col-3 text-center" [ngStyle]="{backgroundColor: '#6b7'}">
+            <span [ngStyle]="{}">
+                Word
+            </span>
+        </div>
+        <div class="col-1 text-center" [ngStyle]="{backgroundColor: 'yellow'}">
+
+        </div>
+        <div class="col-5 text-center" [ngStyle]="{backgroundColor: '#b67'}">
+            <span>
+                Translations
+            </span>
+        </div>
+        <div class="col-1 text-center" [ngStyle]="{backgroundColor: '#6f79b4'}">
+            <span>
+                Score
+            </span>
+        </div>
+        <div class="col-2 text-center" [ngStyle]="{backgroundColor: '#af7944'}">
+            <span>
+                Tags
+            </span>
+        </div>
+    </div>
+    <div class="row database-row" *ngFor="let wordEntry of words">
+        <div class="col-3" [ngStyle]="{backgroundColor: '#6b7'}">
+            <span [ngStyle]="{}">
+                {{ wordEntry.word }}
+            </span>
+        </div>
+        <div class="col-1 text-center" [ngStyle]="{backgroundColor: 'yellow'}">
+            ===>
+        </div>
+        <div class="col-5" [ngStyle]="{backgroundColor: '#b67'}">
+            <span>
+                {{ wordEntry.translations.join(', ') }}
+            </span>
+        </div>
+        <div class="col-1 text-center" [ngStyle]="{backgroundColor: '#6f79b4'}">
+            <span>
+                {{ wordEntry.score }}
+            </span>
+        </div>
+        <div class="col-2" [ngStyle]="{backgroundColor: '#af7944'}">
+            <span>
+                {{ wordEntry.tags.join('; ') }}
+            </span>
+        </div>
+    </div>
+</div>

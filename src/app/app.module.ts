@@ -10,19 +10,19 @@ import { SettingsComponent } from './settings/settings.component';
 import { NavigationComponent } from './navigation/navigation.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    TestingComponent,
-    DatabaseComponent,
-    NotFoundComponent,
-    SettingsComponent,
-    NavigationComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        TestingComponent,
+        DatabaseComponent,
+        NotFoundComponent,
+        SettingsComponent,
+        NavigationComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
