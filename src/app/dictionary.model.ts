@@ -20,7 +20,7 @@ export class Destination {
     }
 }
 
-export class Words {
+export class Dictionary {
     sources: Source[];
 
     from(language: string): Destination[] {
