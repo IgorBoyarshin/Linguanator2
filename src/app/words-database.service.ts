@@ -26,8 +26,8 @@ export class WordsDatabaseService {
             .push(...gerToEng);
     }
 
-    wordsForLanguagePair(languagePair: LanguagePair): WordEntry[] {
-        return this.dictionary.from(languagePair.src).to(languagePair.dst);
+    wordsForLanguagePair({src, dst}: LanguagePair): WordEntry[] {
+        return this.dictionary.from(src).to(dst);
     }
 
     // private randomInt(exclusiveMax) {
