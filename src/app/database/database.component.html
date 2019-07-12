@@ -1,52 +1,140 @@
-<div class="container-fluid" [ngStyle]="{backgroundColor: 'red'}" id="words-database">
-    <div class="row database-header-row">
-        <div class="col-3 text-center" [ngStyle]="{backgroundColor: '#6b7'}">
-            <span [ngStyle]="{}">
-                Word
-            </span>
-        </div>
-        <div class="col-1 text-center" [ngStyle]="{backgroundColor: 'yellow'}">
+<!-- <section class="horizontal primary&#45;text&#45;dark" id="choose&#45;language&#45;panel"> -->
+<!--     <div class="dropdown" id="dropdown&#45;language&#45;from"> -->
+<!--         <a href="javascript:void(0)" class="dropdown&#45;button"  -->
+<!--             (click)="toggleDropdown($event, 'from')" [class]="">{{languageNameFrom}}</a> -->
+<!--         <div class="dropdown&#45;content" *ngIf="isOpenFrom"> -->
+<!--             <a href="javascript:void(0)" *ngFor="let language of allLanguages"  -->
+<!--                 (click)="selectLanguage('from', language)">{{language.name}}</a> -->
+<!--         </div> -->
+<!--     </div> -->
+<!--  -->
+<!--     <button class="button button&#45;big yellow" (click)="swapLanguages()"><==></button> -->
+<!--  -->
+<!--     <div class="dropdown" id="dropdown&#45;language&#45;to" > -->
+<!--         <a href="javascript:void(0)" class="dropdown&#45;button"  -->
+<!--             (click)="toggleDropdown($event, 'to')">{{languageNameTo}}</a> -->
+<!--         <div class="dropdown&#45;content" *ngIf="isOpenTo"> -->
+<!--             <a href="javascript:void(0)" *ngFor="let language of allLanguages"  -->
+<!--                 (click)="selectLanguage('to', language)">{{language.name}}</a> -->
+<!--         </div> -->
+<!--     </div> -->
+<!-- </section>     -->
+<!--  -->
+<!-- <section class="horizontal input&#45;panel" id="process&#45;word&#45;panel"> -->
+<!--     <input type="text" placeholder="Word" [(ngModel)]="inputWord"/> -->
+<!--     <input type="text" placeholder="Translations" [(ngModel)]="inputTranslations"> -->
+<!--     <input type="text" placeholder="Tags" [(ngModel)]="inputTags"> -->
+<!--     <button class="button button&#45;big green" (click)="submitWord()">Submit</button> -->
+<!-- </section> -->
 
+<!-- <p id="loading&#45;sign" *ngIf="isTableLoading">Loading the database...</p> -->
+
+<section id="database-header" class="container-fluid">
+    <div class="row">
+        <div class="col-6">
+            <div class="container-fluid">
+                <div id="database-languages" class="row">
+                    <div class="btn-group" dropdown>
+                      <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
+                              aria-controls="dropdown-basic">
+                          {{ primaryLanguage }} <span class="caret"></span>
+                      </button>
+                      <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+                          role="menu" aria-labelledby="button-basic">
+                          <li role="menuitem">
+                              <a class="dropdown-item" href="#" *ngFor="let language of languages">{{ language }}</a>
+                          </li>
+                      </ul>
+                    </div>
+
+                    <div class="arrow">==>></div>
+
+                    <div class="btn-group" dropdown>
+                      <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
+                              aria-controls="dropdown-basic">
+                          {{ secondaryLanguage }} <span class="caret"></span>
+                      </button>
+                      <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+                          role="menu" aria-labelledby="button-basic">
+                          <li role="menuitem">
+                              <a class="dropdown-item" href="#" *ngFor="let language of languages">{{ language }}</a>
+                          </li>
+                      </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-5 text-center" [ngStyle]="{backgroundColor: '#b67'}">
-            <span>
-                Translations
-            </span>
-        </div>
-        <div class="col-1 text-center" [ngStyle]="{backgroundColor: '#6f79b4'}">
-            <span>
-                Score
-            </span>
-        </div>
-        <div class="col-2 text-center" [ngStyle]="{backgroundColor: '#af7944'}">
-            <span>
-                Tags
-            </span>
+
+        <div class="col-6" id="tableTotalCount">
+            (Total: {{ words.length }} entries)
         </div>
     </div>
-    <div class="row database-row" *ngFor="let wordEntry of words">
-        <div class="col-3" [ngStyle]="{backgroundColor: '#6b7'}">
-            <span [ngStyle]="{}">
-                {{ wordEntry.word }}
-            </span>
-        </div>
-        <div class="col-1 text-center" [ngStyle]="{backgroundColor: 'yellow'}">
-            ===>
-        </div>
-        <div class="col-5" [ngStyle]="{backgroundColor: '#b67'}">
-            <span>
-                {{ wordEntry.translations.join(', ') }}
-            </span>
-        </div>
-        <div class="col-1 text-center" [ngStyle]="{backgroundColor: '#6f79b4'}">
-            <span>
-                {{ wordEntry.score }}
-            </span>
-        </div>
-        <div class="col-2" [ngStyle]="{backgroundColor: '#af7944'}">
-            <span>
-                {{ wordEntry.tags.join('; ') }}
-            </span>
-        </div>
-    </div>
-</div>
+</section>
+
+
+<table class="table table-borderless" id="words-table">
+    <thead>
+        <tr>
+            <th>Word</th>
+            <th>Translations</th>
+            <th>Score</th>
+            <th>Tags</th>
+            <!-- <th>@E</th> -->
+            <!-- <th>@D</th> -->
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let entry of words; let wordIndex = index">
+            <td>{{ entry.word }}</td>
+            <td>
+                {{ entry.translations.join(', ') }}
+                <!-- <span *ngFor="let translation of entry.translations.join(', ')" class="translation&#45;box"> -->
+                <!--     <a href="#">{{(translation ? translation.w : "")}}</a>; -->
+                <!-- </span> -->
+            </td>
+            <td>{{ entry.score }}</td>
+
+            <td>{{ entry.tags.join("; ") }}</td>
+
+            <!-- <td> -->
+            <!--     <button -->
+            <!--         (click)="editWord(word, wordIndex)" -->
+            <!--         class="button button&#45;small yellow">Edit -->
+            <!--     </button> -->
+            <!-- </td> -->
+            <!-- <td> -->
+            <!--     <button -->
+            <!--         (click)="removeWord(word)" -->
+            <!--         class="button button&#45;small red">Del -->
+            <!--     </button> -->
+            <!-- </td> -->
+        </tr>
+    <tbody>
+</table>
+
+<!-- <div class="dropdown"> -->
+<!--   <button class="btn btn&#45;secondary dropdown&#45;toggle" type="button" id="dropdownMenuButton" data&#45;toggle="dropdown" aria&#45;haspopup="true" aria&#45;expanded="false"> -->
+<!--     Dropdown button -->
+<!--   </button> -->
+<!--   <div class="dropdown&#45;menu" aria&#45;labelledby="dropdownMenuButton"> -->
+<!--     <a class="dropdown&#45;item" href="#">Action</a> -->
+<!--     <a class="dropdown&#45;item" href="#">Another action</a> -->
+<!--     <a class="dropdown&#45;item" href="#">Something else here</a> -->
+<!--   </div> -->
+<!-- </div> -->
+<!-- Example single danger button -->
+<!-- <div class="btn&#45;group"> -->
+<!--   <button type="button" class="btn btn&#45;danger dropdown&#45;toggle" data&#45;toggle="dropdown" aria&#45;haspopup="true" aria&#45;expanded="false"> -->
+<!--     Action -->
+<!--   </button> -->
+<!--   <div class="dropdown&#45;menu"> -->
+<!--     <a class="dropdown&#45;item" href="#">Action</a> -->
+<!--     <a class="dropdown&#45;item" href="#">Another action</a> -->
+<!--     <a class="dropdown&#45;item" href="#">Something else here</a> -->
+<!--     <div class="dropdown&#45;divider"></div> -->
+<!--     <a class="dropdown&#45;item" href="#">Separated link</a> -->
+<!--   </div> -->
+<!-- </div> -->
+
+
+

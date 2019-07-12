@@ -23,3 +23,47 @@
     font-size: 1.2rem;
     padding: 0.6em;
 }
+
+#database-header > div {
+    background-color: yellow;
+    padding: 0.8em;
+}
+#tableTotalCount {
+    text-align: right;
+    font-family: sans-serif;
+    font-style: italic;
+    font-size: 1.0rem;
+    margin: auto;
+}
+.arrow {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+#words-table tr > :nth-child(1) {
+    background-color: #6b7;
+}
+#words-table tr > :nth-child(2) {
+    background-color: #b67;
+}
+#words-table tr > :nth-child(3) {
+    background-color: #6f79b4;
+}
+#words-table tr > :nth-child(4) {
+    background-color: #af7944;
+}
+#words-table th {
+    text-align: center;
+    font-family: 'B612', sans-serif;
+    font-weight: bold;
+    letter-spacing: 0.2rem;
+    padding: 0.7em;
+    font-size: 1.3rem;
+}
+#words-table td {
+    font-family: 'Alegreya', sans-serif;
+    font-size: 1.2rem;
+    padding: 0.6em;
+}
+tbody > :first-child {
+    border-top: 4px solid black;
+}

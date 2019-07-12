@@ -12,6 +12,9 @@ import { SettingsService } from '../settings.service';
 })
 export class DatabaseComponent implements OnInit {
     words: WordEntry[];
+    languages: string[] = ["English", "German"];
+    primaryLanguage = this.languages[1];
+    secondaryLanguage = this.languages[0];
 
     constructor(
         private wordsDatabaseService: WordsDatabaseService,
