@@ -1,36 +1,40 @@
 import { Injectable } from '@angular/core';
 
+import { Dictionary } from './dictionary.model';
 import { WordEntry } from './word-entry.model';
 import { LanguagePair } from './language-pair.model';
-import { SettingsService } from './settings.service';
+import { LanguageIndexerService } from './language-indexer.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class WordsDatabaseService {
-    gerToEng: WordEntry[];
+    private dictionary: Dictionary = new Dictionary();
 
-    constructor(private settingsService: SettingsService) {
-        const eng = this.settingsService.indexOfLanguage("English");
-        const ger = this.settingsService.indexOfLanguage("German");
-        this.gerToEng = [
-            new WordEntry(eng, ger, 'weit',       ['wide', 'far', 'broad'],               2, ['tag1', 'tag2']),
-            new WordEntry(eng, ger, 'aufmerksam', ['attentive', 'mindful', 'thoughtful'], 0, ['tag1']),
-            new WordEntry(eng, ger, 'gehorsam',   ['obedient', 'submissive'],             1, []),
+    constructor(private languageIndexer: LanguageIndexerService) {
+        // Populate with sample data
+        const ger = this.languageIndexer.indexOf("German");
+        const eng = this.languageIndexer.indexOf("English");
+        const gerToEng = [
+            new WordEntry(ger, eng, 'weit',       ['wide', 'far', 'broad'],               2, ['tag1', 'tag2']),
+            new WordEntry(ger, eng, 'aufmerksam', ['attentive', 'mindful', 'thoughtful'], 0, ['tag1']),
+            new WordEntry(ger, eng, 'gehorsam',   ['obedient', 'submissive'],             1, []),
         ];
+        this.dictionary
+            .from(ger)
+            .to(eng)
+            .push(...gerToEng);
     }
 
-    // TODO
     wordsForLanguagePair(languagePair: LanguagePair): WordEntry[] {
-        // For now return the default
-        return this.gerToEng;
+        return this.dictionary.from(languagePair.src).to(languagePair.dst);
     }
 
-    private randomInt(exclusiveMax) {
-        return Math.floor(Math.random() * exclusiveMax);
-    }
-
-    randomWordEntry(): WordEntry {
-        return this.gerToEng[this.randomInt(this.gerToEng.length)];
-    }
+    // private randomInt(exclusiveMax) {
+    //     return Math.floor(Math.random() * exclusiveMax);
+    // }
+    //
+    // randomWordEntry(): WordEntry {
+    //     return this.gerToEng[this.randomInt(this.gerToEng.length)];
+    // }
 }

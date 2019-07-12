@@ -1,41 +1,52 @@
-export class Source {
-    constructor(public language: string, public destinations: Destination[]) {}
-    isFor(language: string) {
-        return this.language == language;
-    }
+import { WordEntry } from './word-entry.model';
 
-    // destinationsFor(language: string) {
-    //     for (let destination of this.destinations) {
-    //         if (destination.isFor(language)) {
-    //             return destination;
-    //         }
-    //     }
-    // }
-}
-
-export class Destination {
-    constructor(public language: string, public wordsList: WordEntry[]) {}
-    isFor(language: string) {
+class LanguageContainer {
+    constructor(public language: number) {}
+    isFor(language: number) {
         return this.language == language;
     }
 }
 
-export class Dictionary {
-    sources: Source[];
-
-    from(language: string): Destination[] {
-        for (let source of sources) {
-            if (source.isFor(language)) {
-                return source.destinations;
-            }
-        }
+export class Source extends LanguageContainer {
+    constructor(language: number, public destinations: Destinations) {
+        super(language);
     }
+}
 
-    to(language: string): WordEntry[] {
-        for (let destination of destinations) {
+export class Destination extends LanguageContainer {
+    constructor(language: number, public wordsList: WordEntry[]) {
+        super(language);
+    }
+}
+
+class Destinations {
+    constructor(private destinations: Destination[] = []) {}
+
+    to(language: number): WordEntry[] {
+        for (let destination of this.destinations) {
             if (destination.isFor(language)) {
                 return destination.wordsList;
             }
         }
+        // Not found => create
+        const newDestination = new Destination(language, []);
+        this.destinations.push(newDestination);
+        return newDestination.wordsList;
+    }
+}
+
+export class Dictionary {
+    constructor(private sources: Source[] = []) {}
+
+    from(language: number): Destinations {
+        for (let source of this.sources) {
+            if (source.isFor(language)) {
+                return source.destinations;
+            }
+        }
+        // Not found => create
+        const newSource = new Source(language, new Destinations());
+        this.sources.push(newSource);
+        return newSource.destinations;
     }
 }
