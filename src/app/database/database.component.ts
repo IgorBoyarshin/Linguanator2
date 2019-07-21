@@ -23,11 +23,10 @@ export class DatabaseComponent implements OnInit {
         private settingsService: SettingsService) {}
 
     ngOnInit() {
-        this.languages = languageIndexer.allNames();
-        this.primaryLanguage = this.languages[1];
-        this.secondaryLanguage = this.languages[0];
-        this.words = this.wordsDatabaseService.wordsForLanguagePair(
-            this.settingsService.languagePairInUse()
-        );
+        const languagePair = this.settingsService.languagePairInUse();
+        this.words = this.wordsDatabaseService.wordsForLanguagePair(languagePair);
+        this.primaryLanguage = this.languageIndexer.nameOf(languagePair.src);
+        this.secondaryLanguage = this.languageIndexer.nameOf(languagePair.dst);
+        this.languages = this.languageIndexer.allNames();
     }
 }
