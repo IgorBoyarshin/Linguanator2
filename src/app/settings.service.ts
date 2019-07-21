@@ -7,7 +7,6 @@ import { LanguageIndexerService } from './language-indexer.service';
     providedIn: 'root'
 })
 export class SettingsService {
-    private languages: string[];
     private currentLanguagePair: LanguagePair;
 
     constructor(private languageIndexer: LanguageIndexerService) {

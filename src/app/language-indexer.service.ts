@@ -26,4 +26,8 @@ export class LanguageIndexerService {
         console.error("Could not find index of language: ", name);
         return -1;
     }
+
+    allNames(): string[] {
+        return this.names;
+    }
 }
