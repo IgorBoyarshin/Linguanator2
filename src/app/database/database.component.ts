@@ -18,15 +18,14 @@ export class DatabaseComponent implements OnInit {
     secondaryLanguage: string;
 
     constructor(
-            private wordsDatabaseService: WordsDatabaseService,
-            private languageIndexer: LanguageIndexerService,
-            private settingsService: SettingsService) {
+        private wordsDatabaseService: WordsDatabaseService,
+        private languageIndexer: LanguageIndexerService,
+        private settingsService: SettingsService) {}
+
+    ngOnInit() {
         this.languages = languageIndexer.allNames();
         this.primaryLanguage = this.languages[1];
         this.secondaryLanguage = this.languages[0];
-    }
-
-    ngOnInit() {
         this.words = this.wordsDatabaseService.wordsForLanguagePair(
             this.settingsService.languagePairInUse()
         );
