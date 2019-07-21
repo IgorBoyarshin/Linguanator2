@@ -64,6 +64,9 @@
     font-size: 1.2rem;
     padding: 0.6em;
 }
+#words-table #score {
+    text-align: center;
+}
 tbody > :first-child {
     border-top: 4px solid black;
 }
