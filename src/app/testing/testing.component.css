@@ -20,15 +20,15 @@
     border: 2px solid #ccc;
 }
 /* .box:last-child { */
-.box#testing-user-answer {
+.box#testing-user-input {
     background: #eee;
     border: 2px solid #eee;
 /* } */
-/* .box#testing-user-answer { */
+/* .box#testing-user-input { */
     resize: none;
     outline: none;
 }
-.box#testing-user-answer:focus {
+.box#testing-user-input:focus {
     border: 2px solid blue;
 }
 #word-score {
@@ -50,4 +50,21 @@
 .secondary-text-2 {
     font-size: 1.1rem;
     color: rgba(80, 80, 80, 0.3);
+}
+
+#error-notifier {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #eee;
+}
+/* .horizontal { */
+/*     display: -webkit-flex; */
+/*     display: flex; */
+/*     -webkit-flex-direction: row; */
+/*     flex-direction: row; */
+/* } */
+#result-panel {
+    background-color: blue;
+    margin: auto;
+    padding: 1rem;
 }

@@ -2,7 +2,7 @@
     <div class="row">
         <section id="testing-main-column" class="col-7 container-fluid">
             <div class="row justify-content-around">
-                <div class="col-4 box" id="testing-query">
+                <div class="col-5 box" id="testing-query">
                     <span class="primary-text-dark" id="word-to-translate">
                         {{ wordEntry ? wordEntry.word : "" }}
                     </span>
@@ -17,16 +17,41 @@
                     </span>
                 </div>
 
-                <textarea class="col-4 box primary-text-dark"
-                          id="testing-user-answer"
+                <textarea class="col-5 box primary-text-dark"
+                          id="testing-user-input"
                           placeholder="Type answer here"
-                          ></textarea>
-                    <!-- [(ngModel)]="userInput" -->
-                    <!-- (keyup.enter)="submitAnswer()" -->
+                          [(ngModel)]="userInput"
+                          (keyup.enter)="submitAnswer()"
+                        ></textarea>
                     <!-- [disabled]="currentState != stateUserInput" -->
             </div>
         </section>
     </div>
+    <div class="row">
+        <div class="col-7 row justify-content-between" id="result-panel">
+            <div *ngIf="!wordEntry" id="error-notifier">
+                <p>NO WORDS MEET THE SPECIFIED CONDITION(LANG PAIR & TAGS)</p>
+            </div>
+
+            <div *ngIf="true">
+                <p>
+                    <span class="primary-text-light" id="correct-answer-text">
+                        {{ (true) ? "Corect answer: " : "All translations: " }}
+                    </span>
+                    <span class="primary-text-light" id="correct-answer">
+                        {{ wordEntry ? wordEntry.translations.join("; ") : ""}}
+                    </span>
+                    <span class="primary-text-dark" id="answer-score">
+                        {{ answerScore >= 0 ? "+" : "" }}{{ answerScore }}
+                    </span>
+                </p>
+            </div>
+
+            <button class="button button-big dark"
+                    (click)="submitAnswer()"
+                    [disabled]="!userInput || userInput.trim().length == 0 || !wordEntry">
+                {{ currentState == stateUserInput ? "Submit" : "Next" }}
+            </button>
+        </div>
+    </div>
 </div>
-
-
