@@ -4,23 +4,20 @@ import { Dictionary } from './dictionary.model';
 import { WordEntry } from './word-entry.model';
 import { LanguagePair } from './language-pair.model';
 import { LanguageIndexerService } from './language-indexer.service';
+import { DataProvider } from './data-provider';
+import { StaticDataProvider } from './static-data-provider';
 
 @Injectable({
     providedIn: 'root'
 })
 export class WordsDatabaseService {
+    private dataProvider: DataProvider;
     private dictionary: Dictionary = new Dictionary();
 
     constructor(private languageIndexer: LanguageIndexerService) {
-        // Populate with sample data
-        const ger = this.languageIndexer.indexOf("German");
-        const eng = this.languageIndexer.indexOf("English");
-        const gerToEng = [
-            new WordEntry(ger, eng, 'weit',       ['wide', 'far', 'broad'],               2, ['tag1', 'tag2']),
-            new WordEntry(ger, eng, 'aufmerksam', ['attentive', 'mindful', 'thoughtful'], 0, ['tag1']),
-            new WordEntry(ger, eng, 'gehorsam',   ['obedient', 'submissive'],             1, []),
-        ];
-        this.dictionary.add(...gerToEng);
+        this.dataProvider = new StaticDataProvider();
+
+        this.dictionary.add(...this.dataProvider.retrieveWords());
         // this.dictionary
         //     .from(ger)
         //     .to(eng)

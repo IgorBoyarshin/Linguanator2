@@ -10,7 +10,7 @@ export class LanguageIndexerService {
         this.names = [
             "English",
             "German"
-        ]
+        ];
     }
 
     nameOf(index: number): string {
