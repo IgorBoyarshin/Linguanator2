@@ -1,1 +1,32 @@
-<p>Testing works!</p>
+<div class="container-fluid">
+    <div class="row">
+        <section id="testing-main-column" class="col-7 container-fluid">
+            <div class="row justify-content-around">
+                <div class="col-4 box" id="testing-query">
+                    <span class="primary-text-dark" id="word-to-translate">
+                        {{ wordEntry ? wordEntry.word : "" }}
+                    </span>
+                    <span class="secondary-text-2" id="lang-label">
+                        {{ maybeLanguageSrc() }}
+                    </span>
+                    <span class="secondary-text-1" id="tags-label">
+                        [{{ wordEntry ? wordEntry.tags.join(";") : "" }}]
+                    </span>
+                    <span class="secondary-text-1" id="word-score">
+                        {{ wordEntry ? wordEntry.score : 0.0 }}
+                    </span>
+                </div>
+
+                <textarea class="col-4 box primary-text-dark"
+                          id="testing-user-answer"
+                          placeholder="Type answer here"
+                          ></textarea>
+                    <!-- [(ngModel)]="userInput" -->
+                    <!-- (keyup.enter)="submitAnswer()" -->
+                    <!-- [disabled]="currentState != stateUserInput" -->
+            </div>
+        </section>
+    </div>
+</div>
+
+

@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
+
+import { WordEntry } from '../word-entry.model';
+import { LanguagePair } from '../language-pair.model';
+import { LanguageIndexerService } from '../language-indexer.service';
+import { WordsDatabaseService } from '../words-database.service';
+import { SettingsService } from '../settings.service';
 
 @Component({
     selector: 'app-testing',
@@ -7,9 +12,24 @@ import { Router } from "@angular/router";
     styleUrls: ['./testing.component.css']
 })
 export class TestingComponent implements OnInit {
-    constructor(private router: Router) {}
+    wordEntry: WordEntry;
+    languagePair: LanguagePair;
+
+    constructor(
+        private wordsDatabaseService: WordsDatabaseService,
+        private languageIndexer: LanguageIndexerService,
+        private settingsService: SettingsService) {}
+
     ngOnInit() {
-        // XXX: temporary, while there is nothing in Testing to see
-        this.router.navigate(['/database']); 
+        this.languagePair = this.settingsService.languagePairInUse();
+        const randomWord = this.wordsDatabaseService.randomWordEntryFor(this.languagePair);
+        if (randomWord) {
+            this.wordEntry = randomWord;
+        }
+    }
+
+    maybeLanguageSrc(): string {
+        // XXX: In future must account for both directions
+        return this.languagePair ? this.languageIndexer.nameOf(this.languagePair.src) : "";
     }
 }

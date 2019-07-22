@@ -24,7 +24,7 @@ export class DatabaseComponent implements OnInit {
 
     ngOnInit() {
         const languagePair = this.settingsService.languagePairInUse();
-        this.words = this.wordsDatabaseService.wordsForLanguagePair(languagePair);
+        this.words = this.wordsDatabaseService.wordsFor(languagePair);
         this.primaryLanguage = this.languageIndexer.nameOf(languagePair.src);
         this.secondaryLanguage = this.languageIndexer.nameOf(languagePair.dst);
         this.languages = this.languageIndexer.allNames();

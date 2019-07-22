@@ -26,15 +26,19 @@ export class WordsDatabaseService {
             .push(...gerToEng);
     }
 
-    wordsForLanguagePair({src, dst}: LanguagePair): WordEntry[] {
+    wordsFor({src, dst}: LanguagePair): WordEntry[] {
         return this.dictionary.from(src).to(dst);
     }
 
-    // private randomInt(exclusiveMax) {
-    //     return Math.floor(Math.random() * exclusiveMax);
-    // }
-    //
-    // randomWordEntry(): WordEntry {
-    //     return this.gerToEng[this.randomInt(this.gerToEng.length)];
-    // }
+    private randomInt(exclusiveMax) {
+        return Math.floor(Math.random() * exclusiveMax);
+    }
+
+    private randomOf(arr: any[]): any {
+        return arr[this.randomInt(arr.length)];
+    }
+
+    randomWordEntryFor(languagePair: LanguagePair): WordEntry | undefined {
+        return this.randomOf(this.wordsFor(languagePair));
+    }
 }
