@@ -32,4 +32,8 @@ export class TestingComponent implements OnInit {
         // XXX: In future must account for both directions
         return this.languagePair ? this.languageIndexer.nameOf(this.languagePair.src) : "";
     }
+
+    submitInput() {
+
+    }
 }
