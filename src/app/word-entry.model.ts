@@ -1,6 +1,6 @@
 export class WordEntry {
     constructor(
-        public form: number,
+        public from: number,
         public to: number,
         public word: string,
         public translations: string[],

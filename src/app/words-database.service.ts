@@ -20,10 +20,11 @@ export class WordsDatabaseService {
             new WordEntry(ger, eng, 'aufmerksam', ['attentive', 'mindful', 'thoughtful'], 0, ['tag1']),
             new WordEntry(ger, eng, 'gehorsam',   ['obedient', 'submissive'],             1, []),
         ];
-        this.dictionary
-            .from(ger)
-            .to(eng)
-            .push(...gerToEng);
+        this.dictionary.add(...gerToEng);
+        // this.dictionary
+        //     .from(ger)
+        //     .to(eng)
+        //     .push(...gerToEng);
     }
 
     wordsFor({src, dst}: LanguagePair): WordEntry[] {

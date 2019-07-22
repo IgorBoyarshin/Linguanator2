@@ -49,4 +49,12 @@ export class Dictionary {
         this.sources.push(newSource);
         return newSource.destinations;
     }
+
+    add(...words: WordEntry[]) {
+        for (let word of words) {
+            this.from(word.from)
+                .to  (word.to)
+                .push(word);
+        }
+    }
 }
