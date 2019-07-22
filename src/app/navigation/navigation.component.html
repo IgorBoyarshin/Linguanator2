@@ -2,14 +2,14 @@
     <a class="navbar-brand" href="#">Linguanator 2</a>
 
     <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-            <a class="nav-link disabled" href="#">Testing</a>
+        <li class="nav-item" [routerLinkActive]="['active']">
+            <a class="nav-link" href="#" routerLink="/testing">Testing</a>
         </li>
-        <li class="nav-item active">
-            <a class="nav-link" href="#">Database</a>
+        <li class="nav-item" [routerLinkActive]="['active']">
+            <a class="nav-link" href="#" routerLink="/database">Database</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link disabled" href="#">Settings</a>
+        <li class="nav-item" [routerLinkActive]="['active']">
+            <a class="nav-link disabled" href="#" routerLink="/settings">Settings</a>
         </li>
     </ul>
 
