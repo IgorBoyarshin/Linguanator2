@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Alegreya&display=swap');
 
 #database-header > div {
-    background-color: yellow;
+    background-color: #777;
     padding: 0.8em;
 }
 #tableTotalCount {
