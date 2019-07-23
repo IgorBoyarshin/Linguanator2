@@ -1,29 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=B612:400,700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Alegreya&display=swap');
 
-#words-database {}
-.database-row {
-    /* margin-top: 2em; */
-}
-/* .row-top:not(:first-child) { */
-/* } */
-
-.database-header-row {
-    border-bottom: 4px solid black;
-}
-.database-header-row>* {
-    font-family: 'B612', sans-serif;
-    font-weight: bold;
-    letter-spacing: 0.2rem;
-    padding: 0.7em;
-    font-size: 1.3rem;
-}
-.database-row>* {
-    font-family: 'Alegreya', sans-serif;
-    font-size: 1.2rem;
-    padding: 0.6em;
-}
-
 #database-header > div {
     background-color: yellow;
     padding: 0.8em;
@@ -67,6 +44,12 @@
 #words-table #score {
     text-align: center;
 }
+tbody > * {
+    border-top: 1px solid black;
+}
 tbody > :first-child {
     border-top: 4px solid black;
+}
+tbody > :last-child {
+    border-bottom: 4px solid black;
 }
