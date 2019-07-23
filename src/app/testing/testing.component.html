@@ -21,7 +21,7 @@
                           id="testing-user-input"
                           placeholder="Type answer here"
                           [(ngModel)]="userInput"
-                          (keyup.enter)="submitInput()"
+                          (keyup.enter)="submit()"
                           [disabled]="textareaDisabled()"
                         ></textarea>
             </div>
@@ -48,7 +48,7 @@
             </div>
 
             <button class="button button-big dark"
-                    (click)="submitInput()"
+                    (click)="submit()"
                     [disabled]="!userInput || userInput.trim().length == 0 || !wordEntry">
                 {{ submitButtonText() }}
             </button>

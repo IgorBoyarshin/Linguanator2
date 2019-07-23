@@ -15,12 +15,16 @@ enum State {
 @Component({
     selector: 'app-testing',
     templateUrl: './testing.component.html',
-    styleUrls: ['./testing.component.css']
+    styleUrls: ['./testing.component.css'],
+    host: {
+        '(document:keydown)': 'handleKeyPress($event)'
+    }
 })
 export class TestingComponent implements OnInit {
-    private wordEntry: WordEntry;
-    private languagePair: LanguagePair;
-    private state: State;
+    userInput: string = "";
+    wordEntry: WordEntry;
+    languagePair: LanguagePair;
+    state: State;
 
     private languageIndexer: LanguageIndexer;
 
@@ -40,13 +44,21 @@ export class TestingComponent implements OnInit {
         }
     }
 
-    maybeLanguageSrc(): string {
+    private maybeLanguageSrc(): string {
         // XXX: In future must account for both directions
         return this.languagePair ? this.languageIndexer.nameOf(this.languagePair.src) : "";
     }
 
-    submitInput() {
-        this.state = State.DisplayResult;
+    submit() {
+        if (this.state == State.UserInput) {
+            this.userInput = this.userInput.trim();
+            if (this.userInput.length > 0) {
+                this.state = State.DisplayResult;
+            }
+        } else if (this.state == State.DisplayResult) {
+            this.state = State.UserInput;
+            this.userInput = "";
+        }
     }
 
     submitButtonText(): string {
@@ -55,5 +67,16 @@ export class TestingComponent implements OnInit {
 
     textareaDisabled(): boolean {
         return this.state != State.UserInput;
+    }
+
+    private handleKeyPress(event: KeyboardEvent): void {
+        if (event.keyCode == 13) { // Enter
+            if (this.state == State.DisplayResult) {
+                this.submit();
+
+                setTimeout(() => document.getElementById("testing-user-input").focus(), 80);
+                event.stopPropagation();
+            }
+        }
     }
 }
