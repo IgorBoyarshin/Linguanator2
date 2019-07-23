@@ -54,4 +54,8 @@ export class StaticDataProvider implements DataProvider {
         }
         return this.languageIndexer;
     }
+
+    addWordEntry(wordEntry: WordEntry) {
+        this.words.push(wordEntry);
+    }
 }
