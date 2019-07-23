@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { DataProviderFactoryService } from './data-provider-factory.service';
+import { DataProviderFactoryService } from './providers/data-provider-factory.service';
 import { LanguagePair } from './language-pair.model';
 import { LanguageIndexer } from './language-indexer';
 

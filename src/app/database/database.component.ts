@@ -5,7 +5,7 @@ import { LanguagePair } from '../language-pair.model';
 import { WordsDatabaseService } from '../words-database.service';
 import { SettingsService } from '../settings.service';
 import { LanguageIndexer } from '../language-indexer';
-import { DataProviderFactoryService } from '../data-provider-factory.service';
+import { DataProviderFactoryService } from '../providers/data-provider-factory.service';
 
 @Component({
     selector: 'app-database',

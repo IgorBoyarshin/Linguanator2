@@ -5,7 +5,7 @@ import { LanguagePair } from '../language-pair.model';
 import { LanguageIndexer } from '../language-indexer';
 import { WordsDatabaseService } from '../words-database.service';
 import { SettingsService } from '../settings.service';
-import { DataProviderFactoryService } from '../data-provider-factory.service';
+import { DataProviderFactoryService } from '../providers/data-provider-factory.service';
 
 enum State {
     UserInput,

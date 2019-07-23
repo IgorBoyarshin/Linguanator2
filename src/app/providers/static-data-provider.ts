@@ -1,6 +1,6 @@
 import { DataProvider } from './data-provider';
-import { WordEntry } from './word-entry.model';
-import { LanguageIndexer } from './language-indexer';
+import { WordEntry } from '../word-entry.model';
+import { LanguageIndexer } from '../language-indexer';
 
 export class StaticDataProvider implements DataProvider {
     private words: WordEntry[];

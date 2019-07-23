@@ -4,9 +4,9 @@ import { Dictionary } from './dictionary.model';
 import { WordEntry } from './word-entry.model';
 import { LanguagePair } from './language-pair.model';
 // import { LanguageIndexer } from './language-indexer';
-import { DataProvider } from './data-provider';
-import { StaticDataProvider } from './static-data-provider';
-import { DataProviderFactoryService } from './data-provider-factory.service';
+import { DataProvider } from './providers/data-provider';
+import { StaticDataProvider } from './providers/static-data-provider';
+import { DataProviderFactoryService } from './providers/data-provider-factory.service';
 
 @Injectable({
     providedIn: 'root'
