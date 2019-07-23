@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { Dictionary } from './dictionary.model';
 import { WordEntry } from './word-entry.model';
 import { LanguagePair } from './language-pair.model';
-import { LanguageIndexerService } from './language-indexer.service';
+// import { LanguageIndexer } from './language-indexer';
 import { DataProvider } from './data-provider';
 import { StaticDataProvider } from './static-data-provider';
+import { DataProviderFactoryService } from './data-provider-factory.service';
 
 @Injectable({
     providedIn: 'root'
@@ -14,8 +15,8 @@ export class WordsDatabaseService {
     private dataProvider: DataProvider;
     private dictionary: Dictionary = new Dictionary();
 
-    constructor(private languageIndexer: LanguageIndexerService) {
-        this.dataProvider = new StaticDataProvider();
+    constructor(dataProviderFactory: DataProviderFactoryService) {
+        this.dataProvider = dataProviderFactory.dataProviderInUse();
 
         this.dictionary.add(...this.dataProvider.retrieveWords());
         // this.dictionary

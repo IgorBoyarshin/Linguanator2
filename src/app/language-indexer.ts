@@ -1,17 +1,5 @@
-import { Injectable } from '@angular/core';
-
-@Injectable({
-    providedIn: 'root'
-})
-export class LanguageIndexerService {
-    names: string[];
-
-    constructor() {
-        this.names = [
-            "English",
-            "German"
-        ];
-    }
+export class LanguageIndexer {
+    constructor(private names: string[]) {}
 
     nameOf(index: number): string {
         return this.names[index]; // TODO: perform check??

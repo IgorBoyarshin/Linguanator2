@@ -4,7 +4,8 @@ import { WordEntry } from '../word-entry.model';
 import { LanguagePair } from '../language-pair.model';
 import { WordsDatabaseService } from '../words-database.service';
 import { SettingsService } from '../settings.service';
-import { LanguageIndexerService } from '../language-indexer.service';
+import { LanguageIndexer } from '../language-indexer';
+import { DataProviderFactoryService } from '../data-provider-factory.service';
 
 @Component({
     selector: 'app-database',
@@ -17,10 +18,14 @@ export class DatabaseComponent implements OnInit {
     primaryLanguage: string;
     secondaryLanguage: string;
 
+    private languageIndexer: LanguageIndexer;
+
     constructor(
-        private wordsDatabaseService: WordsDatabaseService,
-        private languageIndexer: LanguageIndexerService,
-        private settingsService: SettingsService) {}
+            dataProviderFactory: DataProviderFactoryService,
+            private wordsDatabaseService: WordsDatabaseService,
+            private settingsService: SettingsService) {
+        this.languageIndexer = dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer();
+    }
 
     ngOnInit() {
         const languagePair = this.settingsService.languagePairInUse();

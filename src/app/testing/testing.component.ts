@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 import { WordEntry } from '../word-entry.model';
 import { LanguagePair } from '../language-pair.model';
-import { LanguageIndexerService } from '../language-indexer.service';
+import { LanguageIndexer } from '../language-indexer';
 import { WordsDatabaseService } from '../words-database.service';
 import { SettingsService } from '../settings.service';
+import { DataProviderFactoryService } from '../data-provider-factory.service';
 
 @Component({
     selector: 'app-testing',
@@ -15,10 +16,14 @@ export class TestingComponent implements OnInit {
     wordEntry: WordEntry;
     languagePair: LanguagePair;
 
+    private languageIndexer: LanguageIndexer;
+
     constructor(
-        private wordsDatabaseService: WordsDatabaseService,
-        private languageIndexer: LanguageIndexerService,
-        private settingsService: SettingsService) {}
+            dataProviderFactory: DataProviderFactoryService,
+            private wordsDatabaseService: WordsDatabaseService,
+            private settingsService: SettingsService) {
+        this.languageIndexer = dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer();
+    }
 
     ngOnInit() {
         this.languagePair = this.settingsService.languagePairInUse();

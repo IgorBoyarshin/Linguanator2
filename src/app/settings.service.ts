@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 
+import { DataProviderFactoryService } from './data-provider-factory.service';
 import { LanguagePair } from './language-pair.model';
-import { LanguageIndexerService } from './language-indexer.service';
+import { LanguageIndexer } from './language-indexer';
 
 @Injectable({
     providedIn: 'root'
@@ -9,10 +10,11 @@ import { LanguageIndexerService } from './language-indexer.service';
 export class SettingsService {
     private currentLanguagePair: LanguagePair;
 
-    constructor(private languageIndexer: LanguageIndexerService) {
+    constructor(dataProviderFactory: DataProviderFactoryService) {
+        const languageIndexer = dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer();
         this.currentLanguagePair = new LanguagePair(
-            this.languageIndexer.indexOf("German"),
-            this.languageIndexer.indexOf("English")
+            languageIndexer.indexOf("German"),
+            languageIndexer.indexOf("English")
         );
     }
 

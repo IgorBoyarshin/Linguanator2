@@ -1,20 +1,17 @@
 import { DataProvider } from './data-provider';
 import { WordEntry } from './word-entry.model';
+import { LanguageIndexer } from './language-indexer';
 
-export class StaticDataProvider extends DataProvider {
-    words: WordEntry[];
-    // languages: string[];
+export class StaticDataProvider implements DataProvider {
+    private words: WordEntry[];
+    private languageIndexer: LanguageIndexer;
 
-    constructor() {
-        super();
-    }
+    constructor() {}
 
     retrieveWords(): WordEntry[] {
         if (!this.words) {
-            // const ger = this.languageIndexer.indexOf("German");
-            // const eng = this.languageIndexer.indexOf("English");
-            const ger = 1; // TODO
-            const eng = 0; // TODO
+            const ger = this.retrieveLanguageIndexer().indexOf("German");
+            const eng = this.retrieveLanguageIndexer().indexOf("English");
             this.words = [
                 new WordEntry(ger, eng, 'weit', ['wide', 'far', 'broad'], 2, ['tag1', 'tag2']),
                 new WordEntry(ger, eng, 'aufmerksam', ['attentive', 'mindful', 'thoughtful'], 0, ['tag1']),
@@ -47,13 +44,14 @@ export class StaticDataProvider extends DataProvider {
         return this.words;
     }
 
-    // retrieveLanguages(): string[] {
-    //     if (!this.languages) {
-    //         this.languages = [
-    //             "English",
-    //             "German"
-    //         ];
-    //     }
-    //     return this.languages;
-    // }
+    retrieveLanguageIndexer(): LanguageIndexer {
+        if (!this.languageIndexer) {
+            const languages = [
+                "English",
+                "German"
+            ];
+            this.languageIndexer = new LanguageIndexer(languages);
+        }
+        return this.languageIndexer;
+    }
 }

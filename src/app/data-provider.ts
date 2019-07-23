@@ -1,5 +1,7 @@
 import { WordEntry } from './word-entry.model';
+import { LanguageIndexer } from './language-indexer';
 
-export abstract class DataProvider {
-    abstract retrieveWords(): WordEntry[];
+export interface DataProvider {
+    retrieveWords(): WordEntry[];
+    retrieveLanguageIndexer(): LanguageIndexer;
 }
