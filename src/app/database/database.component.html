@@ -41,7 +41,9 @@
 </section>
 
 
-<app-edited-word-entry>
+<app-edited-word-entry
+    [languagePair]="languagePair"
+    (addWord)="addWordEntry($event)">
 </app-edited-word-entry>
 
 
