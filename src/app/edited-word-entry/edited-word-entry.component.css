@@ -1,0 +1,19 @@
+section.input-panel {
+    padding: 0.8rem;
+    background: #111;
+    align-items: center;
+    justify-content: center;
+}
+section.input-panel > * {
+    margin-right: 1rem;
+}
+section.input-panel > input {
+    border: 2px solid black;
+    border-radius: 0.5rem;
+    /* padding: 0.1rem 0.1rem 0.1rem 0.1rem; */
+    padding: 0.5rem 0.4rem 0.5rem 0.4rem;
+    font-size: 0.9rem;
+    outline: none;
+    background-color: #444;
+    color: #eee;
+}

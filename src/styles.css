@@ -56,3 +56,10 @@
     transform: translate(0.1rem, 0.1rem);
     box-shadow: 0.15rem 0.15rem 0.6rem #111 inset;
 }
+
+.horizontal {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+}
