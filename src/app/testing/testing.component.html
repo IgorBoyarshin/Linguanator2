@@ -22,8 +22,8 @@
                           placeholder="Type answer here"
                           [(ngModel)]="userInput"
                           (keyup.enter)="submitInput()"
+                          [disabled]="textareaDisabled()"
                         ></textarea>
-                    <!-- [disabled]="currentState != stateUserInput" -->
             </div>
         </section>
     </div>
@@ -50,7 +50,7 @@
             <button class="button button-big dark"
                     (click)="submitInput()"
                     [disabled]="!userInput || userInput.trim().length == 0 || !wordEntry">
-                {{ currentState == stateUserInput ? "Submit" : "Next" }}
+                {{ submitButtonText() }}
             </button>
         </div>
     </div>
