@@ -9,8 +9,13 @@ import { StaticDataProvider } from './static-data-provider';
 export class DataProviderFactoryService {
     constructor() {}
 
+    private dataProvider: DataProvider;
+
     dataProviderInUse(): DataProvider {
-        // DataProvider to be used throughout the application is set here
-        return new StaticDataProvider();
+        if (!this.dataProvider) {
+            // DataProvider to be used throughout the application is set here
+            this.dataProvider = new StaticDataProvider();
+        }
+        return this.dataProvider;
     }
 }
