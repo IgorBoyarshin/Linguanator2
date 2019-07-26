@@ -2,10 +2,6 @@
     background-color: #4D4746;
     color: #fff;
 }
-/* .light { */
-/*     background-color: #dadada; */
-/*     color: #333; */
-/* } */
 .green {
     background-color: #7C3;
     color: #FFF;
@@ -19,9 +15,6 @@
     color: #FFF;
 }
 
-/* .button.dark:hover:enabled { */
-/*     background-color: #4D4746; */
-/* } */
 .button.green:hover:enabled {
     background-color: #7E3;
 }

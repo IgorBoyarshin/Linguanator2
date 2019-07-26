@@ -19,10 +19,6 @@ export class WordsDatabaseService {
         this.dataProvider = dataProviderFactory.dataProviderInUse();
 
         this.dictionary.add(...this.dataProvider.retrieveWords());
-        // this.dictionary
-        //     .from(ger)
-        //     .to(eng)
-        //     .push(...gerToEng);
     }
 
     wordsFor({src, dst}: LanguagePair): WordEntry[] {
