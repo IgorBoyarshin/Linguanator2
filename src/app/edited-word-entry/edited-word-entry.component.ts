@@ -20,7 +20,7 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
     editingExistingEntry: boolean;
 
     @Input() languagePair: LanguagePair;
-    @Output() addWord = new EventEmitter<WordEntry>();
+    @Output() submitEntry = new EventEmitter<WordEntry>();
 
     private displayEntrySubscription: any;
     @Input() events: Observable<WordEntry>;
@@ -54,7 +54,7 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
         const to = this.languagePair.dst;
         const score = 0;
         const newWordEntry = new WordEntry(from, to, this.word, translations, score, tags);
-        this.addWord.emit(newWordEntry);
+        this.submitEntry.emit(newWordEntry);
         this.clear();
     }
 
