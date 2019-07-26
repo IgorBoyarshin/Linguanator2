@@ -6,7 +6,7 @@ import { LanguagePair } from '../language-pair.model';
 import { WordEntry } from '../word-entry.model';
 
 @Component({
-    selector: 'app-edited-word-entry',
+    selector: 'edited-word-entry',
     templateUrl: './edited-word-entry.component.html',
     styleUrls: ['./edited-word-entry.component.css']
 })
