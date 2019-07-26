@@ -58,4 +58,8 @@ export class StaticDataProvider implements DataProvider {
     addWordEntry(wordEntry: WordEntry) {
         this.words.push(wordEntry);
     }
+
+    updateWordEntry(index: number, updatedWordEntry: WordEntry) {
+        this.words[index] = updatedWordEntry;
+    }
 }

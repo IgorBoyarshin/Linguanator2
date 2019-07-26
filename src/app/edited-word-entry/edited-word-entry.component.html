@@ -5,5 +5,5 @@
     <button
         class="button button-big dark"
         [disabled]="!canSubmit()"
-        (click)="submit()">Submit</button>
+        (click)="submit()">{{ editingExistingEntry ? "Submit" : "Add" }}</button>
 </section>

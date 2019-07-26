@@ -35,15 +35,16 @@
         </div>
 
         <div class="col-6" id="tableTotalCount">
-            (Total: {{ words.length }} entries)
+            (Total: {{ entries.length }} entries)
         </div>
     </div>
 </section>
 
 
 <edited-word-entry
+    [events]="displayEditedEntry.asObservable()"
     [languagePair]="languagePair"
-    (addWord)="addWordEntry($event)">
+    (addWord)="submitEntry($event)">
 </edited-word-entry>
 
 
@@ -59,7 +60,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let entry of words; let entryIndex = index">
+        <tr *ngFor="let entry of entries; let entryIndex = index">
             <td>{{ entry.word }}</td>
             <td>{{ entry.translations.join(', ') }}</td>
             <td>{{ entry.score }}</td>

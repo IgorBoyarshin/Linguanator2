@@ -7,17 +7,22 @@ import { SettingsService } from '../settings.service';
 import { LanguageIndexer } from '../language-indexer';
 import { DataProviderFactoryService } from '../providers/data-provider-factory.service';
 
+import { Subject } from 'rxjs';
+
 @Component({
     selector: 'app-database',
     templateUrl: './database.component.html',
     styleUrls: ['./database.component.css']
 })
 export class DatabaseComponent implements OnInit {
-    words: WordEntry[];
+    entries: WordEntry[];
     languages: string[];
-    languagePair: LanguagePair;
+    languagePair: LanguagePair; // @Input into sub-component
     primaryLanguage: string;
     secondaryLanguage: string;
+
+    private displayEditedEntry: Subject<WordEntry> = new Subject<WordEntry>();
+    editedEntryIndex: number | undefined;
 
     private languageIndexer: LanguageIndexer;
 
@@ -30,20 +35,38 @@ export class DatabaseComponent implements OnInit {
 
     ngOnInit() {
         this.languagePair = this.settingsService.languagePairInUse();
-        this.words = this.wordsDatabaseService.wordsFor(this.languagePair);
+        this.entries = this.wordsDatabaseService.wordsFor(this.languagePair);
         this.primaryLanguage = this.languageIndexer.nameOf(this.languagePair.src);
         this.secondaryLanguage = this.languageIndexer.nameOf(this.languagePair.dst);
         this.languages = this.languageIndexer.allNames();
     }
 
-    addWordEntry(wordEntry: WordEntry) {
-        // TODO: probably need to do add the word in one place instead of two:
-        this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry); // TODO
-        this.wordsDatabaseService.wordsFor(this.languagePair).push(wordEntry); // TODO
-        this.reloadTable();
+    submitEntry(wordEntry: WordEntry) {
+        if (this.editedEntryIndex === undefined) { // Adding a new Entry
+            // TODO: probably need to do add the word in one place instead of two:
+            this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry); // TODO
+            this.wordsDatabaseService.wordsFor(this.languagePair).push(wordEntry); // TODO
+            this.reloadTable(); // TODO: can avoid reloading the whole table??
+        } else { // Submitting changes to an existing Entry
+            // TODO: probably need to do add the word in one place instead of two:
+            this.dataProviderFactory.dataProviderInUse()
+                .updateWordEntry(this.editedEntryIndex, wordEntry); // TODO
+            this.wordsDatabaseService.wordsFor(this.languagePair)[this.editedEntryIndex] = wordEntry; // TODO
+            this.reloadTable(); // TODO: can avoid reloading the whole table??
+            this.editedEntryIndex = undefined;
+        }
     }
 
     private reloadTable() {
-        this.words = this.wordsDatabaseService.wordsFor(this.languagePair);
+        this.entries = this.wordsDatabaseService.wordsFor(this.languagePair);
+    }
+
+    editEntry(index: number) {
+        const entry = this.entries[index];
+        const word = entry.word;
+        const translations = entry.translations.join(";");
+        const tags = entry.tags.join(";");
+        this.editedEntryIndex = index;
+        this.displayEditedEntry.next(entry);
     }
 }
