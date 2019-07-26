@@ -43,6 +43,10 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
         return (this.word.trim().length > 0) && (this.translations.trim().length > 0);
     }
 
+    canDiscard(): boolean {
+        return (this.word.length > 0) || (this.translations.length > 0) || (this.tags.length > 0);
+    }
+
     submit() {
         const translations = this.translations.split(';');
         const tags = this.tags.length == 0 ? [] : this.tags.split(';');
@@ -51,6 +55,10 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
         const score = 0;
         const newWordEntry = new WordEntry(from, to, this.word, translations, score, tags);
         this.addWord.emit(newWordEntry);
+        this.clear();
+    }
+
+    discard() {
         this.clear();
     }
 

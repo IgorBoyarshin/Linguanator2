@@ -3,7 +3,11 @@
     <input type="text" placeholder="Translations" [(ngModel)]="translations">
     <input type="text" placeholder="Tags"         [(ngModel)]="tags">
     <button
-        class="button button-big dark"
+        class="button button-big green"
         [disabled]="!canSubmit()"
         (click)="submit()">{{ editingExistingEntry ? "Submit" : "Add" }}</button>
+    <button
+        class="button button-big red"
+        [disabled]="!canDiscard()"
+        (click)="discard()">Discard</button>
 </section>

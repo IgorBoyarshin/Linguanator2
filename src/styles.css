@@ -6,10 +6,10 @@
 /*     background-color: #dadada; */
 /*     color: #333; */
 /* } */
-/* .green { */
-/*     background-color: #7C3; */
-/*     color: #FFF; */
-/* } */
+.green {
+    background-color: #7C3;
+    color: #FFF;
+}
 .yellow {
     background-color: #EE2;
     color: #111;
@@ -22,9 +22,9 @@
 /* .button.dark:hover:enabled { */
 /*     background-color: #4D4746; */
 /* } */
-/* .button.green:hover:enabled { */
-/*     background-color: #7E3; */
-/* } */
+.button.green:hover:enabled {
+    background-color: #7E3;
+}
 .button.yellow:hover:enabled {
     background-color: #FF4;
 }
