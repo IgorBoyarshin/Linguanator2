@@ -28,6 +28,12 @@
 #words-table tr > :nth-child(4) {
     background-color: #af7944;
 }
+#words-table tr > :nth-child(5) {
+    background-color: #bbbb77;
+}
+#words-table tr > :nth-child(6) {
+    background-color: #aa7777;
+}
 #words-table th {
     text-align: center;
     font-family: 'B612', sans-serif;
@@ -41,7 +47,13 @@
     font-size: 1.2rem;
     padding: 0.6em;
 }
-#words-table #score {
+#words-table-score {
+    text-align: center;
+}
+#words-table-edit {
+    text-align: center;
+}
+#words-table-delete {
     text-align: center;
 }
 tbody > * {
