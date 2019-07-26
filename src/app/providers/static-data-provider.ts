@@ -62,4 +62,8 @@ export class StaticDataProvider implements DataProvider {
     updateWordEntry(index: number, updatedWordEntry: WordEntry) {
         this.words[index] = updatedWordEntry;
     }
+
+    removeWordEntry(index: number) {
+        this.words.splice(index, 1);
+    }
 }

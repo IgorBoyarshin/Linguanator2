@@ -43,12 +43,12 @@ export class DatabaseComponent implements OnInit {
 
     submitEntry(wordEntry: WordEntry) {
         if (this.editedEntryIndex === undefined) { // Adding a new Entry
-            // TODO: probably need to do add the word in one place instead of two:
+            // TODO: probably need to do this in one place instead of two:
             this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry); // TODO
             this.wordsDatabaseService.wordsFor(this.languagePair).push(wordEntry); // TODO
             this.reloadTable(); // TODO: can avoid reloading the whole table??
         } else { // Submitting changes to an existing Entry
-            // TODO: probably need to do add the word in one place instead of two:
+            // TODO: probably need to do this in one place instead of two:
             this.dataProviderFactory.dataProviderInUse()
                 .updateWordEntry(this.editedEntryIndex, wordEntry); // TODO
             this.wordsDatabaseService.wordsFor(this.languagePair)[this.editedEntryIndex] = wordEntry; // TODO
@@ -68,5 +68,13 @@ export class DatabaseComponent implements OnInit {
         const tags = entry.tags.join(";");
         this.editedEntryIndex = index;
         this.displayEditedEntry.next(entry);
+    }
+
+    // TODO: improve. Unsafe now
+    removeEntry(index: number) {
+        // TODO: probably need to do this in one place instead of two:
+        this.dataProviderFactory.dataProviderInUse().removeWordEntry(index); // TODO
+        this.wordsDatabaseService.wordsFor(this.languagePair).splice(index, 1); // TODO
+        this.reloadTable(); // TODO: can avoid reloading the whole table??
     }
 }

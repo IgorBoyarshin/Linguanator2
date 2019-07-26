@@ -6,4 +6,5 @@ export interface DataProvider {
     retrieveLanguageIndexer(): LanguageIndexer;
     addWordEntry(wordEntry: WordEntry);
     updateWordEntry(index: number, updatedWordEntry: WordEntry);
+    removeWordEntry(index: number);
 }
