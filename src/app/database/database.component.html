@@ -67,13 +67,13 @@
             <td>{{ entry.tags.join("; ") }}</td>
             <td class="nostretch" id="words-table-edit">
                 <button
-                    (click)="editEntry(entryIndex)"
+                    (click)="editEntry(entry, entryIndex)"
                     class="button button-small yellow">Edit
                 </button>
             </td>
             <td class="nostretch" id="words-table-delete">
                 <button
-                    (click)="removeEntry(entryIndex)"
+                    (click)="removeEntry(entry, entryIndex)"
                     class="button button-small red">Delete
                 </button>
             </td>

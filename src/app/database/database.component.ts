@@ -22,6 +22,7 @@ export class DatabaseComponent implements OnInit {
     secondaryLanguage: string;
 
     private displayEditedEntry: Subject<WordEntry> = new Subject<WordEntry>();
+    editedEntry: WordEntry;
     editedEntryIndex: number | undefined;
 
     private languageIndexer: LanguageIndexer;
@@ -46,20 +47,14 @@ export class DatabaseComponent implements OnInit {
             // TODO: probably need to do this in one place instead of two:
             this.addWordEntry(this.dataProviderFactory.dataProviderInUse().retrieveWords(), wordEntry);
             this.addWordEntry(this.wordsDatabaseService.wordsFor(this.languagePair), wordEntry);
-            // this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry); // TODO
-            // this.wordsDatabaseService.wordsFor(this.languagePair).push(wordEntry); // TODO
         } else { // Submitting changes to an existing Entry
             // TODO: probably need to do this in one place instead of two:
             this.updateWordEntry(
                 this.dataProviderFactory.dataProviderInUse().retrieveWords(),
-                this.editedEntryIndex, null, wordEntry);
+                this.editedEntryIndex, this.editedEntry, wordEntry);
             this.updateWordEntry(
                 this.wordsDatabaseService.wordsFor(this.languagePair),
-                this.editedEntryIndex, null, wordEntry);
-
-            // this.dataProviderFactory.dataProviderInUse()
-            //     .updateWordEntry(this.editedEntryIndex, wordEntry); // TODO
-            // this.wordsDatabaseService.wordsFor(this.languagePair)[this.editedEntryIndex] = wordEntry; // TODO
+                this.editedEntryIndex, this.editedEntry, wordEntry);
             this.editedEntryIndex = undefined;
         }
 
@@ -70,29 +65,20 @@ export class DatabaseComponent implements OnInit {
         this.entries = this.wordsDatabaseService.wordsFor(this.languagePair);
     }
 
-    editEntry(index: number) {
-        const entry = this.entries[index];
-        const word = entry.word;
-        const translations = entry.translations.join(";");
-        const tags = entry.tags.join(";");
+    editEntry(entry: WordEntry, index: number) {
         this.editedEntryIndex = index;
+        this.editedEntry = entry;
         this.displayEditedEntry.next(entry);
     }
 
-    removeEntry(index: number) {
+    removeEntry(entry: WordEntry, index: number) {
         // TODO: probably need to do this in one place instead of two:
-        this.removeWordEntry(
-            this.dataProviderFactory.dataProviderInUse().retrieveWords(),
-            this.editedEntryIndex, null);
-        this.removeWordEntry(
-            this.wordsDatabaseService.wordsFor(this.languagePair),
-            this.editedEntryIndex, null);
-        // this.dataProviderFactory.dataProviderInUse().removeWordEntry(index); // TODO
-        // this.wordsDatabaseService.wordsFor(this.languagePair).splice(index, 1); // TODO
+        this.removeWordEntry(this.dataProviderFactory.dataProviderInUse().retrieveWords(), index, entry);
+        this.removeWordEntry(this.wordsDatabaseService.wordsFor(this.languagePair), index, entry);
         this.reloadTable(); // TODO: can avoid reloading the whole table??
     }
 
-    private indexValidIn(array: any[], index: number) {
+    private indexValidIn(array: any[], index: number): boolean {
         return (0 <= index) && (index < array.length);
     }
 
@@ -100,7 +86,8 @@ export class DatabaseComponent implements OnInit {
         entries.push(wordEntry);
     }
 
-    private updateWordEntry(entries: WordEntry[], potentialIndex: number, oldEntry: WordEntry, newEntry: WordEntry) {
+    private updateWordEntry(entries: WordEntry[], potentialIndex: number,
+                            oldEntry: WordEntry, newEntry: WordEntry) {
         if (!this.indexValidIn(entries, potentialIndex)) return;
         if (entries[potentialIndex] === oldEntry) {
             entries[potentialIndex] = newEntry;
