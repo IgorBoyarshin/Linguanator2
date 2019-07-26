@@ -44,17 +44,26 @@ export class DatabaseComponent implements OnInit {
     submitEntry(wordEntry: WordEntry) {
         if (this.editedEntryIndex === undefined) { // Adding a new Entry
             // TODO: probably need to do this in one place instead of two:
-            this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry); // TODO
-            this.wordsDatabaseService.wordsFor(this.languagePair).push(wordEntry); // TODO
-            this.reloadTable(); // TODO: can avoid reloading the whole table??
+            this.addWordEntry(this.dataProviderFactory.dataProviderInUse().retrieveWords(), wordEntry);
+            this.addWordEntry(this.wordsDatabaseService.wordsFor(this.languagePair), wordEntry);
+            // this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry); // TODO
+            // this.wordsDatabaseService.wordsFor(this.languagePair).push(wordEntry); // TODO
         } else { // Submitting changes to an existing Entry
             // TODO: probably need to do this in one place instead of two:
-            this.dataProviderFactory.dataProviderInUse()
-                .updateWordEntry(this.editedEntryIndex, wordEntry); // TODO
-            this.wordsDatabaseService.wordsFor(this.languagePair)[this.editedEntryIndex] = wordEntry; // TODO
-            this.reloadTable(); // TODO: can avoid reloading the whole table??
+            this.updateWordEntry(
+                this.dataProviderFactory.dataProviderInUse().retrieveWords(),
+                this.editedEntryIndex, null, wordEntry);
+            this.updateWordEntry(
+                this.wordsDatabaseService.wordsFor(this.languagePair),
+                this.editedEntryIndex, null, wordEntry);
+
+            // this.dataProviderFactory.dataProviderInUse()
+            //     .updateWordEntry(this.editedEntryIndex, wordEntry); // TODO
+            // this.wordsDatabaseService.wordsFor(this.languagePair)[this.editedEntryIndex] = wordEntry; // TODO
             this.editedEntryIndex = undefined;
         }
+
+        this.reloadTable(); // TODO: can avoid reloading the whole table??
     }
 
     private reloadTable() {
@@ -70,11 +79,46 @@ export class DatabaseComponent implements OnInit {
         this.displayEditedEntry.next(entry);
     }
 
-    // TODO: improve. Unsafe now
     removeEntry(index: number) {
         // TODO: probably need to do this in one place instead of two:
-        this.dataProviderFactory.dataProviderInUse().removeWordEntry(index); // TODO
-        this.wordsDatabaseService.wordsFor(this.languagePair).splice(index, 1); // TODO
+        this.removeWordEntry(
+            this.dataProviderFactory.dataProviderInUse().retrieveWords(),
+            this.editedEntryIndex, null);
+        this.removeWordEntry(
+            this.wordsDatabaseService.wordsFor(this.languagePair),
+            this.editedEntryIndex, null);
+        // this.dataProviderFactory.dataProviderInUse().removeWordEntry(index); // TODO
+        // this.wordsDatabaseService.wordsFor(this.languagePair).splice(index, 1); // TODO
         this.reloadTable(); // TODO: can avoid reloading the whole table??
+    }
+
+    private indexValidIn(array: any[], index: number) {
+        return (0 <= index) && (index < array.length);
+    }
+
+    private addWordEntry(entries: WordEntry[], wordEntry: WordEntry) {
+        entries.push(wordEntry);
+    }
+
+    private updateWordEntry(entries: WordEntry[], potentialIndex: number, oldEntry: WordEntry, newEntry: WordEntry) {
+        if (!this.indexValidIn(entries, potentialIndex)) return;
+        if (entries[potentialIndex] === oldEntry) {
+            entries[potentialIndex] = newEntry;
+        } else { // deep search
+            const index = entries.indexOf(oldEntry);
+            if (index == -1) return; // not found : (
+            entries[index] = newEntry;
+        }
+    }
+
+    private removeWordEntry(entries: WordEntry[], potentialIndex: number, wordEntry: WordEntry) {
+        if (!this.indexValidIn(entries, potentialIndex)) return;
+        if (entries[potentialIndex] === wordEntry) {
+            entries.splice(potentialIndex, 1);
+        } else { // deep search
+            const index = entries.indexOf(wordEntry);
+            if (index == -1) return; // not found : (
+            entries.splice(index, 1);
+        }
     }
 }

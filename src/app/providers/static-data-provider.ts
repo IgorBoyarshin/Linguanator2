@@ -55,15 +55,15 @@ export class StaticDataProvider implements DataProvider {
         return this.languageIndexer;
     }
 
-    addWordEntry(wordEntry: WordEntry) {
-        this.words.push(wordEntry);
-    }
-
-    updateWordEntry(index: number, updatedWordEntry: WordEntry) {
-        this.words[index] = updatedWordEntry;
-    }
-
-    removeWordEntry(index: number) {
-        this.words.splice(index, 1);
-    }
+    // addWordEntry(wordEntry: WordEntry) {
+    //     this.words.push(wordEntry);
+    // }
+    //
+    // updateWordEntry(index: number, updatedWordEntry: WordEntry) {
+    //     this.words[index] = updatedWordEntry;
+    // }
+    //
+    // removeWordEntry(index: number) {
+    //     this.words.splice(index, 1);
+    // }
 }
