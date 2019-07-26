@@ -44,17 +44,13 @@ export class DatabaseComponent implements OnInit {
 
     submitEntry(wordEntry: WordEntry) {
         if (this.editedEntryIndex === undefined) { // Adding a new Entry
-            // TODO: probably need to do this in one place instead of two:
             this.addWordEntry(this.dataProviderFactory.dataProviderInUse().retrieveWords(), wordEntry);
-            this.addWordEntry(this.wordsDatabaseService.wordsFor(this.languagePair), wordEntry);
+            this.wordsDatabaseService.update();
         } else { // Submitting changes to an existing Entry
-            // TODO: probably need to do this in one place instead of two:
             this.updateWordEntry(
                 this.dataProviderFactory.dataProviderInUse().retrieveWords(),
                 this.editedEntryIndex, this.editedEntry, wordEntry);
-            this.updateWordEntry(
-                this.wordsDatabaseService.wordsFor(this.languagePair),
-                this.editedEntryIndex, this.editedEntry, wordEntry);
+            this.wordsDatabaseService.update();
             this.editedEntryIndex = undefined;
         }
 
@@ -72,9 +68,8 @@ export class DatabaseComponent implements OnInit {
     }
 
     removeEntry(entry: WordEntry, index: number) {
-        // TODO: probably need to do this in one place instead of two:
         this.removeWordEntry(this.dataProviderFactory.dataProviderInUse().retrieveWords(), index, entry);
-        this.removeWordEntry(this.wordsDatabaseService.wordsFor(this.languagePair), index, entry);
+        this.wordsDatabaseService.update();
         this.reloadTable(); // TODO: can avoid reloading the whole table??
     }
 

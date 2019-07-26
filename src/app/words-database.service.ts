@@ -17,7 +17,11 @@ export class WordsDatabaseService {
 
     constructor(dataProviderFactory: DataProviderFactoryService) {
         this.dataProvider = dataProviderFactory.dataProviderInUse();
+        this.update();
+    }
 
+    update() {
+        this.dictionary.clear();
         this.dictionary.add(...this.dataProvider.retrieveWords());
     }
 
