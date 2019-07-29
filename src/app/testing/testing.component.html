@@ -28,13 +28,20 @@
         </section>
     </div>
     <div class="row">
-        <div class="col-7 row justify-content-between" id="result-panel">
+        <div class="col-7" id="result-panel"
+            [ngClass]="{'answerFullMatch': resultIsFull(),
+                        'answerPartialMatch': resultIsPartial(),
+                        'answerInsufficientMatch': resultIsInsufficient() || !wordEntry }">
+
             <div *ngIf="!wordEntry" id="error-notifier">
-                <p>NO WORDS MEET THE SPECIFIED CONDITION(LANG PAIR & TAGS)</p>
+                <p>NO WORDS TO TEST</p>
             </div>
 
-            <div *ngIf="true">
-                <p>
+            <div>
+                <!-- The *ngIf is on <p> instead of the parent <div> because we want -->
+                <!-- at least 2 items to be present at all times inside the result parent, -->
+                <!-- otherwise the button shifts to the left. -->
+                <p *ngIf="doDisplayResult()">
                     <span class="primary-text-light" id="correct-answer-text">
                         {{ (true) ? "Corect answer: " : "All translations: " }}
                     </span>
@@ -48,6 +55,7 @@
             </div>
 
             <button class="button button-big dark"
+                    id="button-submit"
                     (click)="submit()"
                     [disabled]="!userInput || userInput.trim().length == 0 || !wordEntry">
                 {{ submitButtonText() }}
