@@ -43,17 +43,14 @@ export class DatabaseComponent implements OnInit {
     }
 
     submitEntry(wordEntry: WordEntry) {
+        const words = this.dataProviderFactory.dataProviderInUse().retrieveWords();
         if (this.editedEntryIndex === undefined) { // Adding a new Entry
-            this.addWordEntry(this.dataProviderFactory.dataProviderInUse().retrieveWords(), wordEntry);
-            this.wordsDatabaseService.resetCache();
+            this.addWordEntry(words, wordEntry);
         } else { // Submitting changes to an existing Entry
-            this.updateWordEntry(
-                this.dataProviderFactory.dataProviderInUse().retrieveWords(),
-                this.editedEntryIndex, this.editedEntry, wordEntry);
-            this.wordsDatabaseService.resetCache();
+            this.updateWordEntry(words, this.editedEntryIndex, this.editedEntry, wordEntry);
             this.editedEntryIndex = undefined;
         }
-
+        this.wordsDatabaseService.resetCache();
         this.reloadTable(); // TODO: can avoid reloading the whole table??
     }
 
