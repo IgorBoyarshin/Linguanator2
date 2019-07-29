@@ -35,15 +35,16 @@
         </div>
 
         <div class="col-6" id="tableTotalCount">
-            (Total: {{ words.length }} entries)
+            (Total: {{ entries.length }} entries)
         </div>
     </div>
 </section>
 
 
 <edited-word-entry
+    [events]="displayEditedEntry.asObservable()"
     [languagePair]="languagePair"
-    (addWord)="addWordEntry($event)">
+    (submitEntry)="submitEntry($event)">
 </edited-word-entry>
 
 
@@ -54,35 +55,28 @@
             <th>Translations</th>
             <th>Score</th>
             <th>Tags</th>
-            <!-- <th>@E</th> -->
-            <!-- <th>@D</th> -->
+            <th>Edit</th>
+            <th>Delete</th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let entry of words; let wordIndex = index">
+        <tr *ngFor="let entry of entries; let entryIndex = index">
             <td>{{ entry.word }}</td>
-            <td>
-                {{ entry.translations.join(', ') }}
-                <!-- <span *ngFor="let translation of entry.translations.join(', ')" class="translation&#45;box"> -->
-                <!--     <a href="#">{{(translation ? translation.w : "")}}</a>; -->
-                <!-- </span> -->
-            </td>
-            <td id="score">{{ entry.score }}</td>
-
+            <td>{{ entry.translations.join(', ') }}</td>
+            <td>{{ entry.score }}</td>
             <td>{{ entry.tags.join("; ") }}</td>
-
-            <!-- <td> -->
-            <!--     <button -->
-            <!--         (click)="editWord(word, wordIndex)" -->
-            <!--         class="button button&#45;small yellow">Edit -->
-            <!--     </button> -->
-            <!-- </td> -->
-            <!-- <td> -->
-            <!--     <button -->
-            <!--         (click)="removeWord(word)" -->
-            <!--         class="button button&#45;small red">Del -->
-            <!--     </button> -->
-            <!-- </td> -->
+            <td class="nostretch" id="words-table-edit">
+                <button
+                    (click)="editEntry(entry, entryIndex)"
+                    class="button button-small yellow">Edit
+                </button>
+            </td>
+            <td class="nostretch" id="words-table-delete">
+                <button
+                    (click)="removeEntry(entry, entryIndex)"
+                    class="button button-small red">Delete
+                </button>
+            </td>
         </tr>
     <tbody>
 </table>

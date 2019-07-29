@@ -57,4 +57,8 @@ export class Dictionary {
                 .push(word);
         }
     }
+
+    clear() {
+        this.sources = [];
+    }
 }
