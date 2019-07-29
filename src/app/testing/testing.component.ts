@@ -97,6 +97,8 @@ export class TestingComponent implements OnInit {
         }
     }
 
+    // XXX: the content of the wordEntry reference is changed here.
+    // Database does not know explicitly about this change.......
     private updateDeltaBy(wordEntry: WordEntry, delta: number) {
         wordEntry.score += delta;
         if (wordEntry.score < 0) {
