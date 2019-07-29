@@ -11,6 +11,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { EditedWordEntryComponent } from './edited-word-entry/edited-word-entry.component';
 
 @NgModule({
     declarations: [
@@ -19,7 +20,8 @@ import { FormsModule } from '@angular/forms';
         DatabaseComponent,
         NotFoundComponent,
         SettingsComponent,
-        NavigationComponent
+        NavigationComponent,
+        EditedWordEntryComponent
     ],
     imports: [
         FormsModule,

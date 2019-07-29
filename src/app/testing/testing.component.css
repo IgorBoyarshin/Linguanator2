@@ -57,12 +57,6 @@
     font-weight: bold;
     color: #eee;
 }
-/* .horizontal { */
-/*     display: -webkit-flex; */
-/*     display: flex; */
-/*     -webkit-flex-direction: row; */
-/*     flex-direction: row; */
-/* } */
 #result-panel {
     background-color: blue;
     margin: auto;

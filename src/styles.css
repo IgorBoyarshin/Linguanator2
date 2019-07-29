@@ -2,31 +2,28 @@
     background-color: #4D4746;
     color: #fff;
 }
-/* .green { */
-/*     background-color: #7C3; */
-/*     color: #FFF; */
-/* } */
-/* .yellow { */
-/*     background-color: #EE2; */
-/*     color: #111; */
-/* } */
-/* .red { */
-/*     background-color: #D21; */
-/*     color: #FFF; */
-/* } */
-
-.button.dark:hover:enabled {
-    background-color: #4D4746;
+.green {
+    background-color: #7C3;
+    color: #FFF;
 }
-/* .button.green:hover:enabled { */
-/*     background-color: #7E3; */
-/* } */
-/* .button.yellow:hover:enabled { */
-/*     background-color: #FF4; */
-/* } */
-/* .button.red:hover:enabled { */
-/*     background-color: #E32; */
-/* } */
+.yellow {
+    background-color: #EE2;
+    color: #111;
+}
+.red {
+    background-color: #D21;
+    color: #FFF;
+}
+
+.button.green:hover:enabled {
+    background-color: #7E3;
+}
+.button.yellow:hover:enabled {
+    background-color: #FF4;
+}
+.button.red:hover:enabled {
+    background-color: #E32;
+}
 .button {
     outline: none;
     font-family: Calibri;
@@ -36,23 +33,35 @@
 .button:disabled {
     background-color: #A5A5A5;
 }
-/* .button-small { */
-/*     font-size: 1.0rem; */
-/*     padding: 0.3rem 0.6rem 0.3rem 0.6rem; */
-/*     border-radius: 0.6rem; */
-/*     box-shadow: 0.08rem 0.08rem 0.4rem #111; */
-/* } */
+.button-small {
+    font-size: 1.0rem;
+    padding: 0.3rem 0.6rem 0.3rem 0.6rem;
+    border-radius: 0.6rem;
+    box-shadow: 0.08rem 0.08rem 0.4rem #111;
+}
 .button-big {
     font-size: 1.1rem;
     padding: 0.8rem 1rem 0.8rem 1rem;
     border-radius: 1rem;
     box-shadow: 0.15rem 0.15rem 0.4rem #111;
 }
-/* .button-small:active { */
-/*     transform: translate(0.05rem, 0.05rem); */
-/*     box-shadow: 0.05rem 0.05rem 0.6rem #111 inset; */
-/* } */
+.button-small:active {
+    transform: translate(0.05rem, 0.05rem);
+    box-shadow: 0.05rem 0.05rem 0.6rem #111 inset;
+}
 .button-big:active {
     transform: translate(0.1rem, 0.1rem);
     box-shadow: 0.15rem 0.15rem 0.6rem #111 inset;
+}
+
+.horizontal {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+}
+
+.nostretch {
+    width: 1%;
+    white-space: nowrap;
 }
