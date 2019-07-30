@@ -8,10 +8,14 @@
                               aria-controls="dropdown-basic">
                           {{ primaryLanguage }} <span class="caret"></span>
                       </button>
-                      <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+                      <ul *dropdownMenu class="dropdown-menu"
                           role="menu" aria-labelledby="button-basic">
                           <li role="menuitem">
-                              <a class="dropdown-item" href="#" *ngFor="let language of languages">{{ language }}</a>
+                              <ng-container *ngFor="let language of languages">
+                                  <a (click)="changeSrcLanguageTo(language)"
+                                      class="dropdown-item"
+                                      [ngClass]="{'disabled': language == primaryLanguage}">{{ language }}</a>
+                              </ng-container>
                           </li>
                       </ul>
                     </div>
@@ -23,10 +27,14 @@
                               aria-controls="dropdown-basic">
                           {{ secondaryLanguage }} <span class="caret"></span>
                       </button>
-                      <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+                      <ul *dropdownMenu class="dropdown-menu"
                           role="menu" aria-labelledby="button-basic">
                           <li role="menuitem">
-                              <a class="dropdown-item" href="#" *ngFor="let language of languages">{{ language }}</a>
+                              <ng-container *ngFor="let language of languages">
+                                  <a (click)="changeDstLanguageTo(language)"
+                                      class="dropdown-item"
+                                      [ngClass]="{'disabled': language == secondaryLanguage}">{{ language }}</a>
+                              </ng-container>
                           </li>
                       </ul>
                     </div>

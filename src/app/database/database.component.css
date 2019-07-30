@@ -60,9 +60,9 @@ tbody > :last-child {
     border-bottom: 4px solid black;
 }
 
-/* #edited-word-component { */
-/*     border: 5px solid red; */
-/*     position: -webkit-sticky; */
-/*     position: sticky; */
-/*     top: 3rem; */
-/* } */
+.dropdown-menu li:hover {
+    cursor: pointer;
+}
+.dropdown-menu a.disabled {
+    color: #888;
+}

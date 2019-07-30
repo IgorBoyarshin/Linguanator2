@@ -21,4 +21,13 @@ export class SettingsService {
     languagePairInUse(): LanguagePair {
         return this.currentLanguagePair;
     }
+
+    flipLanguagePairInUse() {
+        const {src, dst} = this.currentLanguagePair;
+        this.currentLanguagePair = new LanguagePair(dst, src);
+    }
+
+    setLanguagePairTo(languagePair: LanguagePair) {
+        this.currentLanguagePair = languagePair;
+    }
 }

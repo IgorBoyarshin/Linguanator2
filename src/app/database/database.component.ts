@@ -35,11 +35,9 @@ export class DatabaseComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.languagePair = this.settingsService.languagePairInUse();
-        this.entries = this.wordsDatabaseService.wordsFor(this.languagePair);
-        this.primaryLanguage = this.languageIndexer.nameOf(this.languagePair.src);
-        this.secondaryLanguage = this.languageIndexer.nameOf(this.languagePair.dst);
         this.languages = this.languageIndexer.allNames();
+        this.reloadLanguages();
+        this.reloadTable();
     }
 
     submitEntry(wordEntry: WordEntry) {
@@ -52,6 +50,12 @@ export class DatabaseComponent implements OnInit {
         }
         this.wordsDatabaseService.resetCache();
         this.reloadTable(); // TODO: can avoid reloading the whole table??
+    }
+
+    private reloadLanguages() {
+        this.languagePair = this.settingsService.languagePairInUse();
+        this.primaryLanguage = this.languageIndexer.nameOf(this.languagePair.src);
+        this.secondaryLanguage = this.languageIndexer.nameOf(this.languagePair.dst);
     }
 
     private reloadTable() {
@@ -99,5 +103,31 @@ export class DatabaseComponent implements OnInit {
             if (index == -1) return; // not found : (
             entries.splice(index, 1);
         }
+    }
+
+    changeSrcLanguageTo(language: string) {
+        const newSrc = this.languageIndexer.indexOf(language);
+        if (newSrc == this.languagePair.dst) {
+            this.settingsService.flipLanguagePairInUse();
+        } else {
+            const dst = this.languagePair.dst;
+            this.settingsService.setLanguagePairTo(new LanguagePair(newSrc, dst));
+        }
+
+        this.reloadLanguages();
+        this.reloadTable();
+    }
+
+    changeDstLanguageTo(language: string) {
+        const newDst = this.languageIndexer.indexOf(language);
+        if (newDst == this.languagePair.src) {
+            this.settingsService.flipLanguagePairInUse();
+        } else {
+            const src = this.languagePair.src;
+            this.settingsService.setLanguagePairTo(new LanguagePair(src, newDst));
+        }
+
+        this.reloadLanguages();
+        this.reloadTable();
     }
 }
