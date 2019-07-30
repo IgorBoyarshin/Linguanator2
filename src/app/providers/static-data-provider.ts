@@ -32,7 +32,7 @@ export class StaticDataProvider implements DataProvider {
                 new WordEntry(ger, eng, 'unbeteiligt', ['unconcerned', 'uninvolved', 'indifferent'], 1, []),
                 new WordEntry(ger, eng, 'beweisen', ['prove', 'demonstrate', 'show'], 1, []),
                 new WordEntry(ger, eng, 'leuchten', ['light', 'shine', 'glow'], 1, []),
-                new WordEntry(ger, eng, 'allerdings', ['however', 'certainly', 'admittedly', 'but'], 1, []),
+                new WordEntry(ger, eng, 'allerdings', ['however', 'certainly', 'admittedly', 'though'], 1, []),
                 new WordEntry(ger, eng, 'sich mit etwas begnügen', ['content oneself with something', 'make do with somethings'], 1, []),
                 new WordEntry(ger, eng, 'ungefähr', ['approximate', 'rough', 'nearly'], 1, []),
                 new WordEntry(ger, eng, 'bestätigen', ['confirm', 'acknowledge', 'verify'], 1, []),
