@@ -50,6 +50,7 @@ export class TestingComponent implements OnInit {
     state: State;
 
     result: Match | undefined = undefined;
+    resultDelta: number;
 
     private languageIndexer: LanguageIndexer;
 
@@ -87,12 +88,14 @@ export class TestingComponent implements OnInit {
             const delta = this.scoreDeltaFromStats(evaluationStats);
             this.result = this.resultOf(evaluationStats);
             this.updateDeltaBy(this.wordEntry, delta);
+            this.resultDelta = delta;
 
             this.state = State.DisplayResult;
         } else if (this.state == State.DisplayResult) { // Go to the next Test
             this.state = State.UserInput;
             this.userInput = "";
             this.result = undefined;
+            this.resultDelta = 0;
             this.wordEntry = this.loadNextWord();
         }
     }

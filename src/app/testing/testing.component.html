@@ -43,13 +43,13 @@
                 <!-- otherwise the button shifts to the left. -->
                 <p *ngIf="doDisplayResult()">
                     <span class="primary-text-light" id="correct-answer-text">
-                        {{ (true) ? "Corect answer: " : "All translations: " }}
+                        {{ resultIsInsufficient() ? "Corect answer: " : "All translations: " }}
                     </span>
                     <span class="primary-text-light" id="correct-answer">
                         {{ wordEntry ? wordEntry.translations.join("; ") : ""}}
                     </span>
-                    <span class="primary-text-dark" id="answer-score">
-                        {{ answerScore >= 0 ? "+" : "" }}{{ answerScore }}
+                    <span class="primary-text-dark" id="answer-delta">
+                        {{ resultDelta >= 0 ? "+" : "" }}{{ resultDelta }}
                     </span>
                 </p>
             </div>
