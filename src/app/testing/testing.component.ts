@@ -150,15 +150,7 @@ export class TestingComponent implements OnInit {
         if (str1 == str2) return true;
 
         if (str1.length == str2.length) {
-            let mistakeFound: boolean = false;
-            for (let i = 0; i < str1.length; i++) {
-                if (str1.charAt(i) != str2.charAt(i)) {
-                    if (mistakeFound) return false;
-                    mistakeFound = true;
-                }
-            }
-
-            return true;
+            return this.differInOnePlace(str1, str2);
         } else if (str1.length == str2.length - 1) {
             return this.isStrPartOf(str1, str2);
         } else if (str1.length == str2.length + 1) {
@@ -168,14 +160,26 @@ export class TestingComponent implements OnInit {
         return false;
     }
 
+    private differInOnePlace(str1: string, str2: string): boolean {
+        let mistakeFound: boolean = false;
+        for (let i = 0; i < str1.length; i++) {
+            if (str1.charAt(i) != str2.charAt(i)) {
+                if (mistakeFound) return false;
+                mistakeFound = true;
+            }
+        }
+
+        return true;
+    }
+
     private isStrPartOf(subStr: string, str: string): boolean {
-        let missFound = false;
+        let mistakeFound = false;
         for (let i = 1; i <= subStr.length; i++) {
             const char1 = subStr.charAt(i - 1);
-            const char2 = str.charAt((i - 1) + (missFound ? +1 : 0));
+            const char2 = str.charAt((i - 1) + (mistakeFound ? +1 : 0));
             if (char1 != char2) {
-                if (missFound) return false;
-                missFound = true;
+                if (mistakeFound) return false;
+                mistakeFound = true;
                 i--;
             }
         }
