@@ -88,8 +88,8 @@ span#answer-delta {
 .result-full-match {
     padding-top: 0.6rem !important;
     padding-bottom: 0.6rem !important;
-    border-top: 0.6rem solid rgba(0, 255, 0, 0.5);
-    border-bottom: 0.6rem solid rgba(0, 255, 0, 0.5);
+    border-top: 0.6rem solid rgba(0, 200, 0, 0.9);
+    border-bottom: 0.6rem solid rgba(0, 200, 0, 0.9);
 }
 .result-partial-match {
     padding-top: 0.6rem !important;
