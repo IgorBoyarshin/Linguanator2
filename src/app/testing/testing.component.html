@@ -1,6 +1,12 @@
-<div class="container-fluid">
+<div class="container-fluid" id="main-container">
     <div class="row">
-        <section id="testing-main-column" class="col-7 container-fluid">
+        <section class="col-7 container-fluid" id="testing-settings">
+            German -> English
+        </section>
+    </div>
+
+    <div class="row">
+        <section class="col-7 container-fluid" id="testing-main-column">
             <div class="row justify-content-around">
                 <div class="col-5 box" id="testing-query">
                     <span class="primary-text-dark" id="word-to-translate">
@@ -27,11 +33,12 @@
             </div>
         </section>
     </div>
+
     <div class="row">
         <div class="col-7" id="result-panel"
-            [ngClass]="{'answerFullMatch': resultIsFull(),
-                        'answerPartialMatch': resultIsPartial(),
-                        'answerInsufficientMatch': resultIsInsufficient() || !wordEntry }">
+            [ngClass]="{'result-full-match': resultIsFull(),
+                        'result-partial-match': resultIsPartial(),
+                        'result-insufficient-match': resultIsInsufficient() || !wordEntry }">
 
             <div *ngIf="!wordEntry" id="error-notifier">
                 <p>NO WORDS TO TEST</p>
@@ -48,13 +55,15 @@
                     <span class="primary-text-light" id="correct-answer">
                         {{ wordEntry ? wordEntry.translations.join("; ") : ""}}
                     </span>
-                    <span class="primary-text-dark" id="answer-delta">
+                    <span class="primary-text-dark" id="answer-delta"
+                          [ngClass]="{'score-correct': resultIsFull() || resultIsPartial(),
+                                      'score-wrong': resultIsInsufficient() }">
                         {{ resultDelta >= 0 ? "+" : "" }}{{ resultDelta }}
                     </span>
                 </p>
             </div>
 
-            <button class="button button-big dark"
+            <button class="button button-big green"
                     id="button-submit"
                     (click)="submit()"
                     [disabled]="!userInput || userInput.trim().length == 0 || !wordEntry">

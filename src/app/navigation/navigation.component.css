@@ -10,3 +10,7 @@ nav {
     font-size: 1.3em;
     margin-right: 1.7rem;
 }
+
+.navbar {
+    background-color: #252525 !important;
+}
