@@ -1,3 +1,6 @@
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { Injectable } from '@angular/core';
 
 import { Dictionary } from './dictionary.model';
@@ -13,20 +16,25 @@ import { DataProviderFactoryService } from './providers/data-provider-factory.se
 })
 export class WordsDatabaseService {
     private dataProvider: DataProvider;
-    private dictionary: Dictionary = new Dictionary();
+    private dictionary: Dictionary;
+
+    private dictionarySubject: BehaviorSubject<Dictionary>;
 
     constructor(dataProviderFactory: DataProviderFactoryService) {
+        this.dictionary = new Dictionary();
+        this.dictionarySubject = new BehaviorSubject(this.dictionary);
+
         this.dataProvider = dataProviderFactory.dataProviderInUse();
-        this.resetCache();
+        this.dataProvider.retrieveWords().subscribe(words => {
+            this.dictionary.clear();
+            this.dictionary.add(...words)
+
+            this.dictionarySubject.next(this.dictionary);
+        });
     }
 
-    resetCache() {
-        this.dictionary.clear();
-        this.dictionary.add(...this.dataProvider.retrieveWords());
-    }
-
-    wordsFor({src, dst}: LanguagePair): WordEntry[] {
-        return this.dictionary.from(src).to(dst);
+    wordsFor({src, dst}: LanguagePair): Observable<WordEntry[]> {
+        return this.dictionarySubject.pipe(map(dictionary => dictionary.from(src).to(dst)));
     }
 
     private randomInt(exclusiveMax) {
@@ -37,7 +45,7 @@ export class WordsDatabaseService {
         return arr[this.randomInt(arr.length)];
     }
 
-    randomWordEntryFor(languagePair: LanguagePair): WordEntry | undefined {
-        return this.randomOf(this.wordsFor(languagePair));
+    randomWordEntryFor({src, dst}: LanguagePair): WordEntry | undefined {
+        return this.randomOf(this.dictionary.from(src).to(dst));
     }
 }

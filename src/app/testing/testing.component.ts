@@ -58,14 +58,16 @@ export class TestingComponent implements OnInit {
             dataProviderFactory: DataProviderFactoryService,
             private wordsDatabaseService: WordsDatabaseService,
             private settingsService: SettingsService) {
-        this.languageIndexer = dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer();
+        dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer()
+            .subscribe(languageIndexer => this.languageIndexer = languageIndexer);
+        settingsService.languagePairInUse().subscribe(languagePair => {
+            this.languagePair = languagePair;
+            this.wordEntry = this.loadNextWord();
+        });
+        this.state = State.UserInput;
     }
 
-    ngOnInit() {
-        this.state = State.UserInput;
-        this.languagePair = this.settingsService.languagePairInUse();
-        this.wordEntry = this.loadNextWord();
-    }
+    ngOnInit() {}
 
     private loadNextWord(): WordEntry {
         return this.wordsDatabaseService.randomWordEntryFor(this.languagePair);
