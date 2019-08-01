@@ -124,6 +124,9 @@ export class TestingComponent implements OnInit {
     }
 
     private evaluateMatchOfIn(str: string, array: string[]): Match {
+        str = str.toLowerCase();
+        array = array.map(str => str.toLowerCase());
+
         if (array.includes(str)) {
             return Match.Full;
         } else if (array.some(element => this.closeEnough(str, element))) {
@@ -142,7 +145,11 @@ export class TestingComponent implements OnInit {
     }
 
     private round(x: number): number {
-        return +(Math.floor(x * 100.0) / 100.0).toFixed(2);
+        return +this.roundToStr(x);
+    }
+
+    private roundToStr(x: number): string {
+        return (Math.floor(x * 100.0) / 100.0).toFixed(2);
     }
 
     // 1 mistake is allowed

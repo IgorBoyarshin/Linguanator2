@@ -13,7 +13,7 @@
                         [{{ wordEntry ? wordEntry.tags.join(";") : "" }}]
                     </span>
                     <span class="secondary-text-1" id="word-score">
-                        {{ wordEntry ? wordEntry.score : 0.0 }}
+                        {{ wordEntry ? roundToStr(wordEntry.score) : 0.0 }}
                     </span>
                 </div>
 
