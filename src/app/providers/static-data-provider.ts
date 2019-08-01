@@ -39,6 +39,8 @@ export class StaticDataProvider implements DataProvider {
                 new WordEntry(ger, eng, 'die Verachtung', ['the disdain', 'the disgust'], 1, []),
                 new WordEntry(ger, eng, 'zur selben Zeit', ['at the same time'], 1, []),
                 new WordEntry(ger, eng, 'das Gedicht', ['the poem', 'the ode'], 1, []),
+
+                new WordEntry(eng, ger, 'the boy', ['der Junge', 'der Knabe'], 3, []),
             ];
         }
         return this.words;
