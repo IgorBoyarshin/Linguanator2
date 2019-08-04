@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs'
+
 import { Component, OnInit } from '@angular/core';
 
 import { WordEntry } from '../word-entry.model';
@@ -43,7 +45,7 @@ class EvaluationStats {
         '(document:keydown)': 'handleKeyPress($event)'
     }
 })
-export class TestingComponent implements OnInit {
+export class TestingComponent {
     userInput: string = "";
     wordEntry: WordEntry;
     languagePair: LanguagePair;
@@ -58,16 +60,18 @@ export class TestingComponent implements OnInit {
             dataProviderFactory: DataProviderFactoryService,
             private wordsDatabaseService: WordsDatabaseService,
             private settingsService: SettingsService) {
-        this.languageIndexer = dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer();
-    }
-
-    ngOnInit() {
+        dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer()
+            .subscribe(languageIndexer => this.languageIndexer = languageIndexer);
+        settingsService.languagePairInUse().subscribe(languagePair => {
+            this.languagePair = languagePair;
+            this.loadNextWord().subscribe(word => {
+                this.wordEntry = word;
+            })
+        });
         this.state = State.UserInput;
-        this.languagePair = this.settingsService.languagePairInUse();
-        this.wordEntry = this.loadNextWord();
     }
 
-    private loadNextWord(): WordEntry {
+    private loadNextWord(): Observable<WordEntry> {
         return this.wordsDatabaseService.randomWordEntryFor(this.languagePair);
     }
 
@@ -96,7 +100,9 @@ export class TestingComponent implements OnInit {
             this.userInput = "";
             this.result = undefined;
             this.resultDelta = 0;
-            this.wordEntry = this.loadNextWord();
+            this.loadNextWord().subscribe(word => {
+                this.wordEntry = word;
+            })
         }
     }
 
