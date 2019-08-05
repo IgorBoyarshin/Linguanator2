@@ -72,7 +72,7 @@ export class DatabaseComponent {
     }
 
     submitEntry(wordEntry: WordEntry) {
-        if (!this.editedEntryIndex) { // adding a new Entry
+        if (this.editedEntryIndex === undefined) { // adding a new Entry
             this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry)
                 .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
         } else { // submitting changes to an existing Entry
