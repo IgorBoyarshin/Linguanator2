@@ -14,7 +14,6 @@ import { DataProviderFactoryService } from './providers/data-provider-factory.se
 })
 export class WordsDatabaseService {
     private dictionary: Dictionary;
-    private dictionaryObservable: Observable<Dictionary>;
 
     constructor(private dataProviderFactory: DataProviderFactoryService) {}
 
@@ -29,16 +28,13 @@ export class WordsDatabaseService {
 
     wordsFor({src, dst}: LanguagePair): Observable<WordEntry[]> {
         if (!this.dictionary) {
-            if (!this.dictionaryObservable) {
-                this.dictionaryObservable = Observable.create(subscriber => {
+            return Observable.create(subscriber => {
                     this.dataProviderFactory.dataProviderInUse().retrieveWords().subscribe(words => {
                         this.dictionary = new Dictionary();
                         this.dictionary.add(...words);
                         subscriber.next(this.dictionary);
                     });
-                });
-            }
-            return this.dictionaryObservable.pipe(map(dictionary => dictionary.from(src).to(dst)));
+                }).pipe(map(dictionary => dictionary.from(src).to(dst)));
         }
         return of(this.dictionary.from(src).to(dst));
     }

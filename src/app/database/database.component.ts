@@ -25,7 +25,7 @@ export class DatabaseComponent {
 
     private displayEditedEntry: Subject<WordEntry> = new Subject<WordEntry>(); // to child component
     editedEntry: WordEntry;
-    editedEntryIndex: number | undefined;
+    editedEntryIndex?: number;
 
     private languageIndexer: LanguageIndexer;
 
@@ -66,27 +66,26 @@ export class DatabaseComponent {
             .subscribe(words => this.entries = words);
     }
 
+    private resetCacheAndReloadWords(languagePair: LanguagePair) {
+        this.wordsDatabaseService.resetCache();
+        this.reloadWords(languagePair);
+    }
+
     submitEntry(wordEntry: WordEntry) {
-        const onReady = () => {
-            this.wordsDatabaseService.resetCache();
-            this.reloadWords(this.languagePair);
-        };
-        const words = this.dataProviderFactory.dataProviderInUse().retrieveWords();
-        if (this.editedEntryIndex === undefined) { // adding a new Entry
-            this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry, onReady);
+        if (!this.editedEntryIndex) { // adding a new Entry
+            this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry)
+                .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
         } else { // submitting changes to an existing Entry
             this.dataProviderFactory.dataProviderInUse().updateWordEntry(
-                this.editedEntryIndex, this.editedEntry, wordEntry, onReady);
+                this.editedEntryIndex, this.editedEntry, wordEntry)
+                .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
             this.editedEntryIndex = undefined;
         }
-
     }
 
     removeEntry(entry: WordEntry, index: number) {
-        this.dataProviderFactory.dataProviderInUse().removeWordEntry(index, entry, () => {
-            this.wordsDatabaseService.resetCache();
-            this.reloadWords(this.languagePair);
-        });
+        this.dataProviderFactory.dataProviderInUse().removeWordEntry(index, entry)
+            .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
     }
 
     editEntry(entry: WordEntry, index: number) {

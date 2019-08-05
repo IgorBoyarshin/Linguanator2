@@ -9,46 +9,20 @@ export class StaticDataProvider implements DataProvider {
     private words: WordEntry[]; // TODO: rename to entries
     private languageIndexer: LanguageIndexer;
 
-    private wordsObservable: Observable<WordEntry[]>;
-
     constructor() {}
 
     retrieveWords(): Observable<WordEntry[]> {
+        // TODO: Potentially creates multiple Observables, each one sent to query
+        // the result and rewrite this.words upon arrival
         if (!this.words) {
-            if (!this.wordsObservable) {
-                this.wordsObservable = Observable.create(subscriber => {
-                    this.retrieveLanguageIndexer().subscribe(languageIndexer => { // the next(result) function
-                        this.words = this.initWords(languageIndexer);
-                        subscriber.next(this.words);
-                    });
+            return Observable.create(subscriber => {
+                this.retrieveLanguageIndexer().subscribe(languageIndexer => {
+                    this.words = this.initWords(languageIndexer);
+                    subscriber.next(this.words);
                 });
-            }
-            return this.wordsObservable; // the one already sent to retrieve the result
+            });
         }
         return of(this.words);
-
-        // // Potentially creates multiple Observables, each one sent to query the result
-        // // and rewrite this.words upon arrival
-        // if (!this.words) {
-        //     return Observable.create((next) => { // Subscriber's next()
-        //         this.retrieveLanguageIndexer().subscribe(languageIndexer => { // the next(result) function
-        //             this.words = this.initWords(languageIndexer);
-        //             next(this.words);
-        //         });
-        //     });
-        // }
-        // return of(this.words);
-        //
-        //
-        // return Observable.create((next) => { // Subscriber's next()
-        //     if (!this.words) {
-        //         this.retrieveLanguageIndexer().subscribe(languageIndexer => { // the next(result) function
-        //             this.words = this.initWords(languageIndexer);
-        //             next(this.words); // XXX which one???
-        //         });
-        //     }
-        //     next(this.words); // XXX which one???
-        // });
     }
 
     retrieveLanguageIndexer(): Observable<LanguageIndexer> {
@@ -58,37 +32,44 @@ export class StaticDataProvider implements DataProvider {
         return of(this.languageIndexer);
     }
 
-    addWordEntry(wordEntry: WordEntry, onReady: () => void) {
-        this.words.push(wordEntry);
-        onReady();
+    addWordEntry(wordEntry: WordEntry): Observable<void> {
+        return Observable.create(subscriber => {
+            this.words.push(wordEntry);
+            subscriber.next();
+        });
     }
 
-    updateWordEntry(potentialIndex: number, oldEntry: WordEntry, newEntry: WordEntry, onReady: () => void) {
-        if (!this.indexValidIn(this.words, potentialIndex)) return;
-        if (this.words[potentialIndex] === oldEntry) {
-            this.words[potentialIndex] = newEntry;
-        } else { // deep search
-            const index = this.words.indexOf(oldEntry);
-            if (index == -1) return; // not found : (
-            this.words[index] = newEntry;
-        }
-
-        onReady();
-    }
-
-    removeWordEntry(potentialIndex: number, wordEntry: WordEntry, onReady: () => void) {
-        setTimeout(() => {
+    updateWordEntry(potentialIndex: number, oldEntry: WordEntry, newEntry: WordEntry): Observable<void> {
+        return Observable.create(subscriber => {
             if (!this.indexValidIn(this.words, potentialIndex)) return;
-            if (this.words[potentialIndex] === wordEntry) {
-                this.words.splice(potentialIndex, 1);
+            if (this.words[potentialIndex] === oldEntry) {
+                this.words[potentialIndex] = newEntry;
             } else { // deep search
-                const index = this.words.indexOf(wordEntry);
+                const index = this.words.indexOf(oldEntry);
                 if (index == -1) return; // not found : (
-                this.words.splice(index, 1);
+                this.words[index] = newEntry;
             }
 
-            onReady();
-        }, 2000);
+            subscriber.next();
+        });
+    }
+
+    removeWordEntry(potentialIndex: number, wordEntry: WordEntry): Observable<void> {
+        return Observable.create(subscriber => {
+            // To simulate the delay:
+            // setTimeout(() => {
+                if (!this.indexValidIn(this.words, potentialIndex)) return;
+                if (this.words[potentialIndex] === wordEntry) {
+                    this.words.splice(potentialIndex, 1);
+                } else { // deep search
+                    const index = this.words.indexOf(wordEntry);
+                    if (index == -1) return; // not found : (
+                    this.words.splice(index, 1);
+                }
+
+                subscriber.next();
+            // }, 2000);
+        });
     }
 
     private indexValidIn(array: any[], index: number): boolean {

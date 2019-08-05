@@ -12,24 +12,20 @@ import { LanguageIndexer } from './language-indexer';
 })
 export class SettingsService {
     private currentLanguagePair: LanguagePair;
-    private currentLanguagePairObservable: Observable<LanguagePair>;
 
     constructor(private dataProviderFactory: DataProviderFactoryService) {}
 
     languagePairInUse(): Observable<LanguagePair> {
         if (!this.currentLanguagePair) {
-            if (!this.currentLanguagePairObservable) {
-                this.currentLanguagePairObservable = Observable.create(subscriber => {
-                    this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer().subscribe(languageIndexer => {
-                        this.currentLanguagePair = new LanguagePair(
-                            languageIndexer.indexOf("German"),
-                            languageIndexer.indexOf("English")
-                        );
-                        subscriber.next(this.currentLanguagePair);
-                    });
-                })
-            }
-            return this.currentLanguagePairObservable;
+            return Observable.create(subscriber => {
+                this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer().subscribe(languageIndexer => {
+                    this.currentLanguagePair = new LanguagePair(
+                        languageIndexer.indexOf("German"),
+                        languageIndexer.indexOf("English")
+                    );
+                    subscriber.next(this.currentLanguagePair);
+                });
+            });
         }
         return of(this.currentLanguagePair);
     }
