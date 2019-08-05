@@ -29,12 +29,12 @@ export class WordsDatabaseService {
     wordsFor({src, dst}: LanguagePair): Observable<WordEntry[]> {
         if (!this.dictionary) {
             return Observable.create(subscriber => {
-                    this.dataProviderFactory.dataProviderInUse().retrieveWords().subscribe(words => {
-                        this.dictionary = new Dictionary();
-                        this.dictionary.add(...words);
-                        subscriber.next(this.dictionary);
-                    });
-                }).pipe(map(dictionary => dictionary.from(src).to(dst)));
+                this.dataProviderFactory.dataProviderInUse().retrieveWords().subscribe(words => {
+                    this.dictionary = new Dictionary();
+                    this.dictionary.add(...words);
+                    subscriber.next(this.dictionary.from(src).to(dst));
+                });
+            });
         }
         return of(this.dictionary.from(src).to(dst));
     }
