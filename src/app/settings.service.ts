@@ -31,14 +31,13 @@ export class SettingsService {
     }
 
     flipLanguagePairInUse() {
-        // TODO: also ubsubscribe from potential ongoing Observable request??
-        if (!this.currentLanguagePair) return;
+        if (!this.currentLanguagePair)
+            console.error('[SettingsService:flipLanguagePairInUse()]: called without existing currentLanguagePair');
         const {src, dst} = this.currentLanguagePair;
         this.currentLanguagePair = new LanguagePair(dst, src);
     }
 
     setLanguagePairTo(languagePair: LanguagePair) {
-        // TODO: also ubsubscribe from potential ongoing Observable request??
         this.currentLanguagePair = languagePair;
     }
 }
