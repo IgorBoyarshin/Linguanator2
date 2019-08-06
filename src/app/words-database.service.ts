@@ -25,10 +25,20 @@ export class WordsDatabaseService {
     // So the dictionary variable is sort of cached
     resetCache() {
         this.dictionary = null;
+        this.tags = null;
     }
 
     wordsFor({src, dst}: LanguagePair): Observable<WordEntry[]> {
-        if (!this.dictionary) {
+        return this.retrieve(() => this.dictionary.from(src).to(dst));
+    }
+
+    allTags(): Observable<string[]> {
+        return this.retrieve(() => this.tags);
+    }
+
+    // TODO: make a tempalte instead of _any_
+    private retrieve(target: () => any): Observable<any> {
+        if (!this.dictionary || !this.tags) {
             return Observable.create(subscriber => {
                 this.dataProviderFactory.dataProviderInUse().retrieveWords().subscribe(words => {
                     this.dictionary = new Dictionary();
@@ -36,15 +46,11 @@ export class WordsDatabaseService {
                     this.tags = [...new Set(
                         words.map(word => word.tags).flat()
                     )];
-                    subscriber.next(this.dictionary.from(src).to(dst));
+                    subscriber.next(target());
                 });
             });
         }
-        return of(this.dictionary.from(src).to(dst));
-    }
-
-    allTags(): string[] {
-        return this.tags;
+        return of(target());
     }
 
     private randomInt(exclusiveMax) {
