@@ -14,6 +14,7 @@ import { DataProviderFactoryService } from './providers/data-provider-factory.se
 })
 export class WordsDatabaseService {
     private dictionary: Dictionary;
+    private tags: string[];
 
     constructor(private dataProviderFactory: DataProviderFactoryService) {}
 
@@ -32,11 +33,18 @@ export class WordsDatabaseService {
                 this.dataProviderFactory.dataProviderInUse().retrieveWords().subscribe(words => {
                     this.dictionary = new Dictionary();
                     this.dictionary.add(...words);
+                    this.tags = [...new Set(
+                        words.map(word => word.tags).flat()
+                    )];
                     subscriber.next(this.dictionary.from(src).to(dst));
                 });
             });
         }
         return of(this.dictionary.from(src).to(dst));
+    }
+
+    allTags(): string[] {
+        return this.tags;
     }
 
     private randomInt(exclusiveMax) {
