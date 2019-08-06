@@ -1,5 +1,5 @@
 #database-header > div {
-    background-color: #777;
+    background-color: #252525;
     padding: 0.8em;
 }
 #tableTotalCount {
@@ -13,25 +13,44 @@
     margin-top: auto;
     margin-bottom: auto;
 }
+
+
+#words-table {
+    background-color: #bbb;
+}
+#words-table thead tr {
+    background-color: #333;
+    color: #eee;
+}
+#words-table tbody tr:nth-child(odd) {
+    background-color: #777;
+}
+#words-table td:nth-child(even) {
+    border-left: 3px solid #333;
+    border-right: 3px solid #333;
+}
+#words-table td:last-child {
+    border-right: 0px;
+}
 #words-table tr > :nth-child(1) {
-    background-color: #6b7;
+    /* background-color: #6b7; */
 }
 #words-table tr > :nth-child(2) {
-    background-color: #b67;
+    /* background-color: #b67; */
 }
 #words-table tr > :nth-child(3) {
-    background-color: #6f79b4;
+    /* background-color: #6f79b4; */
     text-align: center;
 }
 #words-table tr > :nth-child(4) {
-    background-color: #af7944;
+    /* background-color: #af7944; */
 }
 #words-table tr > :nth-child(5) {
-    background-color: #bbbb77;
+    /* background-color: #bbbb77; */
     text-align: center;
 }
 #words-table tr > :nth-child(6) {
-    background-color: #aa7777;
+    /* background-color: #aa7777; */
     text-align: center;
 }
 #words-table th {
@@ -62,4 +81,16 @@ tbody > :last-child {
 }
 .dropdown-menu a.disabled {
     color: #888;
+}
+
+hr {
+    height: 1px;
+    background: #ccc;
+    background-image: linear-gradient(to right, #333, #ccc, #333);
+    /* background-color: black; */
+    /* background-image: linear-gradient(to right, */
+    /*     rgba(255, 255, 255, 0), */
+    /*     rgba(255, 255, 255, 0.75), */
+    /*     rgba(255, 255, 255, 0)); */
+    margin: 0px;
 }

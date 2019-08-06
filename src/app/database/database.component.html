@@ -1,3 +1,6 @@
+<hr>
+
+
 <section id="database-header" class="container-fluid">
     <div class="row">
         <div class="col-6">
@@ -49,11 +52,17 @@
 </section>
 
 
+<hr>
+
+
 <edited-word-entry
     [events]="displayEditedEntry.asObservable()"
     [languagePair]="languagePair"
     (submitEntry)="submitEntry($event)">
 </edited-word-entry>
+
+
+<hr>
 
 
 <table class="table table-borderless" id="words-table">
