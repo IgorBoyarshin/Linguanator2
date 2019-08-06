@@ -51,6 +51,8 @@ export class TestingComponent {
     languagePair: LanguagePair;
     state: State;
 
+    allTags: string[];
+
     result: Match | undefined = undefined;
     resultDelta: number;
 
@@ -68,15 +70,12 @@ export class TestingComponent {
             });
         settingsService.languagePairInUse().subscribe(languagePair => {
             this.languagePair = languagePair;
-            this.loadNextWord().subscribe(word => {
+            this.wordsDatabaseService.randomWordEntryFor(this.languagePair).subscribe(word => {
                 this.wordEntry = word;
             })
         });
+        wordsDatabaseService.allTags().subscribe(tags => this.allTags = tags);
         this.state = State.UserInput;
-    }
-
-    private loadNextWord(): Observable<WordEntry> {
-        return this.wordsDatabaseService.randomWordEntryFor(this.languagePair);
     }
 
     private maybeLanguageSrc(): string {
@@ -109,7 +108,7 @@ export class TestingComponent {
             this.userInput = "";
             this.result = undefined;
             this.resultDelta = 0;
-            this.loadNextWord().subscribe(word => {
+            this.wordsDatabaseService.randomWordEntryFor(this.languagePair).subscribe(word => {
                 this.wordEntry = word;
             })
         }
@@ -217,7 +216,7 @@ export class TestingComponent {
         return this.state != State.UserInput;
     }
 
-    private handleKeyPress(event: KeyboardEvent): void {
+    private handleKeyPress(event: KeyboardEvent) {
         if (event.keyCode == 13) { // Enter
             if (this.state == State.DisplayResult) {
                 this.submit();

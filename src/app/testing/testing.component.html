@@ -7,7 +7,7 @@
 
     <div class="row">
         <section class="col-7 container-fluid" id="testing-settings">
-            <div class="block col-3 settings-block" id="">
+            <div class="block col-3 settings-block" id="settings-block-from">
                 <div>From</div>
 
                 <div class="btn-group" dropdown>
@@ -29,7 +29,7 @@
                 </div>
             </div>
 
-            <div class="block col-3 settings-block" id="">
+            <div class="block col-3 settings-block" id="settings-block-into">
                 <div>Into</div>
 
                 <div class="btn-group" dropdown>
@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <div class="block col-4 settings-block" id="">
+            <div class="block col-4 settings-block" id="settings-block-tags">
                 <div>Include tags</div>
 
                 <div class="btn-group" dropdown>
@@ -62,13 +62,17 @@
                     </button>
                     <ul *dropdownMenu class="dropdown-menu"
                                       role="menu" aria-labelledby="button-basic">
-                        <li role="menuitem">
-                            <ng-container *ngFor="let language of languages">
-                                <a (click)="changeSrcLanguageTo(language)"
-                                    class="dropdown-item"
-                                    [ngClass]="{'disabled': language == maybeLanguageDst()}">{{ language }}</a>
-                            </ng-container>
+                        <form>
+                        <li class="dropdown-tag-li" role="menuitem" *ngFor="let tag of allTags" (click)="($event).stopPropagation()">
+                            <div class="my-checkbox">
+                                <input type="checkbox" id="checkbox-{{tag}}">
+                                <label for="checkbox-{{tag}}">{{ tag }}</label>
+                            </div>
+                                <!-- <a (click)="changeSrcLanguageTo(language)" -->
+                                <!--     class="dropdown&#45;item" -->
+                                <!--     [ngClass]="{'disabled': false}">{{ tag }}</a> -->
                         </li>
+                        </form>
                     </ul>
                 </div>
             </div>
