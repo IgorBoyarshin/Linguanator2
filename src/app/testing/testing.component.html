@@ -42,7 +42,7 @@
                                       role="menu" aria-labelledby="button-basic">
                         <li role="menuitem">
                             <ng-container *ngFor="let language of languages">
-                                <a (click)="changeSrcLanguageTo(language)"
+                                <a (click)="changeDstLanguageTo(language)"
                                     class="dropdown-item"
                                     [ngClass]="{'disabled': language == maybeLanguageDst()}">{{ language }}</a>
                             </ng-container>
@@ -52,13 +52,13 @@
             </div>
 
             <div class="block col-4 settings-block" id="settings-block-tags">
-                <div>Include tags</div>
+                <div>Include</div>
 
                 <div class="btn-group" dropdown>
                     <button id="button-basic" dropdownToggle type="button"
                             class="btn btn-primary dropdown-toggle"
                             aria-controls="dropdown-basic">
-                        TAGS <span class="caret"></span>
+                        tags <span class="caret"></span>
                     </button>
                     <ul *dropdownMenu class="dropdown-menu"
                                       role="menu" aria-labelledby="button-basic">
