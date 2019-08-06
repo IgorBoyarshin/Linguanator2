@@ -1,8 +1,41 @@
-#testing-settings {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+#testing-top {
     background-color: #454545;
-    /* background-color: #323232; */
+    font-family: 'B612', sans-serif;
+    margin: auto;
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
+    text-align: center;
+    font-size: 2.3rem;
+    font-weight: bold;
+    letter-spacing: 0.3rem;
+    color: #6f89f4;
+    text-shadow: 1px 1px 2px black;
+}
+
+#testing-settings {
+    display: flex;
+    flex-direction: horizontal;
+    justify-content: space-between;
+    padding: 0px; /* To remove padding on the sides of col-7 */
+    color: white;
+}
+.block {
+    background-color: #454545;
+    padding: 0.6rem;
+}
+.settings-block {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    align-items: center;
+    display: flex;
+    flex-direction: horizontal;
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: horizontal;
+    justify-content: center;
+}
+.settings-block > :nth-child(1) {
+    margin-right: 0.5em;
 }
 #testing-main-column {
     padding-top: 3rem;
@@ -99,4 +132,11 @@ span#answer-delta {
 .result-insufficient-match {
     border-top: 0.6rem solid rgba(255, 0, 0, 0.7) !important;
     border-bottom: 0.6rem solid rgba(255, 0, 0, 0.7) !important;
+}
+
+.dropdown-menu li:hover {
+    cursor: pointer;
+}
+.dropdown-menu a.disabled {
+    color: #888;
 }

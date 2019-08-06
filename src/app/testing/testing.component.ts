@@ -28,9 +28,9 @@ class EvaluationStats {
     constructor(matches: Match[]) {
         for (let match of matches) {
             switch(match) {
-                case Match.Full:         { this.full++;         break; }
-                case Match.Partial:      { this.partial++;      break; }
-                case Match.Insufficient: { this.insufficient++; break; }
+                case Match.Full:         this.full++;         break;
+                case Match.Partial:      this.partial++;      break;
+                case Match.Insufficient: this.insufficient++; break;
                 default: console.error('Unknown Match');
             }
         }
@@ -55,13 +55,17 @@ export class TestingComponent {
     resultDelta: number;
 
     private languageIndexer: LanguageIndexer;
+    languages: string[];
 
     constructor(
             dataProviderFactory: DataProviderFactoryService,
             private wordsDatabaseService: WordsDatabaseService,
             private settingsService: SettingsService) {
         dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer()
-            .subscribe(languageIndexer => this.languageIndexer = languageIndexer);
+            .subscribe(languageIndexer => {
+                this.languageIndexer = languageIndexer;
+                this.languages = languageIndexer.allNames();
+            });
         settingsService.languagePairInUse().subscribe(languagePair => {
             this.languagePair = languagePair;
             this.loadNextWord().subscribe(word => {
@@ -78,6 +82,11 @@ export class TestingComponent {
     private maybeLanguageSrc(): string {
         // XXX: In future must account for both directions
         return this.languagePair ? this.languageIndexer.nameOf(this.languagePair.src) : "";
+    }
+
+    private maybeLanguageDst(): string {
+        // XXX: In future must account for both directions
+        return this.languagePair ? this.languageIndexer.nameOf(this.languagePair.dst) : "";
     }
 
     submit() {

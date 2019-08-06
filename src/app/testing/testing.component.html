@@ -1,5 +1,81 @@
 <div class="container-fluid" id="main-container">
     <div class="row">
+        <div class="col-7" id="testing-top">
+            TRANSLATE WORDS FROM YOUR DICTIONARY
+        </div>
+    </div>
+
+    <div class="row">
+        <section class="col-7 container-fluid" id="testing-settings">
+            <div class="block col-3 settings-block" id="">
+                <div>From</div>
+
+                <div class="btn-group" dropdown>
+                    <button id="button-basic" dropdownToggle type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            aria-controls="dropdown-basic">
+                        {{ maybeLanguageSrc() }} <span class="caret"></span>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu"
+                                      role="menu" aria-labelledby="button-basic">
+                        <li role="menuitem">
+                            <ng-container *ngFor="let language of languages">
+                                <a (click)="changeSrcLanguageTo(language)"
+                                    class="dropdown-item"
+                                    [ngClass]="{'disabled': language == maybeLanguageSrc()}">{{ language }}</a>
+                            </ng-container>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="block col-3 settings-block" id="">
+                <div>Into</div>
+
+                <div class="btn-group" dropdown>
+                    <button id="button-basic" dropdownToggle type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            aria-controls="dropdown-basic">
+                        {{ maybeLanguageDst() }} <span class="caret"></span>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu"
+                                      role="menu" aria-labelledby="button-basic">
+                        <li role="menuitem">
+                            <ng-container *ngFor="let language of languages">
+                                <a (click)="changeSrcLanguageTo(language)"
+                                    class="dropdown-item"
+                                    [ngClass]="{'disabled': language == maybeLanguageDst()}">{{ language }}</a>
+                            </ng-container>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="block col-4 settings-block" id="">
+                <div>Include tags</div>
+
+                <div class="btn-group" dropdown>
+                    <button id="button-basic" dropdownToggle type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            aria-controls="dropdown-basic">
+                        TAGS <span class="caret"></span>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu"
+                                      role="menu" aria-labelledby="button-basic">
+                        <li role="menuitem">
+                            <ng-container *ngFor="let language of languages">
+                                <a (click)="changeSrcLanguageTo(language)"
+                                    class="dropdown-item"
+                                    [ngClass]="{'disabled': language == maybeLanguageDst()}">{{ language }}</a>
+                            </ng-container>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="row">
         <section class="col-7 container-fluid" id="testing-main-column">
             <div class="row justify-content-around">
                 <div class="col-5 box" id="testing-query">
