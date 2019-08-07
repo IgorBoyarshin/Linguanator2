@@ -1,8 +1,15 @@
+.block {
+    background-color: #454545;
+    padding: 1.2rem;
+}
+
 section.input-panel {
-    padding: 0.8rem;
-    background-color: #252525;
+    /* padding: 0.8rem; */
+    /* background-color: #252525; */
     align-items: center;
     justify-content: center;
+    max-width: 58.333333%;
+    margin: auto;
 }
 section.input-panel > * {
     margin-right: 1rem;

@@ -1,58 +1,76 @@
-<hr>
-
-
-<section id="database-header" class="container-fluid">
+<section class="container-fluid main-container">
     <div class="row">
-        <div class="col-6">
-            <div class="container-fluid">
-                <div id="database-languages" class="row">
-                    <div class="btn-group" dropdown>
-                        <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
-                                                                               aria-controls="dropdown-basic">
-                            {{ primaryLanguage }} <span class="caret"></span>
-                        </button>
-                        <ul *dropdownMenu class="dropdown-menu"
-                                          role="menu" aria-labelledby="button-basic">
-                            <li role="menuitem">
-                                <ng-container *ngFor="let language of languages">
-                                    <a (click)="changeSrcLanguageTo(language)"
-                                class="dropdown-item"
-                                [ngClass]="{'disabled': language == primaryLanguage}">{{ language }}</a>
-                                </ng-container>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="arrow">==>></div>
-
-                    <div class="btn-group" dropdown>
-                        <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
-                                                                               aria-controls="dropdown-basic">
-                            {{ secondaryLanguage }} <span class="caret"></span>
-                        </button>
-                        <ul *dropdownMenu class="dropdown-menu"
-                                          role="menu" aria-labelledby="button-basic">
-                            <li role="menuitem">
-                                <ng-container *ngFor="let language of languages">
-                                    <a (click)="changeDstLanguageTo(language)"
-                                class="dropdown-item"
-                                [ngClass]="{'disabled': language == secondaryLanguage}">{{ language }}</a>
-                                </ng-container>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-6" id="tableTotalCount">
-            (Total: {{ entries ? entries.length : 0 }} entries)
+        <div class="block col-7" id="testing-top">
+            MANIPULATE YOUR DICTIONARY
         </div>
     </div>
+
+
+    <div class="row">
+        <section class="col-7 container-fluid" id="database-settings">
+            <div class="block col-3 settings-block" id="settings-block-from">
+                <div>From</div>
+
+                <div class="btn-group" dropdown>
+                    <button id="button-basic" dropdownToggle type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            aria-controls="dropdown-basic">
+                        {{ primaryLanguage }} <span class="caret"></span>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu"
+                                      role="menu" aria-labelledby="button-basic">
+                        <li role="menuitem" *ngFor="let language of languages">
+                            <a (click)="changeSrcLanguageTo(language)"
+                                class="dropdown-item"
+                                [ngClass]="{'disabled': language == primaryLanguage}">{{ language }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="block col-3 settings-block" id="settings-block-into">
+                <div>Into</div>
+
+                <div class="btn-group" dropdown>
+                    <button id="button-basic" dropdownToggle type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            aria-controls="dropdown-basic">
+                        {{ secondaryLanguage }} <span class="caret"></span>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu"
+                                      role="menu" aria-labelledby="button-basic">
+                        <li role="menuitem" *ngFor="let language of languages">
+                            <a (click)="changeDstLanguageTo(language)"
+                                class="dropdown-item"
+                                [ngClass]="{'disabled': language == secondaryLanguage}">{{ language }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="block col-3 settings-block" id="settings-block-tags">
+                <div>Include</div>
+
+                <div class="btn-group" dropdown>
+                    <button id="button-basic" dropdownToggle type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            aria-controls="dropdown-basic">
+                        tags <span class="caret"></span>
+                    </button>
+                    <ul *dropdownMenu class="dropdown-menu"
+                                      role="menu" aria-labelledby="button-basic">
+                        <li class="dropdown-tag-li" role="menuitem" *ngFor="let tag of allTags" (click)="($event).stopPropagation()">
+                            <div class="my-checkbox">
+                                <input type="checkbox" id="checkbox-{{tag}}">
+                                <label for="checkbox-{{tag}}">{{ tag }}</label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
 </section>
-
-
-<hr>
 
 
 <edited-word-entry
@@ -62,7 +80,68 @@
 </edited-word-entry>
 
 
-<hr>
+
+
+
+
+
+
+
+<!-- <section id="database&#45;header" class="container&#45;fluid"> -->
+<!--     <div class="row"> -->
+<!--         <div class="col&#45;6"> -->
+<!--             <div class="container&#45;fluid"> -->
+<!--                 <div id="database&#45;languages" class="row"> -->
+<!--                     <div class="btn&#45;group" dropdown> -->
+<!--                         <button id="button&#45;basic" dropdownToggle type="button" class="btn btn&#45;primary dropdown&#45;toggle" -->
+<!--                                                                                aria&#45;controls="dropdown&#45;basic"> -->
+<!--                             {{ primaryLanguage }} <span class="caret"></span> -->
+<!--                         </button> -->
+<!--                         <ul *dropdownMenu class="dropdown&#45;menu" -->
+<!--                                           role="menu" aria&#45;labelledby="button&#45;basic"> -->
+<!--                             <li role="menuitem"> -->
+<!--                                 <ng&#45;container *ngFor="let language of languages"> -->
+<!--                                     <a (click)="changeSrcLanguageTo(language)" -->
+<!--                                 class="dropdown&#45;item" -->
+<!--                                 [ngClass]="{'disabled': language == primaryLanguage}">{{ language }}</a> -->
+<!--                                 </ng&#45;container> -->
+<!--                             </li> -->
+<!--                         </ul> -->
+<!--                     </div> -->
+<!--  -->
+<!--                     <div class="arrow">==>></div> -->
+<!--  -->
+<!--                     <div class="btn&#45;group" dropdown> -->
+<!--                         <button id="button&#45;basic" dropdownToggle type="button" class="btn btn&#45;primary dropdown&#45;toggle" -->
+<!--                                                                                aria&#45;controls="dropdown&#45;basic"> -->
+<!--                             {{ secondaryLanguage }} <span class="caret"></span> -->
+<!--                         </button> -->
+<!--                         <ul *dropdownMenu class="dropdown&#45;menu" -->
+<!--                                           role="menu" aria&#45;labelledby="button&#45;basic"> -->
+<!--                             <li role="menuitem"> -->
+<!--                                 <ng&#45;container *ngFor="let language of languages"> -->
+<!--                                     <a (click)="changeDstLanguageTo(language)" -->
+<!--                                 class="dropdown&#45;item" -->
+<!--                                 [ngClass]="{'disabled': language == secondaryLanguage}">{{ language }}</a> -->
+<!--                                 </ng&#45;container> -->
+<!--                             </li> -->
+<!--                         </ul> -->
+<!--                     </div> -->
+<!--                 </div> -->
+<!--             </div> -->
+<!--         </div> -->
+<!--  -->
+<!--         <div class="col&#45;6" id="tableTotalCount"> -->
+<!--             (Total: {{ entries ? entries.length : 0 }} entries) -->
+<!--         </div> -->
+<!--     </div> -->
+<!-- </section> -->
+
+
+
+
+
+
 
 
 <table class="table table-borderless" id="words-table">

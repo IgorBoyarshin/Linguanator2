@@ -58,17 +58,12 @@
                     </button>
                     <ul *dropdownMenu class="dropdown-menu"
                                       role="menu" aria-labelledby="button-basic">
-                        <form>
                         <li class="dropdown-tag-li" role="menuitem" *ngFor="let tag of allTags" (click)="($event).stopPropagation()">
                             <div class="my-checkbox">
                                 <input type="checkbox" id="checkbox-{{tag}}">
                                 <label for="checkbox-{{tag}}">{{ tag }}</label>
                             </div>
-                                <!-- <a (click)="changeSrcLanguageTo(language)" -->
-                                <!--     class="dropdown&#45;item" -->
-                                <!--     [ngClass]="{'disabled': false}">{{ tag }}</a> -->
                         </li>
-                        </form>
                     </ul>
                 </div>
             </div>
