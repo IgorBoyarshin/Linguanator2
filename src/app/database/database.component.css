@@ -1,5 +1,12 @@
-.main-container > div {
+.main-container > * {
     margin-bottom: 1rem;
+}
+.edited-word-entry-container {
+    /* margin-bottom: 1rem; */
+    border-bottom: 1rem solid #ddd; /* page background */
+    position: -webkit-sticky;
+    position: sticky;
+    top: 3.5rem;
 }
 
 #testing-top {
@@ -12,50 +19,13 @@
     color: #6f89f4;
     text-shadow: 1px 1px 2px black;
 }
-#database-settings {
-    display: flex;
-    flex-direction: horizontal;
-    justify-content: space-between;
-    padding: 0px; /* To remove padding on the sides of col-7 */
-    color: white;
-}
-.block {
-    background-color: #454545;
-    padding: 1.2rem;
-}
-.settings-block {
-    display: flex;
-    flex-direction: horizontal;
-    justify-content: center;
-    font-size: 1.5rem;
-}
-.settings-block > :nth-child(1) {
-    margin-right: 0.5em;
-}
 
-
-
-
-
-/* #database-header > div { */
-/*     background-color: #252525; */
-/*     padding: 0.8em; */
-/* } */
-#tableTotalCount {
-    text-align: right;
-    font-family: sans-serif;
-    font-style: italic;
-    font-size: 1.0rem;
-    margin: auto;
-}
-.arrow {
-    margin-top: auto;
-    margin-bottom: auto;
-}
 
 
 #words-table {
     background-color: #bbb;
+    max-width: 58.333333%;
+    margin: auto;
 }
 #words-table thead tr {
     background-color: #333;

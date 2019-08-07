@@ -7,7 +7,7 @@
 
 
     <div class="row">
-        <section class="col-7 container-fluid" id="database-settings">
+        <section class="col-7 container-fluid settings">
             <div class="block col-3 settings-block" id="settings-block-from">
                 <div>From</div>
 
@@ -73,75 +73,13 @@
 </section>
 
 
-<edited-word-entry
-    [events]="displayEditedEntry.asObservable()"
-    [languagePair]="languagePair"
-    (submitEntry)="submitEntry($event)">
-</edited-word-entry>
-
-
-
-
-
-
-
-
-
-<!-- <section id="database&#45;header" class="container&#45;fluid"> -->
-<!--     <div class="row"> -->
-<!--         <div class="col&#45;6"> -->
-<!--             <div class="container&#45;fluid"> -->
-<!--                 <div id="database&#45;languages" class="row"> -->
-<!--                     <div class="btn&#45;group" dropdown> -->
-<!--                         <button id="button&#45;basic" dropdownToggle type="button" class="btn btn&#45;primary dropdown&#45;toggle" -->
-<!--                                                                                aria&#45;controls="dropdown&#45;basic"> -->
-<!--                             {{ primaryLanguage }} <span class="caret"></span> -->
-<!--                         </button> -->
-<!--                         <ul *dropdownMenu class="dropdown&#45;menu" -->
-<!--                                           role="menu" aria&#45;labelledby="button&#45;basic"> -->
-<!--                             <li role="menuitem"> -->
-<!--                                 <ng&#45;container *ngFor="let language of languages"> -->
-<!--                                     <a (click)="changeSrcLanguageTo(language)" -->
-<!--                                 class="dropdown&#45;item" -->
-<!--                                 [ngClass]="{'disabled': language == primaryLanguage}">{{ language }}</a> -->
-<!--                                 </ng&#45;container> -->
-<!--                             </li> -->
-<!--                         </ul> -->
-<!--                     </div> -->
-<!--  -->
-<!--                     <div class="arrow">==>></div> -->
-<!--  -->
-<!--                     <div class="btn&#45;group" dropdown> -->
-<!--                         <button id="button&#45;basic" dropdownToggle type="button" class="btn btn&#45;primary dropdown&#45;toggle" -->
-<!--                                                                                aria&#45;controls="dropdown&#45;basic"> -->
-<!--                             {{ secondaryLanguage }} <span class="caret"></span> -->
-<!--                         </button> -->
-<!--                         <ul *dropdownMenu class="dropdown&#45;menu" -->
-<!--                                           role="menu" aria&#45;labelledby="button&#45;basic"> -->
-<!--                             <li role="menuitem"> -->
-<!--                                 <ng&#45;container *ngFor="let language of languages"> -->
-<!--                                     <a (click)="changeDstLanguageTo(language)" -->
-<!--                                 class="dropdown&#45;item" -->
-<!--                                 [ngClass]="{'disabled': language == secondaryLanguage}">{{ language }}</a> -->
-<!--                                 </ng&#45;container> -->
-<!--                             </li> -->
-<!--                         </ul> -->
-<!--                     </div> -->
-<!--                 </div> -->
-<!--             </div> -->
-<!--         </div> -->
-<!--  -->
-<!--         <div class="col&#45;6" id="tableTotalCount"> -->
-<!--             (Total: {{ entries ? entries.length : 0 }} entries) -->
-<!--         </div> -->
-<!--     </div> -->
-<!-- </section> -->
-
-
-
-
-
-
+<section class="edited-word-entry-container">
+    <edited-word-entry
+        [events]="displayEditedEntry.asObservable()"
+        [languagePair]="languagePair"
+        (submitEntry)="submitEntry($event)">
+    </edited-word-entry>
+</section>
 
 
 <table class="table table-borderless" id="words-table">
@@ -174,5 +112,5 @@
                 </button>
             </td>
         </tr>
-    <tbody>
+        <tbody>
 </table>

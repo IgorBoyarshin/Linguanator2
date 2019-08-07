@@ -24,9 +24,3 @@ section.input-panel > input {
     background-color: #444;
     color: #eee;
 }
-
-section {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 3.5rem;
-}
