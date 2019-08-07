@@ -20,7 +20,9 @@ export class HttpDataProvider implements DataProvider {
         // the result and rewrite this.words upon arrival
         if (!this.words) {
             return Observable.create(subscriber => {
+                console.log('Sending get() from retrieveWords()');
                 this.http.get(this.wordsUrl).subscribe((words: WordEntry[]) => {
+                    console.log('Processing result in retrieveWords()');
                     this.words = words;
                     subscriber.next(words);
                 });
@@ -32,7 +34,9 @@ export class HttpDataProvider implements DataProvider {
     retrieveLanguageIndexer(): Observable<LanguageIndexer> {
         if (!this.languageIndexer) {
             return Observable.create(subscriber => {
+                console.log('Sending get() from retrieveLanguageIndexer()');
                 this.http.get(this.languageIndexerUrl).subscribe((languages: string[]) => {
+                    console.log('Processing result in retrieveLanguageIndexer()');
                     this.languageIndexer = new LanguageIndexer(languages);
                     subscriber.next(this.languageIndexer);
                 });
