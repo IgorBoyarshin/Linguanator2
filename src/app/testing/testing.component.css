@@ -1,9 +1,6 @@
 #testing-top {
-    background-color: #454545;
     font-family: 'B612', sans-serif;
     margin: auto;
-    padding-top: 1.2rem;
-    padding-bottom: 1.2rem;
     text-align: center;
     font-size: 2.3rem;
     font-weight: bold;
@@ -21,18 +18,13 @@
 }
 .block {
     background-color: #454545;
-    padding: 0.6rem;
+    padding: 1.2rem;
 }
 .settings-block {
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
-    align-items: center;
-    display: flex;
-    flex-direction: horizontal;
-    font-size: 1.5rem;
     display: flex;
     flex-direction: horizontal;
     justify-content: center;
+    font-size: 1.5rem;
 }
 .settings-block > :nth-child(1) {
     margin-right: 0.5em;
@@ -40,7 +32,6 @@
 #testing-main-column {
     padding-top: 3rem;
     padding-bottom: 3rem;
-    background-color: #454545;
 }
 
 #main-container > div {
@@ -54,11 +45,11 @@
     font-weight: bold;
 }
 .box#testing-query {
-    background: #ccc;
+    background-color: #ccc;
     border: 2px solid #ccc;
 }
 .box#testing-user-input {
-    background: #eee;
+    background-color: #eee;
     border: 2px solid #eee;
     resize: none;
     outline: none;
@@ -93,11 +84,10 @@
     color: #eee;
 }
 #result-panel {
-    background-color: #454545;
+    padding: 0.6rem;
     border-top: 0.6rem solid #454545;
     border-bottom: 0.6rem solid #454545;
     margin: auto;
-    padding: 0.6rem;
     display: flex;
     flex-direction: horizontal;
     justify-content: space-between;

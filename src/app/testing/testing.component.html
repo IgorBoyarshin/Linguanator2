@@ -1,6 +1,6 @@
 <div class="container-fluid" id="main-container">
     <div class="row">
-        <div class="col-7" id="testing-top">
+        <div class="block col-7" id="testing-top">
             TRANSLATE WORDS FROM YOUR DICTIONARY
         </div>
     </div>
@@ -76,7 +76,7 @@
     </div>
 
     <div class="row">
-        <section class="col-7 container-fluid" id="testing-main-column">
+        <section class="block col-7 container-fluid" id="testing-main-column">
             <div class="row justify-content-around">
                 <div class="col-5 box" id="testing-query">
                     <span class="primary-text-dark" id="word-to-translate">
@@ -105,7 +105,7 @@
     </div>
 
     <div class="row">
-        <div class="col-7" id="result-panel"
+        <div class="block col-7" id="result-panel"
             [ngClass]="{'result-full-match': resultIsFull(),
                         'result-partial-match': resultIsPartial(),
                         'result-insufficient-match': resultIsInsufficient() || !wordEntry }">
