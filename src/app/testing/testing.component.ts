@@ -51,7 +51,7 @@ export class TestingComponent {
     languagePair: LanguagePair;
     state: State;
 
-    allTags: string[];
+    allTagsObservable: Observable<string[]>;
 
     result: Match | undefined = undefined;
     resultDelta: number;
@@ -74,7 +74,7 @@ export class TestingComponent {
                 this.wordEntry = word;
             })
         });
-        wordsDatabaseService.allTags().subscribe(tags => this.allTags = tags);
+        this.allTagsObservable = wordsDatabaseService.allTags();
         this.state = State.UserInput;
     }
 
