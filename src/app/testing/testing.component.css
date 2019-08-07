@@ -65,8 +65,8 @@
 }
 #result-panel {
     padding: 0.6rem;
-    border-top: 0.6rem solid #454545;
-    border-bottom: 0.6rem solid #454545;
+    border-top: 0.6rem solid #333;
+    border-bottom: 0.6rem solid #333;
     margin: auto;
     display: flex;
     flex-direction: horizontal;

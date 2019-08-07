@@ -21,22 +21,24 @@
 }
 
 
-
-#words-table {
-    background-color: #bbb;
+.the-table {
     max-width: 58.333333%;
     margin: auto;
 }
+#words-table {
+}
 #words-table thead tr {
-    background-color: #333;
+    color: #eee;
+}
+#words-table tbody {
     color: #eee;
 }
 #words-table tbody tr:nth-child(odd) {
-    background-color: #777;
+    background-color: #444;
 }
 #words-table td:nth-child(even) {
-    border-left: 3px solid #333;
-    border-right: 3px solid #333;
+    border-left: 3px solid #000;
+    border-right: 3px solid #000;
 }
 #words-table td:last-child {
     border-right: 0px;
@@ -68,6 +70,7 @@
     font-weight: bold;
     letter-spacing: 0.2rem;
     padding: 0.7em;
+    padding-top: 0.0em;
     font-size: 1.3rem;
 }
 #words-table td {
@@ -90,16 +93,4 @@ tbody > :last-child {
 }
 .dropdown-menu a.disabled {
     color: #888;
-}
-
-hr {
-    height: 1px;
-    background: #ccc;
-    background-image: linear-gradient(to right, #333, #ccc, #333);
-    /* background-color: black; */
-    /* background-image: linear-gradient(to right, */
-    /*     rgba(255, 255, 255, 0), */
-    /*     rgba(255, 255, 255, 0.75), */
-    /*     rgba(255, 255, 255, 0)); */
-    margin: 0px;
 }
