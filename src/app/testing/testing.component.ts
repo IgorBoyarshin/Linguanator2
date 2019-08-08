@@ -74,7 +74,7 @@ export class TestingComponent {
                 this.wordEntry = word;
             })
         });
-        this.allTagsObservable = wordsDatabaseService.allTags();
+        this.allTagsObservable = settingsService.allTags();
         this.state = State.UserInput;
     }
 

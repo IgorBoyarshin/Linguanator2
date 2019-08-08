@@ -12,8 +12,36 @@ import { LanguageIndexer } from './language-indexer';
 })
 export class SettingsService {
     private currentLanguagePair: LanguagePair;
+    private tags: string[];
+    private currentTags: string[];
 
     constructor(private dataProviderFactory: DataProviderFactoryService) {}
+
+    allTags(): Observable<string[]> {
+        if (!this.tags) {
+            return Observable.create(subscriber => {
+                this.dataProviderFactory.dataProviderInUse().retrieveWords().subscribe(words => {
+                    this.tags = [...new Set( // To leave unique tags
+                        words.flatMap(word => word.tags)
+                    )];
+                    subscriber.next(this.tags);
+                });
+            });
+        }
+        return of(this.tags);
+    }
+
+    tagsInUse(): Observable<string[]> {
+        if (!this.currentTags) {
+            return Observable.create(subscriber => {
+                this.allTags().subscribe(tags => {
+                    this.currentTags = [...tags];
+                    subscriber.next(this.currentTags);
+                });
+            });
+        }
+        return of(this.currentTags);
+    }
 
     languagePairInUse(): Observable<LanguagePair> {
         if (!this.currentLanguagePair) {
