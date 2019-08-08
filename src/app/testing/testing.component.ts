@@ -282,4 +282,9 @@ export class TestingComponent {
     doDisplayResult(): boolean {
         return this.state == State.DisplayResult;
     }
+
+    toggleTag({tag, checked}: StatefulTag) {
+        this.settingsService.setTagState(tag, !checked);
+        this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
+    }
 }

@@ -10,7 +10,7 @@ import { LanguagePair } from './language-pair.model';
 import { LanguageIndexer } from './language-indexer';
 
 export class StatefulTag {
-    constructor(tag: string, checked: boolean) {}
+    constructor(public tag: string, public checked: boolean) {}
 }
 
 @Injectable({
@@ -22,6 +22,15 @@ export class SettingsService {
     private currentTags: string[];
 
     constructor(private dataProviderFactory: DataProviderFactoryService) {}
+
+    setTagState(tag: string, checked: boolean) {
+        if (checked && !this.currentTags.includes(tag)) { // include
+            this.currentTags.push(tag);
+        } else if (!checked && this.currentTags.includes(tag)) { // remove
+            const index = this.currentTags.indexOf(tag);
+            this.currentTags.splice(index, 1);
+        }
+    }
 
     allStatefulTags(): Observable<StatefulTag[]> {
         return combineLatest(this.allTags(), this.tagsInUse()).pipe(map(([allTags, tagsInUse]) => {

@@ -74,6 +74,11 @@ export class DatabaseComponent {
         this.reloadWords(languagePair);
     }
 
+    toggleTag({tag, checked}: StatefulTag) {
+        this.settingsService.setTagState(tag, !checked);
+        this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
+    }
+
     submitEntry(wordEntry: WordEntry) {
         if (this.editedEntryIndex === undefined) { // adding a new Entry
             this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry)
