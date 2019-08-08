@@ -1,11 +1,17 @@
 import { Observable } from 'rxjs';
 import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
 import { DataProviderFactoryService } from './providers/data-provider-factory.service';
 import { LanguagePair } from './language-pair.model';
 import { LanguageIndexer } from './language-indexer';
+
+export class StatefulTag {
+    constructor(tag: string, checked: boolean) {}
+}
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +22,16 @@ export class SettingsService {
     private currentTags: string[];
 
     constructor(private dataProviderFactory: DataProviderFactoryService) {}
+
+    allStatefulTags(): Observable<StatefulTag[]> {
+        return combineLatest(this.allTags(), this.tagsInUse()).pipe(map(([allTags, tagsInUse]) => {
+            // TODO: Could make a one-liner
+            return allTags.map(tag => {
+                const checked = tagsInUse.includes(tag);
+                return {tag, checked};
+            });
+        }));
+    }
 
     allTags(): Observable<string[]> {
         if (!this.tags) {

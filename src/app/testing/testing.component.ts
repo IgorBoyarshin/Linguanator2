@@ -6,7 +6,7 @@ import { WordEntry } from '../word-entry.model';
 import { LanguagePair } from '../language-pair.model';
 import { LanguageIndexer } from '../language-indexer';
 import { WordsDatabaseService } from '../words-database.service';
-import { SettingsService } from '../settings.service';
+import { SettingsService, StatefulTag } from '../settings.service';
 import { DataProviderFactoryService } from '../providers/data-provider-factory.service';
 
 enum State {
@@ -51,7 +51,7 @@ export class TestingComponent {
     languagePair: LanguagePair;
     state: State;
 
-    allTagsObservable: Observable<string[]>;
+    allStatefulTagsObservable: Observable<StatefulTag[]>;
 
     result: Match | undefined = undefined;
     resultDelta: number;
@@ -74,7 +74,7 @@ export class TestingComponent {
                 this.wordEntry = word;
             })
         });
-        this.allTagsObservable = settingsService.allTags();
+        this.allStatefulTagsObservable = settingsService.allStatefulTags();
         this.state = State.UserInput;
     }
 
