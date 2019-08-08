@@ -36,15 +36,15 @@ export class WordsDatabaseService {
         return this.retrieve(() => this.tags);
     }
 
-    // TODO: make a tempalte instead of _any_
+    // TODO: make a template instead of _any_
     private retrieve(target: () => any): Observable<any> {
         if (!this.dictionary || !this.tags) {
             return Observable.create(subscriber => {
                 this.dataProviderFactory.dataProviderInUse().retrieveWords().subscribe(words => {
                     this.dictionary = new Dictionary();
                     this.dictionary.add(...words);
-                    this.tags = [...new Set(
-                        words.map(word => word.tags).flat()
+                    this.tags = [...new Set( // To leave unique tags
+                        words.flatMap(word => word.tags)
                     )];
                     subscriber.next(target());
                 });
