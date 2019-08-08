@@ -99,7 +99,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let entry of entries; let entryIndex = index">
+        <tr *ngFor="let entry of entries | async; let entryIndex = index">
             <td>{{ entry.word }}</td>
             <td>{{ entry.translations.join(', ') }}</td>
             <td>{{ entry.score }}</td>

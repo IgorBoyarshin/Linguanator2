@@ -17,7 +17,7 @@ import { DataProviderFactoryService } from '../providers/data-provider-factory.s
     styleUrls: ['./database.component.css']
 })
 export class DatabaseComponent {
-    entries: WordEntry[];
+    entries: Observable<WordEntry[]>;
     languages: string[];
     languagePair: LanguagePair; // @Input into sub-component
     primaryLanguage: string;
@@ -65,8 +65,7 @@ export class DatabaseComponent {
     }
 
     private reloadWords(languagePair: LanguagePair) {
-        this.wordsDatabaseService.wordsFor(languagePair)
-            .subscribe(words => this.entries = words);
+        this.entries = this.wordsDatabaseService.wordsFor(languagePair);
     }
 
     private resetCacheAndReloadWords(languagePair: LanguagePair) {
