@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs';
 
 import { Component, OnInit } from '@angular/core';
 
@@ -51,7 +52,7 @@ export class TestingComponent {
     languagePair: LanguagePair;
     state: State;
 
-    allStatefulTagsObservable: Observable<StatefulTag[]>;
+    statefulTags: StatefulTag[];
 
     result: Match | undefined = undefined;
     resultDelta: number;
@@ -68,15 +69,7 @@ export class TestingComponent {
                 this.languageIndexer = languageIndexer;
                 this.languages = languageIndexer.allNames();
             });
-        // TODO: mb use combineLatest here...
-        settingsService.languagePairInUse().subscribe(languagePair => {
-            this.languagePair = languagePair;
-            this.settingsService.allStatefulTags().subscribe(statefulTags => {
-                this.wordsDatabaseService.randomWordEntryForWithStatefulTags(this.languagePair, statefulTags)
-                    .subscribe(word => this.wordEntry = word);
-            })
-        });
-        this.allStatefulTagsObservable = settingsService.allStatefulTags();
+        this.reloadWord();
         this.state = State.UserInput;
     }
 
@@ -110,11 +103,18 @@ export class TestingComponent {
             this.userInput = "";
             this.result = undefined;
             this.resultDelta = 0;
-            this.settingsService.allStatefulTags().subscribe(statefulTags => {
-                this.wordsDatabaseService.randomWordEntryForWithStatefulTags(this.languagePair, statefulTags)
-                    .subscribe(word => this.wordEntry = word);
-            })
+            this.reloadWord();
         }
+    }
+
+    private reloadWord() {
+        combineLatest(this.settingsService.languagePairInUse(), this.settingsService.allStatefulTags())
+            .subscribe(([languagePair, statefulTags]) => {
+                this.languagePair = languagePair;
+                this.statefulTags = statefulTags;
+                this.wordsDatabaseService.randomWordEntryForWithStatefulTags(languagePair, statefulTags)
+                    .subscribe(word => this.wordEntry = word);
+            });
     }
 
     // XXX: the content of the wordEntry reference is changed here.
@@ -221,13 +221,7 @@ export class TestingComponent {
             this.settingsService.setLanguagePairTo(new LanguagePair(newSrc, dst));
         }
 
-        this.settingsService.languagePairInUse().subscribe(languagePair => {
-            this.languagePair = languagePair;
-            this.settingsService.allStatefulTags().subscribe(statefulTags => {
-                this.wordsDatabaseService.randomWordEntryForWithStatefulTags(this.languagePair, statefulTags)
-                    .subscribe(word => this.wordEntry = word);
-            })
-        });
+        this.reloadWord();
     }
 
     // TODO: currently more or less duplicates the code from Database
@@ -240,13 +234,7 @@ export class TestingComponent {
             this.settingsService.setLanguagePairTo(new LanguagePair(src, newDst));
         }
 
-        this.settingsService.languagePairInUse().subscribe(languagePair => {
-            this.languagePair = languagePair;
-            this.settingsService.allStatefulTags().subscribe(statefulTags => {
-                this.wordsDatabaseService.randomWordEntryForWithStatefulTags(this.languagePair, statefulTags)
-                    .subscribe(word => this.wordEntry = word);
-            })
-        });
+        this.reloadWord();
     }
 
     submitButtonText(): string {
@@ -289,12 +277,6 @@ export class TestingComponent {
     }
 
     toggleTag({tag, checked}: StatefulTag) {
-        this.settingsService.setTagState(tag, !checked).subscribe(() => {
-            this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
-            this.allStatefulTagsObservable.subscribe(statefulTags => {
-                this.wordsDatabaseService.randomWordEntryForWithStatefulTags(this.languagePair, statefulTags)
-                    .subscribe(word => this.wordEntry = word);
-            })
-        });
+        this.settingsService.setTagState(tag, !checked).subscribe(() => this.reloadWord());
     }
 }
