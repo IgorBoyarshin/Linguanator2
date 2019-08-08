@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, filter, tap } from 'rxjs/operators';
 
 import { Injectable } from '@angular/core';
 
@@ -8,6 +8,7 @@ import { Dictionary } from './dictionary.model';
 import { WordEntry } from './word-entry.model';
 import { LanguagePair } from './language-pair.model';
 import { DataProviderFactoryService } from './providers/data-provider-factory.service';
+import { StatefulTag } from './settings.service';
 
 @Injectable({
     providedIn: 'root'
@@ -39,6 +40,17 @@ export class WordsDatabaseService {
         return of(this.dictionary.from(src).to(dst));
     }
 
+    wordsForWithStatefulTags(languagePair: LanguagePair, statefulTags: StatefulTag[]): Observable<WordEntry[]> {
+        const includedTags = statefulTags.filter(({tag, checked}) => checked).map(({tag}) => tag);
+        return this.wordsFor(languagePair).pipe(
+            map(words => words.filter(word =>
+                word.tags.some(
+                    tag => includedTags.includes(tag)
+                )
+            ))
+        );
+    }
+
     private randomInt(exclusiveMax) {
         return Math.floor(Math.random() * exclusiveMax);
     }
@@ -50,6 +62,14 @@ export class WordsDatabaseService {
     randomWordEntryFor(languagePair: LanguagePair): Observable<WordEntry> {
         return Observable.create(subscriber => {
             this.wordsFor(languagePair).subscribe(words => {
+                subscriber.next(this.randomOf(words));
+            })
+        });
+    }
+
+    randomWordEntryForWithStatefulTags(languagePair: LanguagePair, statefulTags: StatefulTag[]): Observable<WordEntry> {
+        return Observable.create(subscriber => {
+            this.wordsForWithStatefulTags(languagePair, statefulTags).subscribe(words => {
                 subscriber.next(this.randomOf(words));
             })
         });

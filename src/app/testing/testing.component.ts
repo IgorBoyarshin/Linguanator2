@@ -68,10 +68,12 @@ export class TestingComponent {
                 this.languageIndexer = languageIndexer;
                 this.languages = languageIndexer.allNames();
             });
+        // TODO: mb use combineLatest here...
         settingsService.languagePairInUse().subscribe(languagePair => {
             this.languagePair = languagePair;
-            this.wordsDatabaseService.randomWordEntryFor(this.languagePair).subscribe(word => {
-                this.wordEntry = word;
+            this.settingsService.allStatefulTags().subscribe(statefulTags => {
+                this.wordsDatabaseService.randomWordEntryForWithStatefulTags(this.languagePair, statefulTags)
+                    .subscribe(word => this.wordEntry = word);
             })
         });
         this.allStatefulTagsObservable = settingsService.allStatefulTags();
@@ -108,8 +110,9 @@ export class TestingComponent {
             this.userInput = "";
             this.result = undefined;
             this.resultDelta = 0;
-            this.wordsDatabaseService.randomWordEntryFor(this.languagePair).subscribe(word => {
-                this.wordEntry = word;
+            this.settingsService.allStatefulTags().subscribe(statefulTags => {
+                this.wordsDatabaseService.randomWordEntryForWithStatefulTags(this.languagePair, statefulTags)
+                    .subscribe(word => this.wordEntry = word);
             })
         }
     }
@@ -220,8 +223,9 @@ export class TestingComponent {
 
         this.settingsService.languagePairInUse().subscribe(languagePair => {
             this.languagePair = languagePair;
-            this.wordsDatabaseService.randomWordEntryFor(this.languagePair).subscribe(word => {
-                this.wordEntry = word;
+            this.settingsService.allStatefulTags().subscribe(statefulTags => {
+                this.wordsDatabaseService.randomWordEntryForWithStatefulTags(this.languagePair, statefulTags)
+                    .subscribe(word => this.wordEntry = word);
             })
         });
     }
@@ -238,8 +242,9 @@ export class TestingComponent {
 
         this.settingsService.languagePairInUse().subscribe(languagePair => {
             this.languagePair = languagePair;
-            this.wordsDatabaseService.randomWordEntryFor(this.languagePair).subscribe(word => {
-                this.wordEntry = word;
+            this.settingsService.allStatefulTags().subscribe(statefulTags => {
+                this.wordsDatabaseService.randomWordEntryForWithStatefulTags(this.languagePair, statefulTags)
+                    .subscribe(word => this.wordEntry = word);
             })
         });
     }
@@ -284,7 +289,12 @@ export class TestingComponent {
     }
 
     toggleTag({tag, checked}: StatefulTag) {
-        this.settingsService.setTagState(tag, !checked);
-        this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
+        this.settingsService.setTagState(tag, !checked).subscribe(() => {
+            this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
+            this.allStatefulTagsObservable.subscribe(statefulTags => {
+                this.wordsDatabaseService.randomWordEntryForWithStatefulTags(this.languagePair, statefulTags)
+                    .subscribe(word => this.wordEntry = word);
+            })
+        });
     }
 }

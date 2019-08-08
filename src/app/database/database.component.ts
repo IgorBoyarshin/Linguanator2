@@ -65,7 +65,9 @@ export class DatabaseComponent {
     }
 
     private reloadWords(languagePair: LanguagePair) {
-        this.entries = this.wordsDatabaseService.wordsFor(languagePair);
+        this.settingsService.allStatefulTags().subscribe(statefulTags => {
+            this.entries = this.wordsDatabaseService.wordsForWithStatefulTags(languagePair, statefulTags);
+        });
     }
 
     private resetCacheAndReloadWords(languagePair: LanguagePair) {
@@ -74,8 +76,10 @@ export class DatabaseComponent {
     }
 
     toggleTag({tag, checked}: StatefulTag) {
-        this.settingsService.setTagState(tag, !checked);
-        this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
+        this.settingsService.setTagState(tag, !checked).subscribe(() => {
+            this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
+            this.reloadWords(this.languagePair);
+        });
     }
 
     submitEntry(wordEntry: WordEntry) {

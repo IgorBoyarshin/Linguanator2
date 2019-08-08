@@ -18,18 +18,23 @@ export class StatefulTag {
 })
 export class SettingsService {
     private currentLanguagePair: LanguagePair;
+
     private tags: string[];
     private currentTags: string[];
 
     constructor(private dataProviderFactory: DataProviderFactoryService) {}
 
-    setTagState(tag: string, checked: boolean) {
-        if (checked && !this.currentTags.includes(tag)) { // include
-            this.currentTags.push(tag);
-        } else if (!checked && this.currentTags.includes(tag)) { // remove
-            const index = this.currentTags.indexOf(tag);
-            this.currentTags.splice(index, 1);
-        }
+    setTagState(tag: string, checked: boolean): Observable<void> {
+        return Observable.create(subscriber => {
+            if (checked && !this.currentTags.includes(tag)) { // include
+                this.currentTags.push(tag);
+            } else if (!checked && this.currentTags.includes(tag)) { // remove
+                const index = this.currentTags.indexOf(tag);
+                this.currentTags.splice(index, 1);
+            }
+
+            subscriber.next();
+        });
     }
 
     allStatefulTags(): Observable<StatefulTag[]> {
@@ -56,6 +61,7 @@ export class SettingsService {
         return of(this.tags);
     }
 
+    // TODO: used??????
     tagsInUse(): Observable<string[]> {
         if (!this.currentTags) {
             return Observable.create(subscriber => {
