@@ -77,7 +77,15 @@ export class DatabaseComponent {
 
     toggleTag({tag, checked}: StatefulTag) {
         this.settingsService.setTagState(tag, !checked).subscribe(() => {
-            this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
+            this.allStatefulTagsObservable = this.settingsService.allStatefulTags(); // TODO
+            this.reloadWords(this.languagePair);
+        });
+    }
+
+    toggleAllTags() {
+        // TODO: account for language observable also, jsut as in Testing
+        this.settingsService.toggleAllTags().subscribe(() => {
+            this.allStatefulTagsObservable = this.settingsService.allStatefulTags(); // TODO
             this.reloadWords(this.languagePair);
         });
     }

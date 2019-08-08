@@ -279,4 +279,8 @@ export class TestingComponent {
     toggleTag({tag, checked}: StatefulTag) {
         this.settingsService.setTagState(tag, !checked).subscribe(() => this.reloadWord());
     }
+
+    toggleAllTags() {
+        this.settingsService.toggleAllTags().subscribe(() => this.reloadWord());
+    }
 }

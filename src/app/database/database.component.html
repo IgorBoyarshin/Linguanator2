@@ -59,6 +59,11 @@
                     </button>
                     <ul *dropdownMenu class="dropdown-menu"
                                       role="menu" aria-labelledby="button-basic">
+                        <li class="dropdown-tag-li" role="menuitem">
+                            <button class="button button-small green"
+                                    id="button-toggle-all-tags"
+                                    (click)="toggleAllTags();($event).stopPropagation()">all</button>
+                        </li>
                         <li class="dropdown-tag-li" role="menuitem"
                                 *ngFor="let statefulTag of allStatefulTagsObservable | async"
                                 (click)="($event).stopPropagation()">

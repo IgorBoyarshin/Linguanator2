@@ -112,4 +112,8 @@ span#answer-delta {
     color: #888;
 }
 
+#button-toggle-all-tags {
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+}
 

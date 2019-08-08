@@ -24,17 +24,30 @@ export class SettingsService {
 
     constructor(private dataProviderFactory: DataProviderFactoryService) {}
 
-    setTagState(tag: string, checked: boolean): Observable<void> {
+    toggleAllTags(): Observable<void> {
         return Observable.create(subscriber => {
-            if (checked && !this.currentTags.includes(tag)) { // include
-                this.currentTags.push(tag);
-            } else if (!checked && this.currentTags.includes(tag)) { // remove
-                const index = this.currentTags.indexOf(tag);
-                this.currentTags.splice(index, 1);
-            }
+            const allChecked = this.currentTags.length == this.tags.length; // XXX: hope it works
+            if (allChecked) this.currentTags = [];
+            else            this.currentTags = [...this.tags];
 
             subscriber.next();
         });
+    }
+
+    setTagState(tag: string, checked: boolean): Observable<void> {
+        return Observable.create(subscriber => {
+            this._setTagState(tag, checked);
+            subscriber.next();
+        });
+    }
+
+    private _setTagState(tag: string, checked: boolean) {
+        if (checked && !this.currentTags.includes(tag)) { // include
+            this.currentTags.push(tag);
+        } else if (!checked && this.currentTags.includes(tag)) { // remove
+            const index = this.currentTags.indexOf(tag);
+            this.currentTags.splice(index, 1);
+        }
     }
 
     allStatefulTags(): Observable<StatefulTag[]> {
