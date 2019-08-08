@@ -59,10 +59,12 @@
                     </button>
                     <ul *dropdownMenu class="dropdown-menu"
                                       role="menu" aria-labelledby="button-basic">
-                        <li class="dropdown-tag-li" role="menuitem" *ngFor="let tag of allTags" (click)="($event).stopPropagation()">
+                        <li class="dropdown-tag-li" role="menuitem"
+                                *ngFor="let statefulTag of allStatefulTagsObservable | async"
+                                (click)="($event).stopPropagation()">
                             <div class="my-checkbox">
-                                <input type="checkbox" id="checkbox-{{tag}}">
-                                <label for="checkbox-{{tag}}">{{ tag }}</label>
+                                <input type="checkbox" id="checkbox-{{tag}}" [checked]="statefulTag.checked">
+                                <label for="checkbox-{{tag}}">{{ statefulTag.tag }}</label>
                             </div>
                         </li>
                     </ul>

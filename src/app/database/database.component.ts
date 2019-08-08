@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { combineLatest } from 'rxjs';
 
 import { Component, OnInit } from '@angular/core';
@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import { WordEntry } from '../word-entry.model';
 import { LanguagePair } from '../language-pair.model';
 import { WordsDatabaseService } from '../words-database.service';
-import { SettingsService } from '../settings.service';
+import { SettingsService, StatefulTag } from '../settings.service';
 import { LanguageIndexer } from '../language-indexer';
 import { DataProviderFactoryService } from '../providers/data-provider-factory.service';
 
@@ -22,10 +22,12 @@ export class DatabaseComponent {
     languagePair: LanguagePair; // @Input into sub-component
     primaryLanguage: string;
     secondaryLanguage: string;
+    allStatefulTagsObservable: Observable<StatefulTag[]>;
 
     private displayEditedEntry: Subject<WordEntry> = new Subject<WordEntry>(); // to child component
     editedEntry: WordEntry;
     editedEntryIndex?: number;
+
 
     private languageIndexer: LanguageIndexer;
 
@@ -36,6 +38,7 @@ export class DatabaseComponent {
         this.reloadLanguageIndexerAndLanguages();
         this.reloadLanguagePairAndWords();
         this.reloadPrimaryAndSecondaryLanguages();
+        this.allStatefulTagsObservable = settingsService.allStatefulTags();
     }
 
     private reloadLanguageIndexerAndLanguages() {
