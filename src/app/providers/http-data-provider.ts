@@ -75,6 +75,7 @@ export class HttpDataProvider implements DataProvider {
         return Observable.create(subscriber => {
             if (!this.indexValidIn(this.words, potentialIndex)) return;
             if (this.words[potentialIndex] === oldEntry) {
+                // TODO: not hitting as of now
                 this.words[potentialIndex] = newEntry;
             } else { // deep search
                 const index = this.words.indexOf(oldEntry);
@@ -90,6 +91,7 @@ export class HttpDataProvider implements DataProvider {
         return Observable.create(subscriber => {
             if (!this.indexValidIn(this.words, potentialIndex)) return;
             if (this.words[potentialIndex] === wordEntry) {
+                // TODO: not hitting as of now
                 this.words.splice(potentialIndex, 1);
             } else { // deep search
                 const index = this.words.indexOf(wordEntry);
