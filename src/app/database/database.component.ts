@@ -65,6 +65,7 @@ export class DatabaseComponent {
     }
 
     private reloadWords(languagePair: LanguagePair) {
+        this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
         this.settingsService.allStatefulTags().subscribe(statefulTags => {
             this.entries = this.wordsDatabaseService.wordsForWithStatefulTags(languagePair, statefulTags);
         });
@@ -72,6 +73,7 @@ export class DatabaseComponent {
 
     private resetCacheAndReloadWords(languagePair: LanguagePair) {
         this.wordsDatabaseService.resetCache();
+        this.settingsService.resetCache();
         this.reloadWords(languagePair);
     }
 
@@ -83,7 +85,7 @@ export class DatabaseComponent {
     }
 
     toggleAllTags() {
-        // TODO: account for language observable also, jsut as in Testing
+        // TODO: account for language observable also, just as in Testing
         this.settingsService.toggleAllTags().subscribe(() => {
             this.allStatefulTagsObservable = this.settingsService.allStatefulTags(); // TODO
             this.reloadWords(this.languagePair);

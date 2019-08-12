@@ -1,1 +1,4 @@
 check that upon WordEntry edit the word remains unique in the database 
+
+
+For edit() and remove() can not pass the whole oldEntry now, just its ID

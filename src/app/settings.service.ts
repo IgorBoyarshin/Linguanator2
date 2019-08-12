@@ -24,9 +24,14 @@ export class SettingsService {
 
     constructor(private dataProviderFactory: DataProviderFactoryService) {}
 
+    resetCache() {
+        this.tags = null;
+        this.currentTags = null;
+    }
+
     toggleAllTags(): Observable<void> {
         return Observable.create(subscriber => {
-            const allChecked = this.currentTags.length == this.tags.length; // XXX: hope it works
+            const allChecked = this.currentTags.length == this.tags.length; // XXX: hack
             if (allChecked) this.currentTags = [];
             else            this.currentTags = [...this.tags];
 

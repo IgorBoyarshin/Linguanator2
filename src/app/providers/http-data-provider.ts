@@ -18,7 +18,17 @@ class DbWordEntry {
         public score: number,
         public tags: string[]
     ) {}
+}
 
+class DbWordEntryNoId {
+    constructor(
+        public fromLanguage: number,
+        public toLanguage: number,
+        public word: string,
+        public translations: string[],
+        public score: number,
+        public tags: string[]
+    ) {}
 }
 
 export class HttpDataProvider implements DataProvider {
@@ -31,6 +41,10 @@ export class HttpDataProvider implements DataProvider {
 
     toWordEntry({id, fromlanguage, tolanguage, word, translations, score, tags}: DbWordEntry): WordEntry {
         return new WordEntry(id, fromlanguage, tolanguage, word, translations, score, tags);
+    }
+
+    toDbWordEntryNoId({id, from, to, word, translations, score, tags}: WordEntry): DbWordEntryNoId {
+        return new DbWordEntryNoId(from, to, word, translations, score, tags);
     }
 
     retrieveWords(): Observable<WordEntry[]> {
@@ -70,8 +84,13 @@ export class HttpDataProvider implements DataProvider {
 
     addWordEntry(wordEntry: WordEntry): Observable<void> {
         return Observable.create(subscriber => {
-            this.words.push(wordEntry);
-            subscriber.next();
+            console.log('Sending post() from addWordEntry()');
+            this.http.post<DbWordEntryNoId>(this.wordsUrl, this.toDbWordEntryNoId(wordEntry)).subscribe(res => {
+                console.log('Processing result in addWordEntry(): ', res);
+                // this.words.push(wordEntry);
+                this.resetWords();
+                subscriber.next();
+            }, err => console.error(err));
         });
     }
 
