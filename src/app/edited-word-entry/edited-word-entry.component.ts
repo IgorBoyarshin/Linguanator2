@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 export class EditedWordEntryComponent implements OnInit, OnDestroy {
     id: number;
     score: number;
-    languagePair: LanguagePair;
+    editedLanguagePair: LanguagePair;
 
     // [(ngModel)]
     word: string = "";
@@ -23,6 +23,8 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
     tags: string = "";
 
     editingExistingEntry: boolean;
+
+    @Input() languagePair: LanguagePair;
 
     @Output() submitEntry = new EventEmitter<WordEntry>();
 
@@ -32,10 +34,11 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
     constructor() {}
     ngOnInit() {
         this.displayEntrySubscription = this.events.subscribe(({id, from, to, word, translations, score, tags}: WordEntry) => {
+            console.log('doing');
             this.editingExistingEntry = true;
 
             this.id = id;
-            this.languagePair = new LanguagePair(from, to);
+            this.editedLanguagePair = new LanguagePair(from, to);
             this.word = word;
             this.translations = translations.join(";");
             this.score = score;
@@ -58,6 +61,7 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
     submit() {
         const fakeId = -1;
         const {src, dst} = this.languagePair;
+        // TODO: not using this.editedLanguagePair as of now...
         const translations = this.translations.split(';');
         const tags = this.tags.length == 0 ? [] : this.tags.split(';');
         const newWordEntry = new WordEntry(fakeId, src, dst, this.word, translations, this.score, tags);
@@ -73,6 +77,9 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
         this.word = "";
         this.translations = "";
         this.tags = "";
+        this.id = -1;
+        this.score = 0;
+        this.editedLanguagePair = null;
         this.editingExistingEntry = false;
     }
 }
