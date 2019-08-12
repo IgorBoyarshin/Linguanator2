@@ -1,21 +1,25 @@
-export class LanguageIndexer {
-    constructor(private names: string[]) {}
+import { Language } from './language-model';
 
-    nameOf(index: number): string {
-        return this.names[index]; // TODO: perform check??
+export class LanguageIndexer {
+    constructor(private languages: Language[]) {}
+
+    nameOf(id: number): string {
+        for (let language of this.languages) {
+            if (language.id == id) return language.name;
+        }
+        console.error("Could not find name of language with id: ", id);
+        return '';
     }
 
     indexOf(name: string): number {
-        for (let i = 0; i < this.names.length; i++) {
-            if (this.names[i] == name) {
-                return i;
-            }
+        for (let language of this.languages) {
+            if (language.name == name) return language.id;
         }
-        console.error("Could not find index of language: ", name);
+        console.error("Could not find index of language with name: ", name);
         return -1;
     }
 
     allNames(): string[] {
-        return this.names;
+        return this.languages.map(language => language.name);
     }
 }

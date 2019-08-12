@@ -3,9 +3,23 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs';
 
+import { Language } from '../language-model';
 import { DataProvider } from './data-provider';
 import { WordEntry } from '../word-entry.model';
 import { LanguageIndexer } from '../language-indexer';
+
+class DbWordEntry {
+    constructor(
+        public id: number,
+        public fromlanguage: number,
+        public tolanguage: number,
+        public word: string,
+        public translations: string[],
+        public score: number,
+        public tags: string[]
+    ) {}
+
+}
 
 export class HttpDataProvider implements DataProvider {
     private words: WordEntry[]; // TODO: rename to entries
@@ -15,13 +29,18 @@ export class HttpDataProvider implements DataProvider {
 
     constructor(private http: HttpClient) {}
 
+    toWordEntry({id, fromlanguage, tolanguage, word, translations, score, tags}: DbWordEntry): WordEntry {
+        return new WordEntry(id, fromlanguage, tolanguage, word, translations, score, tags);
+    }
+
     retrieveWords(): Observable<WordEntry[]> {
         // TODO: Potentially creates multiple Observables, each one sent to query
         // the result and rewrite this.words upon arrival
         if (!this.words) {
             return Observable.create(subscriber => {
                 console.log('Sending get() from retrieveWords()');
-                this.http.get(this.wordsUrl).subscribe((words: WordEntry[]) => {
+                this.http.get(this.wordsUrl).subscribe((dbWords: DbWordEntry[]) => {
+                    const words = dbWords.map(this.toWordEntry);
                     console.log('Processing result in retrieveWords()');
                     this.words = words;
                     subscriber.next(words);
@@ -35,7 +54,7 @@ export class HttpDataProvider implements DataProvider {
         if (!this.languageIndexer) {
             return Observable.create(subscriber => {
                 console.log('Sending get() from retrieveLanguageIndexer()');
-                this.http.get(this.languageIndexerUrl).subscribe((languages: string[]) => {
+                this.http.get(this.languageIndexerUrl).subscribe((languages: Language[]) => {
                     console.log('Processing result in retrieveLanguageIndexer()');
                     this.languageIndexer = new LanguageIndexer(languages);
                     subscriber.next(this.languageIndexer);

@@ -48,12 +48,13 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
     }
 
     submit() {
+        const fakeId = -1;
         const translations = this.translations.split(';');
         const tags = this.tags.length == 0 ? [] : this.tags.split(';');
         const from = this.languagePair.src;
         const to = this.languagePair.dst;
         const score = 0;
-        const newWordEntry = new WordEntry(from, to, this.word, translations, score, tags);
+        const newWordEntry = new WordEntry(fakeId, from, to, this.word, translations, score, tags);
         this.submitEntry.emit(newWordEntry);
         this.clear();
     }

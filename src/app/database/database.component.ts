@@ -95,15 +95,17 @@ export class DatabaseComponent {
             this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry)
                 .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
         } else { // submitting changes to an existing Entry
+            const potentialIndex = this.editedEntryIndex + 1;
             this.dataProviderFactory.dataProviderInUse().updateWordEntry(
-                this.editedEntryIndex, this.editedEntry, wordEntry)
+                potentialIndex, this.editedEntry, wordEntry)
                 .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
             this.editedEntryIndex = undefined;
         }
     }
 
     removeEntry(entry: WordEntry, index: number) {
-        this.dataProviderFactory.dataProviderInUse().removeWordEntry(index, entry)
+        const potentialIndex = index + 1;
+        this.dataProviderFactory.dataProviderInUse().removeWordEntry(potentialIndex, entry)
             .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
     }
 
