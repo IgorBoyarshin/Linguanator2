@@ -18,9 +18,9 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
     editedLanguagePair: LanguagePair;
 
     // [(ngModel)]
-    word: string = "";
-    translations: string = "";
-    tags: string = "";
+    word: string;
+    translations: string;
+    tags: string;
 
     editingExistingEntry: boolean;
 
@@ -31,7 +31,10 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
     private displayEntrySubscription: any;
     @Input() events: Observable<WordEntry>;
 
-    constructor() {}
+    constructor() {
+        this.clear();
+    }
+
     ngOnInit() {
         this.displayEntrySubscription = this.events.subscribe(({id, from, to, word, translations, score, tags}: WordEntry) => {
             console.log('doing');

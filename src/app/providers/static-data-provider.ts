@@ -20,6 +20,7 @@ export class StaticDataProvider implements DataProvider {
             return Observable.create(subscriber => {
                 this.retrieveLanguageIndexer().subscribe(languageIndexer => {
                     this.words = this.initWords(languageIndexer);
+                    this.nextWordEntryIdToUse = 1 + this.maxIdUsed(this.words);
                     subscriber.next(this.words);
                 });
             });
@@ -34,7 +35,8 @@ export class StaticDataProvider implements DataProvider {
         return of(this.languageIndexer);
     }
 
-    _addWordEntry({from, to, word, translations, score, tags}: WordEntry) {
+    private _addWordEntry({from, to, word, translations, score, tags}: WordEntry) {
+        if (tags.length == 0) tags = ['main']; // TODO: find a better place to do this
         this.words.push(new WordEntry(this.nextWordEntryIdToUse, from, to, word, translations, score, tags));
         this.nextWordEntryIdToUse++;
     }
@@ -42,7 +44,6 @@ export class StaticDataProvider implements DataProvider {
     addWordEntry(wordEntry: WordEntry): Observable<void> {
         return Observable.create(subscriber => {
             this._addWordEntry(wordEntry);
-            this.words.push(wordEntry);
             subscriber.next();
         });
     }
@@ -87,35 +88,36 @@ export class StaticDataProvider implements DataProvider {
     private initWords(languageIndexer: LanguageIndexer): WordEntry[] {
         const ger = languageIndexer.indexOf("German");
         const eng = languageIndexer.indexOf("English");
+        let nextId = 1;
         return [
-            new WordEntry(1, ger, eng, 'weit', ['wide', 'far', 'broad'], 2, ['tag1', 'tag2']),
-            new WordEntry(2, ger, eng, 'aufmerksam', ['attentive', 'mindful', 'thoughtful'], 0, ['tag1']),
-            new WordEntry(3, ger, eng, 'gehorsam', ['obedient', 'submissive'], 1, []),
-            new WordEntry(4, ger, eng, 'die Einsamkeit', ['the loneliness', 'the solitude'], 1, []),
-            new WordEntry(5, ger, eng, 'regungslos', ['motionless', 'dead still'], 1, []),
-            new WordEntry(6, ger, eng, 'die Kerze', ['the candle'], 1, []),
-            new WordEntry(7, ger, eng, 'zu zweit', ['in pairs'], 1, []),
-            new WordEntry(8, ger, eng, 'der Fels', ['the rock', 'the cliff'], 1, []),
-            new WordEntry(9, ger, eng, 'kundtun', ['make known', 'proclaim'], 1, []),
-            new WordEntry(10, ger, eng, 'das Verlangen', ['the demand', 'the desire', 'the request'], 1, []),
-            new WordEntry(11, ger, eng, 'verderben', ['spoil', 'ruin', 'corrupt'], 1, []),
-            new WordEntry(12, ger, eng, 'wesentlich', ['significant', 'essential', 'crucial', 'fundamental'], 1, []),
-            new WordEntry(13, ger, eng, 'die Sünde', ['the sin'], 1, []),
-            new WordEntry(14, ger, eng, 'auswendig', ['by heart'], 1, []),
-            new WordEntry(15, ger, eng, 'der Schatz', ['the treasure', 'the sweetheart', 'the honey'], 1, []),
-            new WordEntry(16, ger, eng, 'anschauen', ['look at', 'watch', 'view'], 1, []),
-            new WordEntry(17, ger, eng, 'unbeteiligt', ['unconcerned', 'uninvolved', 'indifferent'], 1, []),
-            new WordEntry(18, ger, eng, 'beweisen', ['prove', 'demonstrate', 'show'], 1, []),
-            new WordEntry(19, ger, eng, 'leuchten', ['light', 'shine', 'glow'], 1, []),
-            new WordEntry(20, ger, eng, 'allerdings', ['however', 'certainly', 'admittedly', 'though'], 1, []),
-            new WordEntry(21, ger, eng, 'sich mit etwas begnügen', ['content oneself with something', 'make do with somethings'], 1, []),
-            new WordEntry(22, ger, eng, 'ungefähr', ['approximate', 'rough', 'nearly'], 1, []),
-            new WordEntry(23, ger, eng, 'bestätigen', ['confirm', 'acknowledge', 'verify'], 1, []),
-            new WordEntry(24, ger, eng, 'die Verachtung', ['the disdain', 'the disgust'], 1, []),
-            new WordEntry(25, ger, eng, 'zur selben Zeit', ['at the same time'], 1, []),
-            new WordEntry(26, ger, eng, 'das Gedicht', ['the poem', 'the ode'], 1, []),
+            new WordEntry(nextId++, ger, eng, 'weit', ['wide', 'far', 'broad'], 2, ['tag1', 'tag2']),
+            new WordEntry(nextId++, ger, eng, 'aufmerksam', ['attentive', 'mindful', 'thoughtful'], 0, ['tag1']),
+            new WordEntry(nextId++, ger, eng, 'gehorsam', ['obedient', 'submissive'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'die Einsamkeit', ['the loneliness', 'the solitude'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'regungslos', ['motionless', 'dead still'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'die Kerze', ['the candle'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'zu zweit', ['in pairs'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'der Fels', ['the rock', 'the cliff'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'kundtun', ['make known', 'proclaim'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'das Verlangen', ['the demand', 'the desire', 'the request'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'verderben', ['spoil', 'ruin', 'corrupt'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'wesentlich', ['significant', 'essential', 'crucial', 'fundamental'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'die Sünde', ['the sin'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'auswendig', ['by heart'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'der Schatz', ['the treasure', 'the sweetheart', 'the honey'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'anschauen', ['look at', 'watch', 'view'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'unbeteiligt', ['unconcerned', 'uninvolved', 'indifferent'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'beweisen', ['prove', 'demonstrate', 'show'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'leuchten', ['light', 'shine', 'glow'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'allerdings', ['however', 'certainly', 'admittedly', 'though'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'sich mit etwas begnügen', ['content oneself with something', 'make do with somethings'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'ungefähr', ['approximate', 'rough', 'nearly'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'bestätigen', ['confirm', 'acknowledge', 'verify'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'die Verachtung', ['the disdain', 'the disgust'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'zur selben Zeit', ['at the same time'], 1, ['main']),
+            new WordEntry(nextId++, ger, eng, 'das Gedicht', ['the poem', 'the ode'], 1, ['main']),
 
-            new WordEntry(27, eng, ger, 'the boy', ['der Junge', 'der Knabe'], 3, []),
+            new WordEntry(nextId++, eng, ger, 'the boy', ['der Junge', 'der Knabe'], 3, ['main']),
         ];
     }
 
@@ -125,5 +127,17 @@ export class StaticDataProvider implements DataProvider {
             new Language(2, "German"),
         ];
         return new LanguageIndexer(languages);
+    }
+
+    private maxIdUsed(words: WordEntry[]): number {
+        if (words.length == 0) return -1;
+        const ids = words.map(word => word.id);
+
+        let maxId = ids[0];
+        for (let id of ids) {
+            if (id > maxId) maxId = id;
+        }
+
+        return maxId;
     }
 }
