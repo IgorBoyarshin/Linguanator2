@@ -13,13 +13,17 @@ import { Observable } from 'rxjs';
     styleUrls: ['./edited-word-entry.component.css']
 })
 export class EditedWordEntryComponent implements OnInit, OnDestroy {
+    id: number;
+    score: number;
+    languagePair: LanguagePair;
+
+    // [(ngModel)]
     word: string = "";
     translations: string = "";
     tags: string = "";
 
     editingExistingEntry: boolean;
 
-    @Input() languagePair: LanguagePair;
     @Output() submitEntry = new EventEmitter<WordEntry>();
 
     private displayEntrySubscription: any;
@@ -27,11 +31,15 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
 
     constructor() {}
     ngOnInit() {
-        this.displayEntrySubscription = this.events.subscribe((entry: WordEntry) => {
+        this.displayEntrySubscription = this.events.subscribe(({id, from, to, word, translations, score, tags}: WordEntry) => {
             this.editingExistingEntry = true;
-            this.word = entry.word;
-            this.translations = entry.translations.join(";");
-            this.tags = entry.tags.join(";");
+
+            this.id = id;
+            this.languagePair = new LanguagePair(from, to);
+            this.word = word;
+            this.translations = translations.join(";");
+            this.score = score;
+            this.tags = tags.join(";");
         });
     }
 
@@ -49,12 +57,10 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
 
     submit() {
         const fakeId = -1;
+        const {src, dst} = this.languagePair;
         const translations = this.translations.split(';');
         const tags = this.tags.length == 0 ? [] : this.tags.split(';');
-        const from = this.languagePair.src;
-        const to = this.languagePair.dst;
-        const score = 0;
-        const newWordEntry = new WordEntry(fakeId, from, to, this.word, translations, score, tags);
+        const newWordEntry = new WordEntry(fakeId, src, dst, this.word, translations, this.score, tags);
         this.submitEntry.emit(newWordEntry);
         this.clear();
     }
