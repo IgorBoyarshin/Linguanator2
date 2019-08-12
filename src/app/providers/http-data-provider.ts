@@ -64,6 +64,10 @@ export class HttpDataProvider implements DataProvider {
         return of(this.languageIndexer);
     }
 
+    private resetWords() {
+        this.words = null;
+    }
+
     addWordEntry(wordEntry: WordEntry): Observable<void> {
         return Observable.create(subscriber => {
             this.words.push(wordEntry);
@@ -75,7 +79,6 @@ export class HttpDataProvider implements DataProvider {
         return Observable.create(subscriber => {
             if (!this.indexValidIn(this.words, potentialIndex)) return;
             if (this.words[potentialIndex] === oldEntry) {
-                // TODO: not hitting as of now
                 this.words[potentialIndex] = newEntry;
             } else { // deep search
                 const index = this.words.indexOf(oldEntry);

@@ -31,7 +31,6 @@ export class WordsDatabaseService {
         if (!this.dictionary) {
             return Observable.create(subscriber => {
                 this.dataProviderFactory.dataProviderInUse().retrieveWords().subscribe(words => {
-                    console.log('======================');
                     this.dictionary = new Dictionary();
                     this.dictionary.add(...words);
                     subscriber.next(this.dictionary.from(src).to(dst));
