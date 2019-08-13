@@ -37,7 +37,6 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.displayEntrySubscription = this.events.subscribe(({id, from, to, word, translations, score, tags}: WordEntry) => {
-            console.log('doing');
             this.editingExistingEntry = true;
 
             this.id = id;

@@ -25,9 +25,7 @@ export class DatabaseComponent {
     allStatefulTagsObservable: Observable<StatefulTag[]>;
 
     private displayEditedEntry: Subject<WordEntry> = new Subject<WordEntry>(); // to child component
-    editedEntry: WordEntry;
-    editedEntryIndex?: number;
-
+    editedEntryId?: number;
 
     private languageIndexer: LanguageIndexer;
 
@@ -93,27 +91,24 @@ export class DatabaseComponent {
     }
 
     submitEntry(wordEntry: WordEntry) {
-        if (this.editedEntryIndex === undefined) { // adding a new Entry
+        if (this.editedEntryId === undefined) { // adding a new Entry
             this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry)
                 .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
         } else { // submitting changes to an existing Entry
-            const potentialIndex = this.editedEntryIndex + 1;
-            this.dataProviderFactory.dataProviderInUse().updateWordEntry(
-                potentialIndex, this.editedEntry, wordEntry)
+            this.dataProviderFactory.dataProviderInUse().updateWordEntry(this.editedEntryId, wordEntry)
                 .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
-            this.editedEntryIndex = undefined;
+            this.editedEntryId = undefined;
         }
     }
 
-    removeEntry(entry: WordEntry, index: number) {
-        const potentialIndex = index + 1;
-        this.dataProviderFactory.dataProviderInUse().removeWordEntry(potentialIndex, entry)
+    // TODO simplify args
+    removeEntry(entry: WordEntry, _index: number) {
+        this.dataProviderFactory.dataProviderInUse().removeWordEntry(entry.id)
             .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
     }
 
     editEntry(entry: WordEntry, index: number) {
-        this.editedEntryIndex = index;
-        this.editedEntry = entry;
+        this.editedEntryId = entry.id;
         this.displayEditedEntry.next(entry);
     }
 

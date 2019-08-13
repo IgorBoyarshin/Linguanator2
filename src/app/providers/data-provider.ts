@@ -8,6 +8,6 @@ export interface DataProvider {
     retrieveLanguageIndexer(): Observable<LanguageIndexer>;
 
     addWordEntry(wordEntry: WordEntry): Observable<void>;
-    updateWordEntry(potentialIndex: number, oldEntry: WordEntry, newEntry: WordEntry): Observable<void>;
-    removeWordEntry(potentialIndex: number, wordEntry: WordEntry): Observable<void>;
+    updateWordEntry(id: number, newEntry: WordEntry): Observable<void>;
+    removeWordEntry(id: number): Observable<void>;
 }

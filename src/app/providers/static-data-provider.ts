@@ -48,39 +48,32 @@ export class StaticDataProvider implements DataProvider {
         });
     }
 
-    updateWordEntry(potentialIndex: number, oldEntry: WordEntry, newEntry: WordEntry): Observable<void> {
+    updateWordEntry(id: number, newEntry: WordEntry): Observable<void> {
         return Observable.create(subscriber => {
-            if (!this.indexValidIn(this.words, potentialIndex)) return;
-            if (this.words[potentialIndex] === oldEntry) {
-                // TODO: not hitting as of now
-                this.words[potentialIndex] = newEntry;
-            } else { // deep search
-                const index = this.words.indexOf(oldEntry);
-                if (index == -1) return; // not found : (
-                this.words[index] = newEntry;
-            }
+            const index = this.indexOfWordWithId(id, this.words);
+            if (index == -1) return; // not found : (
+            this.words[index] = newEntry;
 
             subscriber.next();
         });
     }
 
-    removeWordEntry(potentialIndex: number, wordEntry: WordEntry): Observable<void> {
+    removeWordEntry(id: number): Observable<void> {
         return Observable.create(subscriber => {
-            // To simulate the delay:
-            // setTimeout(() => {
-                if (!this.indexValidIn(this.words, potentialIndex)) return;
-                if (this.words[potentialIndex] === wordEntry) {
-                    // TODO: not hitting as of now
-                    this.words.splice(potentialIndex, 1);
-                } else { // deep search
-                    const index = this.words.indexOf(wordEntry);
-                    if (index == -1) return; // not found : (
-                    this.words.splice(index, 1);
-                }
+            const index = this.indexOfWordWithId(id, this.words);
+            if (index == -1) return; // not found : (
+            this.words.splice(index, 1);
 
-                subscriber.next();
-            // }, 2000);
+            subscriber.next();
         });
+    }
+
+    private indexOfWordWithId(id: number, words: WordEntry[]): number {
+        for (let i = 0; i < words.length; i++) {
+            if (words[i].id === id) return i;
+        }
+        console.error("[indexOfWordWithId()]: not found for id=", id);
+        return -1;
     }
 
     private indexValidIn(array: any[], index: number): boolean {

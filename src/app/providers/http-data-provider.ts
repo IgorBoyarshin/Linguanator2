@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { Language } from '../language-model';
 import { DataProvider } from './data-provider';
@@ -85,19 +85,20 @@ export class HttpDataProvider implements DataProvider {
     addWordEntry(wordEntry: WordEntry): Observable<void> {
         return Observable.create(subscriber => {
             console.log('Sending post() from addWordEntry()');
-            this.http.post<DbWordEntryNoId>(this.wordsUrl, this.toDbWordEntryNoId(wordEntry)).subscribe(res => {
+            this.http.post<DbWordEntryNoId>(this.wordsUrl, this.toDbWordEntryNoId(wordEntry))
+                .pipe(catchError((err) => {console.error('HERE', err); return of();}))
+                .subscribe(res => {
                 console.log('Processing result in addWordEntry(): ', res);
                 // this.words.push(wordEntry);
                 this.resetWords();
                 subscriber.next();
-            }, err => console.error(err));
-        });
+            }, err => console.error('HERE2', err));
+        }).pipe(catchError((err) => {console.error('HERE3', err); return of();}));
     }
 
-    updateWordEntry(_potentialIndex: number, oldEntry: WordEntry, newEntry: WordEntry): Observable<void> {
+    updateWordEntry(id: number, newEntry: WordEntry): Observable<void> {
         return Observable.create(subscriber => {
             console.log('Sending update() from updateWordEntry()');
-            const { id } = oldEntry; // TODO don't need the whole oldEntry
             const url = this.wordsUrl + `/${id}`;
             this.http.put<DbWordEntryNoId>(url, this.toDbWordEntryNoId(newEntry)).subscribe(res => {
                 console.log('Processing result in updateWordEntry(): ', res);
@@ -108,10 +109,9 @@ export class HttpDataProvider implements DataProvider {
     }
 
     // Do not need the whole wordEntry now
-    removeWordEntry(_potentialIndex: number, wordEntry: WordEntry): Observable<void> {
+    removeWordEntry(id: number): Observable<void> {
         return Observable.create(subscriber => {
             console.log('Sending delete() from removeWordEntry()');
-            const { id } = wordEntry;
             const url = this.wordsUrl + `/${id}`;
             this.http.delete(url).subscribe(res => {
                 console.log('Processing result in removeWordEntry(): ', res);
