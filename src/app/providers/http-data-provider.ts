@@ -94,34 +94,30 @@ export class HttpDataProvider implements DataProvider {
         });
     }
 
-    updateWordEntry(potentialIndex: number, oldEntry: WordEntry, newEntry: WordEntry): Observable<void> {
+    updateWordEntry(_potentialIndex: number, oldEntry: WordEntry, newEntry: WordEntry): Observable<void> {
         return Observable.create(subscriber => {
-            if (!this.indexValidIn(this.words, potentialIndex)) return;
-            if (this.words[potentialIndex] === oldEntry) {
-                this.words[potentialIndex] = newEntry;
-            } else { // deep search
-                const index = this.words.indexOf(oldEntry);
-                if (index == -1) return; // not found : (
-                this.words[index] = newEntry;
-            }
-
-            subscriber.next();
+            console.log('Sending update() from updateWordEntry()');
+            const { id } = oldEntry; // TODO don't need the whole oldEntry
+            const url = this.wordsUrl + `/${id}`;
+            this.http.put<DbWordEntryNoId>(url, this.toDbWordEntryNoId(newEntry)).subscribe(res => {
+                console.log('Processing result in updateWordEntry(): ', res);
+                this.resetWords();
+                subscriber.next();
+            }, err => console.error(err));
         });
     }
 
-    removeWordEntry(potentialIndex: number, wordEntry: WordEntry): Observable<void> {
+    // Do not need the whole wordEntry now
+    removeWordEntry(_potentialIndex: number, wordEntry: WordEntry): Observable<void> {
         return Observable.create(subscriber => {
-            if (!this.indexValidIn(this.words, potentialIndex)) return;
-            if (this.words[potentialIndex] === wordEntry) {
-                // TODO: not hitting as of now
-                this.words.splice(potentialIndex, 1);
-            } else { // deep search
-                const index = this.words.indexOf(wordEntry);
-                if (index == -1) return; // not found : (
-                this.words.splice(index, 1);
-            }
-
-            subscriber.next();
+            console.log('Sending delete() from removeWordEntry()');
+            const { id } = wordEntry;
+            const url = this.wordsUrl + `/${id}`;
+            this.http.delete(url).subscribe(res => {
+                console.log('Processing result in removeWordEntry(): ', res);
+                this.resetWords();
+                subscriber.next();
+            }, err => console.error(err));
         });
     }
 
