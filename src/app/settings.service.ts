@@ -17,12 +17,16 @@ export class StatefulTag {
     providedIn: 'root'
 })
 export class SettingsService {
+    private languageIndexer: LanguageIndexer;
     private currentLanguagePair: LanguagePair;
 
     private tags: string[];
     private currentTags: string[];
 
-    constructor(private dataProviderFactory: DataProviderFactoryService) {}
+    constructor(private dataProviderFactory: DataProviderFactoryService) {
+        this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer()
+            .subscribe(languageIndexer => this.languageIndexer = languageIndexer);
+    }
 
     resetCache() {
         this.tags = null;
@@ -94,6 +98,7 @@ export class SettingsService {
         if (!this.currentLanguagePair) {
             return Observable.create(subscriber => {
                 this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer().subscribe(languageIndexer => {
+                    this.languageIndexer = languageIndexer;
                     this.currentLanguagePair = new LanguagePair(
                         languageIndexer.indexOf("German"),
                         languageIndexer.indexOf("English")
@@ -105,14 +110,26 @@ export class SettingsService {
         return of(this.currentLanguagePair);
     }
 
-    flipLanguagePairInUse() {
-        if (!this.currentLanguagePair)
-            console.error('[SettingsService:flipLanguagePairInUse()]: called without existing currentLanguagePair');
-        const {src, dst} = this.currentLanguagePair;
-        this.currentLanguagePair = new LanguagePair(dst, src);
+    changeSrcLanguageTo(language: string) {
+        this.changeLanguageTo(true, language);
     }
 
-    setLanguagePairTo(languagePair: LanguagePair) {
-        this.currentLanguagePair = languagePair;
+    changeDstLanguageTo(language: string) {
+        this.changeLanguageTo(false, language);
+    }
+
+    private changeLanguageTo(changeSrc: boolean, language: string) {
+        // We HOPE that by this time languageIndexer is already resolved
+        const newIndex = this.languageIndexer.indexOf(language);
+        const theOtherIndex = changeSrc ? this.currentLanguagePair.dst
+                                        : this.currentLanguagePair.src;
+        if (newIndex == theOtherIndex) { // then just flip
+            const {src, dst} = this.currentLanguagePair;
+            this.currentLanguagePair = new LanguagePair(dst, src);
+        } else {
+            this.currentLanguagePair =
+                changeSrc   ? new LanguagePair(newIndex, theOtherIndex)
+             /* changeDst */: new LanguagePair(theOtherIndex, newIndex);
+        }
     }
 }

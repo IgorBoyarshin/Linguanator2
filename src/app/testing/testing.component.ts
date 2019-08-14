@@ -211,29 +211,13 @@ export class TestingComponent {
         return true;
     }
 
-    // TODO: currently more or less duplicates the code from Database
     changeSrcLanguageTo(language: string) {
-        const newSrc = this.languageIndexer.indexOf(language);
-        if (newSrc == this.languagePair.dst) {
-            this.settingsService.flipLanguagePairInUse();
-        } else {
-            const dst = this.languagePair.dst;
-            this.settingsService.setLanguagePairTo(new LanguagePair(newSrc, dst));
-        }
-
+        this.settingsService.changeSrcLanguageTo(language);
         this.reloadEntry();
     }
 
-    // TODO: currently more or less duplicates the code from Database
     changeDstLanguageTo(language: string) {
-        const newDst = this.languageIndexer.indexOf(language);
-        if (newDst == this.languagePair.src) {
-            this.settingsService.flipLanguagePairInUse();
-        } else {
-            const src = this.languagePair.src;
-            this.settingsService.setLanguagePairTo(new LanguagePair(src, newDst));
-        }
-
+        this.settingsService.changeDstLanguageTo(language);
         this.reloadEntry();
     }
 

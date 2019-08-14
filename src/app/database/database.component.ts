@@ -35,7 +35,7 @@ export class DatabaseComponent {
             private entriesDatabaseService: EntriesDatabaseService,
             private settingsService: SettingsService) {
         this.reloadLanguageIndexerAndLanguages();
-        this.reloadLanguagePairAndEntries();
+        this.reloadLanguagePairAndTagsAndEntries();
         this.reloadPrimaryAndSecondaryLanguages();
         this.allStatefulTagsObservable = settingsService.allStatefulTags();
     }
@@ -47,10 +47,10 @@ export class DatabaseComponent {
         });
     }
 
-    private reloadLanguagePairAndEntries() {
+    private reloadLanguagePairAndTagsAndEntries() {
         this.settingsService.languagePairInUse().subscribe(languagePair => {
             this.languagePair = languagePair;
-            this.reloadEntries(languagePair);
+            this.reloadTagsAndEntries(languagePair);
         });
     }
 
@@ -63,7 +63,7 @@ export class DatabaseComponent {
             });
     }
 
-    private reloadEntries(languagePair: LanguagePair) {
+    private reloadTagsAndEntries(languagePair: LanguagePair) {
         this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
         this.settingsService.allStatefulTags().subscribe(statefulTags => {
             this.entries = this.entriesDatabaseService.entriesForWithStatefulTags(languagePair, statefulTags)
@@ -71,41 +71,34 @@ export class DatabaseComponent {
         });
     }
 
-    private resetCacheAndReloadEntries(languagePair: LanguagePair) {
+    private resetCacheAndReloadTagsAndEntries(languagePair: LanguagePair) {
         this.entriesDatabaseService.resetCache();
         this.settingsService.resetCache();
-        this.reloadEntries(languagePair);
+        this.reloadTagsAndEntries(languagePair);
     }
 
     toggleTag({tag, checked}: StatefulTag) {
-        this.settingsService.setTagState(tag, !checked).subscribe(() => {
-            this.allStatefulTagsObservable = this.settingsService.allStatefulTags(); // TODO
-            this.reloadEntries(this.languagePair);
-        });
+        this.settingsService.setTagState(tag, !checked).subscribe(() => this.reloadLanguagePairAndTagsAndEntries());
     }
 
     toggleAllTags() {
-        // TODO: account for language observable also, just as in Testing
-        this.settingsService.toggleAllTags().subscribe(() => {
-            this.allStatefulTagsObservable = this.settingsService.allStatefulTags(); // TODO
-            this.reloadEntries(this.languagePair);
-        });
+        this.settingsService.toggleAllTags().subscribe(() => this.reloadLanguagePairAndTagsAndEntries());
     }
 
     submitEntry(wordEntry: WordEntry) {
         if (this.editedEntryId === undefined) { // adding a new Entry
             this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry)
-                .subscribe(() => this.resetCacheAndReloadEntries(this.languagePair));
+                .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
         } else { // submitting changes to an existing Entry
             this.dataProviderFactory.dataProviderInUse().updateWordEntry(this.editedEntryId, wordEntry)
-                .subscribe(() => this.resetCacheAndReloadEntries(this.languagePair));
+                .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
             this.editedEntryId = undefined;
         }
     }
 
     removeEntry(id: number) {
         this.dataProviderFactory.dataProviderInUse().removeWordEntry(id)
-            .subscribe(() => this.resetCacheAndReloadEntries(this.languagePair));
+            .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
     }
 
     editEntry(entry: WordEntry) {
@@ -114,28 +107,14 @@ export class DatabaseComponent {
     }
 
     changeSrcLanguageTo(language: string) {
-        const newSrc = this.languageIndexer.indexOf(language);
-        if (newSrc == this.languagePair.dst) {
-            this.settingsService.flipLanguagePairInUse();
-        } else {
-            const dst = this.languagePair.dst;
-            this.settingsService.setLanguagePairTo(new LanguagePair(newSrc, dst));
-        }
-
-        this.reloadLanguagePairAndEntries();
+        this.settingsService.changeSrcLanguageTo(language);
+        this.reloadLanguagePairAndTagsAndEntries();
         this.reloadPrimaryAndSecondaryLanguages();
     }
 
     changeDstLanguageTo(language: string) {
-        const newDst = this.languageIndexer.indexOf(language);
-        if (newDst == this.languagePair.src) {
-            this.settingsService.flipLanguagePairInUse();
-        } else {
-            const src = this.languagePair.src;
-            this.settingsService.setLanguagePairTo(new LanguagePair(src, newDst));
-        }
-
-        this.reloadLanguagePairAndEntries();
+        this.settingsService.changeDstLanguageTo(language);
+        this.reloadLanguagePairAndTagsAndEntries();
         this.reloadPrimaryAndSecondaryLanguages();
     }
 }
