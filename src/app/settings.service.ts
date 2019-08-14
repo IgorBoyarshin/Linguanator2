@@ -56,13 +56,12 @@ export class SettingsService {
     }
 
     allStatefulTags(): Observable<StatefulTag[]> {
-        return combineLatest(this.allTags(), this.tagsInUse()).pipe(map(([allTags, tagsInUse]) => {
-            // TODO: Could make a one-liner
-            return allTags.map(tag => {
-                const checked = tagsInUse.includes(tag);
-                return {tag, checked};
-            });
-        }));
+        return combineLatest(this.allTags(), this.tagsInUse())
+            .pipe(map(([allTags, tagsInUse]) => allTags.map(tag => {
+                    const checked = tagsInUse.includes(tag);
+                    return {tag, checked};
+                })
+            ));
     }
 
     allTags(): Observable<string[]> {
@@ -79,8 +78,7 @@ export class SettingsService {
         return of(this.tags);
     }
 
-    // TODO: used??????
-    tagsInUse(): Observable<string[]> {
+    private tagsInUse(): Observable<string[]> {
         if (!this.currentTags) {
             return Observable.create(subscriber => {
                 this.allTags().subscribe(tags => {
