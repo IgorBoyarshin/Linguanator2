@@ -1,5 +1,6 @@
 import { Subject, Observable } from 'rxjs';
 import { combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Component, OnInit } from '@angular/core';
 
@@ -65,7 +66,8 @@ export class DatabaseComponent {
     private reloadEntries(languagePair: LanguagePair) {
         this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
         this.settingsService.allStatefulTags().subscribe(statefulTags => {
-            this.entries = this.entriesDatabaseService.entriesForWithStatefulTags(languagePair, statefulTags);
+            this.entries = this.entriesDatabaseService.entriesForWithStatefulTags(languagePair, statefulTags)
+                .pipe(map(entries => entries.reverse()));
         });
     }
 
