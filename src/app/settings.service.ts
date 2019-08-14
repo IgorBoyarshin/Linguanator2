@@ -68,9 +68,9 @@ export class SettingsService {
     allTags(): Observable<string[]> {
         if (!this.tags) {
             return Observable.create(subscriber => {
-                this.dataProviderFactory.dataProviderInUse().retrieveWords().subscribe(words => {
+                this.dataProviderFactory.dataProviderInUse().retrieveEntries().subscribe(entries => {
                     this.tags = [...new Set( // To leave unique tags
-                        words.flatMap(word => word.tags)
+                        entries.flatMap(word => word.tags)
                     )];
                     subscriber.next(this.tags);
                 });

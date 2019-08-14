@@ -13,13 +13,13 @@ import { StatefulTag } from './settings.service';
 @Injectable({
     providedIn: 'root'
 })
-export class WordsDatabaseService {
+export class EntriesDatabaseService {
     private dictionary: Dictionary;
 
     constructor(private dataProviderFactory: DataProviderFactoryService) {}
 
-    // Instead of retrieving the whole words base on each call of wordsFor()
-    // only to access a specific set of words from there, let us store the
+    // Instead of retrieving the whole entries base on each call of entriesFor()
+    // only to access a specific set of entries from there, let us store the
     // dictionary and let the user indicate us when the dictionary is no longer
     // valid and needs to be updated.
     // So the dictionary variable is sort of cached
@@ -27,12 +27,12 @@ export class WordsDatabaseService {
         this.dictionary = null;
     }
 
-    wordsFor({src, dst}: LanguagePair): Observable<WordEntry[]> {
+    entriesFor({src, dst}: LanguagePair): Observable<WordEntry[]> {
         if (!this.dictionary) {
             return Observable.create(subscriber => {
-                this.dataProviderFactory.dataProviderInUse().retrieveWords().subscribe(words => {
+                this.dataProviderFactory.dataProviderInUse().retrieveEntries().subscribe(entries => {
                     this.dictionary = new Dictionary();
-                    this.dictionary.add(...words);
+                    this.dictionary.add(...entries);
                     subscriber.next(this.dictionary.from(src).to(dst));
                 });
             });
@@ -40,11 +40,11 @@ export class WordsDatabaseService {
         return of(this.dictionary.from(src).to(dst));
     }
 
-    wordsForWithStatefulTags(languagePair: LanguagePair, statefulTags: StatefulTag[]): Observable<WordEntry[]> {
+    entriesForWithStatefulTags(languagePair: LanguagePair, statefulTags: StatefulTag[]): Observable<WordEntry[]> {
         const includedTags = statefulTags.filter(({tag, checked}) => checked).map(({tag}) => tag);
-        return this.wordsFor(languagePair).pipe(
-            map(words => words.filter(word =>
-                word.tags.some(
+        return this.entriesFor(languagePair).pipe(
+            map(entries => entries.filter(entry =>
+                entry.tags.some(
                     tag => includedTags.includes(tag)
                 )
             ))
@@ -61,16 +61,16 @@ export class WordsDatabaseService {
 
     randomWordEntryFor(languagePair: LanguagePair): Observable<WordEntry> {
         return Observable.create(subscriber => {
-            this.wordsFor(languagePair).subscribe(words => {
-                subscriber.next(this.randomOf(words));
+            this.entriesFor(languagePair).subscribe(entries => {
+                subscriber.next(this.randomOf(entries));
             })
         });
     }
 
     randomWordEntryForWithStatefulTags(languagePair: LanguagePair, statefulTags: StatefulTag[]): Observable<WordEntry> {
         return Observable.create(subscriber => {
-            this.wordsForWithStatefulTags(languagePair, statefulTags).subscribe(words => {
-                subscriber.next(this.randomOf(words));
+            this.entriesForWithStatefulTags(languagePair, statefulTags).subscribe(entries => {
+                subscriber.next(this.randomOf(entries));
             })
         });
     }

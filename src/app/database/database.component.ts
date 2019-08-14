@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { WordEntry } from '../word-entry.model';
 import { LanguagePair } from '../language-pair.model';
-import { WordsDatabaseService } from '../words-database.service';
+import { EntriesDatabaseService } from '../entries-database.service';
 import { SettingsService, StatefulTag } from '../settings.service';
 import { LanguageIndexer } from '../language-indexer';
 import { DataProviderFactoryService } from '../providers/data-provider-factory.service';
@@ -31,10 +31,10 @@ export class DatabaseComponent {
 
     constructor(
             private dataProviderFactory: DataProviderFactoryService,
-            private wordsDatabaseService: WordsDatabaseService,
+            private entriesDatabaseService: EntriesDatabaseService,
             private settingsService: SettingsService) {
         this.reloadLanguageIndexerAndLanguages();
-        this.reloadLanguagePairAndWords();
+        this.reloadLanguagePairAndEntries();
         this.reloadPrimaryAndSecondaryLanguages();
         this.allStatefulTagsObservable = settingsService.allStatefulTags();
     }
@@ -46,10 +46,10 @@ export class DatabaseComponent {
         });
     }
 
-    private reloadLanguagePairAndWords() {
+    private reloadLanguagePairAndEntries() {
         this.settingsService.languagePairInUse().subscribe(languagePair => {
             this.languagePair = languagePair;
-            this.reloadWords(languagePair);
+            this.reloadEntries(languagePair);
         });
     }
 
@@ -62,23 +62,23 @@ export class DatabaseComponent {
             });
     }
 
-    private reloadWords(languagePair: LanguagePair) {
+    private reloadEntries(languagePair: LanguagePair) {
         this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
         this.settingsService.allStatefulTags().subscribe(statefulTags => {
-            this.entries = this.wordsDatabaseService.wordsForWithStatefulTags(languagePair, statefulTags);
+            this.entries = this.entriesDatabaseService.entriesForWithStatefulTags(languagePair, statefulTags);
         });
     }
 
-    private resetCacheAndReloadWords(languagePair: LanguagePair) {
-        this.wordsDatabaseService.resetCache();
+    private resetCacheAndReloadEntries(languagePair: LanguagePair) {
+        this.entriesDatabaseService.resetCache();
         this.settingsService.resetCache();
-        this.reloadWords(languagePair);
+        this.reloadEntries(languagePair);
     }
 
     toggleTag({tag, checked}: StatefulTag) {
         this.settingsService.setTagState(tag, !checked).subscribe(() => {
             this.allStatefulTagsObservable = this.settingsService.allStatefulTags(); // TODO
-            this.reloadWords(this.languagePair);
+            this.reloadEntries(this.languagePair);
         });
     }
 
@@ -86,17 +86,17 @@ export class DatabaseComponent {
         // TODO: account for language observable also, just as in Testing
         this.settingsService.toggleAllTags().subscribe(() => {
             this.allStatefulTagsObservable = this.settingsService.allStatefulTags(); // TODO
-            this.reloadWords(this.languagePair);
+            this.reloadEntries(this.languagePair);
         });
     }
 
     submitEntry(wordEntry: WordEntry) {
         if (this.editedEntryId === undefined) { // adding a new Entry
             this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry)
-                .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
+                .subscribe(() => this.resetCacheAndReloadEntries(this.languagePair));
         } else { // submitting changes to an existing Entry
             this.dataProviderFactory.dataProviderInUse().updateWordEntry(this.editedEntryId, wordEntry)
-                .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
+                .subscribe(() => this.resetCacheAndReloadEntries(this.languagePair));
             this.editedEntryId = undefined;
         }
     }
@@ -104,7 +104,7 @@ export class DatabaseComponent {
     // TODO simplify args
     removeEntry(entry: WordEntry, _index: number) {
         this.dataProviderFactory.dataProviderInUse().removeWordEntry(entry.id)
-            .subscribe(() => this.resetCacheAndReloadWords(this.languagePair));
+            .subscribe(() => this.resetCacheAndReloadEntries(this.languagePair));
     }
 
     editEntry(entry: WordEntry, index: number) {
@@ -121,7 +121,7 @@ export class DatabaseComponent {
             this.settingsService.setLanguagePairTo(new LanguagePair(newSrc, dst));
         }
 
-        this.reloadLanguagePairAndWords();
+        this.reloadLanguagePairAndEntries();
         this.reloadPrimaryAndSecondaryLanguages();
     }
 
@@ -134,7 +134,7 @@ export class DatabaseComponent {
             this.settingsService.setLanguagePairTo(new LanguagePair(src, newDst));
         }
 
-        this.reloadLanguagePairAndWords();
+        this.reloadLanguagePairAndEntries();
         this.reloadPrimaryAndSecondaryLanguages();
     }
 }

@@ -14,7 +14,7 @@ export class Source extends LanguageContainer {
 }
 
 export class Destination extends LanguageContainer {
-    constructor(language: number, public wordsList: WordEntry[]) {
+    constructor(language: number, public entriesList: WordEntry[]) {
         super(language);
     }
 }
@@ -25,13 +25,13 @@ class Destinations {
     to(language: number): WordEntry[] {
         for (let destination of this.destinations) {
             if (destination.isFor(language)) {
-                return destination.wordsList;
+                return destination.entriesList;
             }
         }
         // Not found => create
         const newDestination = new Destination(language, []);
         this.destinations.push(newDestination);
-        return newDestination.wordsList;
+        return newDestination.entriesList;
     }
 }
 
@@ -50,11 +50,11 @@ export class Dictionary {
         return newSource.destinations;
     }
 
-    add(...words: WordEntry[]) {
-        for (let word of words) {
-            this.from(word.from)
-                .to  (word.to)
-                .push(word);
+    add(...entries: WordEntry[]) {
+        for (let entry of entries) {
+            this.from(entry.from)
+                .to  (entry.to)
+                .push(entry);
         }
     }
 

@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import { WordEntry } from '../word-entry.model';
 import { LanguagePair } from '../language-pair.model';
 import { LanguageIndexer } from '../language-indexer';
-import { WordsDatabaseService } from '../words-database.service';
+import { EntriesDatabaseService } from '../entries-database.service';
 import { SettingsService, StatefulTag } from '../settings.service';
 import { DataProviderFactoryService } from '../providers/data-provider-factory.service';
 
@@ -62,14 +62,14 @@ export class TestingComponent {
 
     constructor(
             dataProviderFactory: DataProviderFactoryService,
-            private wordsDatabaseService: WordsDatabaseService,
+            private entriesDatabaseService: EntriesDatabaseService,
             private settingsService: SettingsService) {
         dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer()
             .subscribe(languageIndexer => {
                 this.languageIndexer = languageIndexer;
                 this.languages = languageIndexer.allNames();
             });
-        this.reloadWord();
+        this.reloadEntry();
         this.state = State.UserInput;
     }
 
@@ -103,21 +103,21 @@ export class TestingComponent {
             this.userInput = "";
             this.result = undefined;
             this.resultDelta = 0;
-            this.reloadWord();
+            this.reloadEntry();
         }
     }
 
-    private reloadWord() {
+    private reloadEntry() {
         combineLatest(this.settingsService.languagePairInUse(), this.settingsService.allStatefulTags())
             .subscribe(([languagePair, statefulTags]) => {
                 this.languagePair = languagePair;
                 this.statefulTags = statefulTags;
-                this.wordsDatabaseService.randomWordEntryForWithStatefulTags(languagePair, statefulTags)
-                    .subscribe(word => this.wordEntry = word);
+                this.entriesDatabaseService.randomWordEntryForWithStatefulTags(languagePair, statefulTags)
+                    .subscribe(entry => this.wordEntry = entry);
             });
     }
 
-    // XXX: the content of the wordEntry reference is changed here.
+    // TODO XXX: the content of the wordEntry reference is changed here.
     // Database does not know explicitly about this change.......
     private updateDeltaBy(wordEntry: WordEntry, delta: number) {
         wordEntry.score += delta;
@@ -221,7 +221,7 @@ export class TestingComponent {
             this.settingsService.setLanguagePairTo(new LanguagePair(newSrc, dst));
         }
 
-        this.reloadWord();
+        this.reloadEntry();
     }
 
     // TODO: currently more or less duplicates the code from Database
@@ -234,7 +234,7 @@ export class TestingComponent {
             this.settingsService.setLanguagePairTo(new LanguagePair(src, newDst));
         }
 
-        this.reloadWord();
+        this.reloadEntry();
     }
 
     submitButtonText(): string {
@@ -277,10 +277,10 @@ export class TestingComponent {
     }
 
     toggleTag({tag, checked}: StatefulTag) {
-        this.settingsService.setTagState(tag, !checked).subscribe(() => this.reloadWord());
+        this.settingsService.setTagState(tag, !checked).subscribe(() => this.reloadEntry());
     }
 
     toggleAllTags() {
-        this.settingsService.toggleAllTags().subscribe(() => this.reloadWord());
+        this.settingsService.toggleAllTags().subscribe(() => this.reloadEntry());
     }
 }

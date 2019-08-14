@@ -8,24 +8,24 @@ import { LanguageIndexer } from '../language-indexer';
 
 export class StaticDataProvider implements DataProvider {
     private nextWordEntryIdToUse: number = 1;
-    private words: WordEntry[]; // TODO: rename to entries
+    private entries: WordEntry[];
     private languageIndexer: LanguageIndexer;
 
     constructor() {}
 
-    retrieveWords(): Observable<WordEntry[]> {
+    retrieveEntries(): Observable<WordEntry[]> {
         // TODO: Potentially creates multiple Observables, each one sent to query
-        // the result and rewrite this.words upon arrival
-        if (!this.words) {
+        // the result and rewrite this.entries upon arrival
+        if (!this.entries) {
             return Observable.create(subscriber => {
                 this.retrieveLanguageIndexer().subscribe(languageIndexer => {
-                    this.words = this.initWords(languageIndexer);
-                    this.nextWordEntryIdToUse = 1 + this.maxIdUsed(this.words);
-                    subscriber.next(this.words);
+                    this.entries = this.initEntries(languageIndexer);
+                    this.nextWordEntryIdToUse = 1 + this.maxIdUsed(this.entries);
+                    subscriber.next(this.entries);
                 });
             });
         }
-        return of(this.words);
+        return of(this.entries);
     }
 
     retrieveLanguageIndexer(): Observable<LanguageIndexer> {
@@ -35,24 +35,21 @@ export class StaticDataProvider implements DataProvider {
         return of(this.languageIndexer);
     }
 
-    private _addWordEntry({from, to, word, translations, score, tags}: WordEntry) {
-        if (tags.length == 0) tags = ['main']; // TODO: find a better place to do this
-        this.words.push(new WordEntry(this.nextWordEntryIdToUse, from, to, word, translations, score, tags));
-        this.nextWordEntryIdToUse++;
-    }
-
-    addWordEntry(wordEntry: WordEntry): Observable<void> {
+    addWordEntry({from, to, word, translations, score, tags}: WordEntry): Observable<void> {
         return Observable.create(subscriber => {
-            this._addWordEntry(wordEntry);
+            const DEFAULT_TAGS = ['main'];
+            if (tags.length == 0) tags = DEFAULT_TAGS;
+            this.entries.push(new WordEntry(this.nextWordEntryIdToUse, from, to, word, translations, score, tags));
+            this.nextWordEntryIdToUse++;
             subscriber.next();
         });
     }
 
     updateWordEntry(id: number, newEntry: WordEntry): Observable<void> {
         return Observable.create(subscriber => {
-            const index = this.indexOfWordWithId(id, this.words);
+            const index = this.indexOfEntryWithId(id, this.entries);
             if (index == -1) return; // not found : (
-            this.words[index] = newEntry;
+            this.entries[index] = newEntry;
 
             subscriber.next();
         });
@@ -60,27 +57,23 @@ export class StaticDataProvider implements DataProvider {
 
     removeWordEntry(id: number): Observable<void> {
         return Observable.create(subscriber => {
-            const index = this.indexOfWordWithId(id, this.words);
+            const index = this.indexOfEntryWithId(id, this.entries);
             if (index == -1) return; // not found : (
-            this.words.splice(index, 1);
+            this.entries.splice(index, 1);
 
             subscriber.next();
         });
     }
 
-    private indexOfWordWithId(id: number, words: WordEntry[]): number {
-        for (let i = 0; i < words.length; i++) {
-            if (words[i].id === id) return i;
+    private indexOfEntryWithId(id: number, entries: WordEntry[]): number {
+        for (let i = 0; i < entries.length; i++) {
+            if (entries[i].id === id) return i;
         }
-        console.error("[indexOfWordWithId()]: not found for id=", id);
+        console.error("[indexOfEntryWithId()]: not found for id=", id);
         return -1;
     }
 
-    private indexValidIn(array: any[], index: number): boolean {
-        return (0 <= index) && (index < array.length);
-    }
-
-    private initWords(languageIndexer: LanguageIndexer): WordEntry[] {
+    private initEntries(languageIndexer: LanguageIndexer): WordEntry[] {
         const ger = languageIndexer.indexOf("German");
         const eng = languageIndexer.indexOf("English");
         let nextId = 1;
@@ -124,15 +117,10 @@ export class StaticDataProvider implements DataProvider {
         return new LanguageIndexer(languages);
     }
 
-    private maxIdUsed(words: WordEntry[]): number {
-        if (words.length == 0) return -1;
-        const ids = words.map(word => word.id);
+    private maxIdUsed(entries: WordEntry[]): number {
+        if (entries.length == 0) return -1;
+        const ids = entries.map(word => word.id);
 
         let maxId = ids[0];
-        for (let id of ids) {
-            if (id > maxId) maxId = id;
-        }
-
-        return maxId;
     }
 }

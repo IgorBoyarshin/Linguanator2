@@ -32,9 +32,9 @@ class DbWordEntryNoId {
 }
 
 export class HttpDataProvider implements DataProvider {
-    private words: WordEntry[]; // TODO: rename to entries
+    private entries: WordEntry[];
     private languageIndexer: LanguageIndexer;
-    private wordsUrl = 'https://whateveryouwannacallit.tk/words';
+    private entriesUrl = 'https://whateveryouwannacallit.tk/entries';
     private languageIndexerUrl = 'https://whateveryouwannacallit.tk/languages';
 
     constructor(private http: HttpClient) {}
@@ -47,21 +47,21 @@ export class HttpDataProvider implements DataProvider {
         return new DbWordEntryNoId(from, to, word, translations, score, tags);
     }
 
-    retrieveWords(): Observable<WordEntry[]> {
+    retrieveEntries(): Observable<WordEntry[]> {
         // TODO: Potentially creates multiple Observables, each one sent to query
-        // the result and rewrite this.words upon arrival
-        if (!this.words) {
+        // the result and rewrite this.entries upon arrival
+        if (!this.entries) {
             return Observable.create(subscriber => {
-                console.log('Sending get() from retrieveWords()');
-                this.http.get(this.wordsUrl).subscribe((dbWords: DbWordEntry[]) => {
-                    const words = dbWords.map(this.toWordEntry);
-                    console.log('Processing result in retrieveWords()');
-                    this.words = words;
-                    subscriber.next(words);
+                console.log('Sending get() from retrieveEntries()');
+                this.http.get(this.entriesUrl).subscribe((dbEntries: DbWordEntry[]) => {
+                    const entries = dbEntries.map(this.toWordEntry);
+                    console.log('Processing result in retrieveEntries()');
+                    this.entries = entries;
+                    subscriber.next(entries);
                 });
             });
         }
-        return of(this.words);
+        return of(this.entries);
     }
 
     retrieveLanguageIndexer(): Observable<LanguageIndexer> {
@@ -78,31 +78,31 @@ export class HttpDataProvider implements DataProvider {
         return of(this.languageIndexer);
     }
 
-    private resetWords() {
-        this.words = null;
+    private resetEntries() {
+        this.entries = null;
     }
 
     addWordEntry(wordEntry: WordEntry): Observable<void> {
         return Observable.create(subscriber => {
             console.log('Sending post() from addWordEntry()');
-            this.http.post<DbWordEntryNoId>(this.wordsUrl, this.toDbWordEntryNoId(wordEntry))
-                .pipe(catchError((err) => {console.error('HERE', err); return of();}))
-                .subscribe(res => {
-                console.log('Processing result in addWordEntry(): ', res);
-                // this.words.push(wordEntry);
-                this.resetWords();
-                subscriber.next();
-            }, err => console.error('HERE2', err));
+            this.http.post<DbWordEntryNoId>(this.entriesUrl, this.toDbWordEntryNoId(wordEntry))
+                    .pipe(catchError((err) => {console.error('HERE', err); return of();}))
+                    .subscribe(res => {
+                        console.log('Processing result in addWordEntry(): ', res);
+                        // this.entries.push(wordEntry);
+                        this.resetEntries();
+                        subscriber.next();
+                    }, err => console.error('HERE2', err));
         }).pipe(catchError((err) => {console.error('HERE3', err); return of();}));
     }
 
     updateWordEntry(id: number, newEntry: WordEntry): Observable<void> {
         return Observable.create(subscriber => {
             console.log('Sending update() from updateWordEntry()');
-            const url = this.wordsUrl + `/${id}`;
+            const url = this.entriesUrl + `/${id}`;
             this.http.put<DbWordEntryNoId>(url, this.toDbWordEntryNoId(newEntry)).subscribe(res => {
                 console.log('Processing result in updateWordEntry(): ', res);
-                this.resetWords();
+                this.resetEntries();
                 subscriber.next();
             }, err => console.error(err));
         });
@@ -112,10 +112,10 @@ export class HttpDataProvider implements DataProvider {
     removeWordEntry(id: number): Observable<void> {
         return Observable.create(subscriber => {
             console.log('Sending delete() from removeWordEntry()');
-            const url = this.wordsUrl + `/${id}`;
+            const url = this.entriesUrl + `/${id}`;
             this.http.delete(url).subscribe(res => {
                 console.log('Processing result in removeWordEntry(): ', res);
-                this.resetWords();
+                this.resetEntries();
                 subscriber.next();
             }, err => console.error(err));
         });
