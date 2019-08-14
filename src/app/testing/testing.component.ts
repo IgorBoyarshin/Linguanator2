@@ -61,7 +61,7 @@ export class TestingComponent {
     languages: string[];
 
     constructor(
-            dataProviderFactory: DataProviderFactoryService,
+            private dataProviderFactory: DataProviderFactoryService,
             private entriesDatabaseService: EntriesDatabaseService,
             private settingsService: SettingsService) {
         dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer()
@@ -117,13 +117,21 @@ export class TestingComponent {
             });
     }
 
-    // TODO XXX: the content of the wordEntry reference is changed here.
-    // Database does not know explicitly about this change.......
     private updateDeltaBy(wordEntry: WordEntry, delta: number) {
         wordEntry.score += delta;
         if (wordEntry.score < 0) {
             wordEntry.score = 0;
         }
+        // The following may result in a loss of score points if the same entry
+        // is used for testing 2 times in a row and the update request has not
+        // reached the database yet. This can be remedied by using a cached
+        // entries database (such that the subsequent request to which is
+        // already aware of the changes).
+        // Although possible, the scenario is made less likely by the fact that
+        // we are in the result state for some time and hopefully that timespan
+        // is enough for the update request to reach its destination.
+        this.dataProviderFactory.dataProviderInUse()
+            .updateWordEntry(wordEntry.id, wordEntry).subscribe(() => {});
     }
 
     private resultOf({full, partial, insufficient}: EvaluationStats): Match {
