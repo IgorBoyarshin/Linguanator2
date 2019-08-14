@@ -103,13 +103,12 @@ export class DatabaseComponent {
         }
     }
 
-    // TODO simplify args
-    removeEntry(entry: WordEntry, _index: number) {
-        this.dataProviderFactory.dataProviderInUse().removeWordEntry(entry.id)
+    removeEntry(id: number) {
+        this.dataProviderFactory.dataProviderInUse().removeWordEntry(id)
             .subscribe(() => this.resetCacheAndReloadEntries(this.languagePair));
     }
 
-    editEntry(entry: WordEntry, index: number) {
+    editEntry(entry: WordEntry) {
         this.editedEntryId = entry.id;
         this.displayEditedEntry.next(entry);
     }

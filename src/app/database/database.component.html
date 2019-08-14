@@ -104,20 +104,20 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let entry of entries | async; let entryIndex = index">
+        <tr *ngFor="let entry of entries | async">
             <td>{{ entry.word }}</td>
             <td>{{ entry.translations.join(', ') }}</td>
             <td>{{ entry.score }}</td>
             <td>{{ entry.tags.join("; ") }}</td>
             <td class="nostretch" id="words-table-edit">
                 <button
-                    (click)="editEntry(entry, entryIndex)"
+                    (click)="editEntry(entry)"
                     class="button button-small yellow">Edit
                 </button>
             </td>
             <td class="nostretch" id="words-table-delete">
                 <button
-                    (click)="removeEntry(entry, entryIndex)"
+                    (click)="removeEntry(entry.id)"
                     class="button button-small red">Delete
                 </button>
             </td>
