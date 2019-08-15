@@ -1,3 +1,13 @@
+#main-container {
+    display: flex;
+    flex-direction: column;
+}
+#main-container > * {
+    width: 66%;
+    margin: auto;
+    margin-bottom: 1rem;
+}
+
 #testing-top {
     font-family: 'B612', sans-serif;
     margin: auto;
@@ -12,10 +22,28 @@
 #testing-main-column {
     padding-top: 3rem;
     padding-bottom: 3rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+#testing-main-column > * {
+    width: 40%;
 }
 
-#main-container > div {
-    margin-bottom: 1rem;
+#settings-block-test-both-ways {
+    /* color: white; */
+    /* display: flex; */
+    /* flex-direction: horizontal; */
+    /* font-size: 1.5rem; */
+
+}
+#settings-block-test-both-ways label {
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+#settings-block-test-both-ways label:after,
+#settings-block-test-both-ways label:before {
+    margin-top: 0.5rem;
 }
 
 .box {
@@ -116,4 +144,3 @@ span#answer-delta {
     margin-left: 1rem;
     margin-bottom: 1rem;
 }
-

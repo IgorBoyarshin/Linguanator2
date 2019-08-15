@@ -1,148 +1,160 @@
-<div class="container-fluid" id="main-container">
-    <div class="row">
-        <div class="block col-7" id="testing-top">
-            TRANSLATE WORDS FROM YOUR DICTIONARY
+<div class="" id="main-container">
+    <div class="block " id="testing-top">
+        TRANSLATE WORDS FROM YOUR DICTIONARY
+    </div>
+
+
+    <section class="settings">
+        <div class="block settings-block" id="settings-block-from">
+            <div>From</div>
+
+            <div class="btn-group" dropdown>
+                <button id="button-basic" dropdownToggle type="button"
+                        class="btn btn-primary dropdown-toggle"
+                        aria-controls="dropdown-basic">
+                    {{ maybeLanguageSrc() }} <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu"
+                                  role="menu" aria-labelledby="button-basic">
+                    <li role="menuitem" *ngFor="let language of languages">
+                        <a (click)="changeSrcLanguageTo(language)"
+                            class="dropdown-item"
+                            [ngClass]="{'disabled': language == maybeLanguageSrc()}">{{ language }}</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <section class="col-7 container-fluid settings">
-            <div class="block col-3 settings-block" id="settings-block-from">
-                <div>From</div>
+        <div class="block settings-block" id="settings-block-into">
+            <div>Into</div>
 
-                <div class="btn-group" dropdown>
-                    <button id="button-basic" dropdownToggle type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            aria-controls="dropdown-basic">
-                        {{ maybeLanguageSrc() }} <span class="caret"></span>
-                    </button>
-                    <ul *dropdownMenu class="dropdown-menu"
-                                      role="menu" aria-labelledby="button-basic">
-                        <li role="menuitem" *ngFor="let language of languages">
-                            <a (click)="changeSrcLanguageTo(language)"
-                                class="dropdown-item"
-                                [ngClass]="{'disabled': language == maybeLanguageSrc()}">{{ language }}</a>
-                        </li>
-                    </ul>
-                </div>
+            <div class="btn-group" dropdown>
+                <button id="button-basic" dropdownToggle type="button"
+                        class="btn btn-primary dropdown-toggle"
+                        aria-controls="dropdown-basic">
+                    {{ maybeLanguageDst() }} <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu"
+                                  role="menu" aria-labelledby="button-basic">
+                    <li role="menuitem" *ngFor="let language of languages">
+                        <a (click)="changeDstLanguageTo(language)"
+                            class="dropdown-item"
+                            [ngClass]="{'disabled': language == maybeLanguageDst()}">{{ language }}</a>
+                    </li>
+                </ul>
             </div>
+        </div>
 
-            <div class="block col-3 settings-block" id="settings-block-into">
-                <div>Into</div>
+        <div class="block settings-block" id="settings-block-tags">
+            <div>Include</div>
 
-                <div class="btn-group" dropdown>
-                    <button id="button-basic" dropdownToggle type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            aria-controls="dropdown-basic">
-                        {{ maybeLanguageDst() }} <span class="caret"></span>
-                    </button>
-                    <ul *dropdownMenu class="dropdown-menu"
-                                      role="menu" aria-labelledby="button-basic">
-                        <li role="menuitem" *ngFor="let language of languages">
-                            <a (click)="changeDstLanguageTo(language)"
-                                class="dropdown-item"
-                                [ngClass]="{'disabled': language == maybeLanguageDst()}">{{ language }}</a>
-                        </li>
-                    </ul>
-                </div>
+            <div class="btn-group" dropdown>
+                <button id="button-basic" dropdownToggle type="button"
+                        class="btn btn-primary dropdown-toggle"
+                        aria-controls="dropdown-basic">
+                    tags <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu"
+                                  role="menu" aria-labelledby="button-basic">
+                    <li class="dropdown-tag-li" role="menuitem">
+                        <button class="button button-small green"
+                                id="button-toggle-all-tags"
+                                (click)="toggleAllTags();($event).stopPropagation()">all</button>
+                    </li>
+                    <li class="dropdown-tag-li" role="menuitem"
+                            *ngFor="let statefulTag of statefulTags"
+                            (click)="($event).stopPropagation()">
+                        <div class="my-checkbox">
+                            <input type="checkbox" id="checkbox-{{statefulTag.tag}}"
+                                [checked]="statefulTag.checked"
+                                (change)="toggleTag(statefulTag)">
+                            <label for="checkbox-{{statefulTag.tag}}">{{ statefulTag.tag }}</label>
+                        </div>
+                    </li>
+                </ul>
             </div>
+        </div>
 
-            <div class="block col-3 settings-block" id="settings-block-tags">
-                <div>Include</div>
-
-                <div class="btn-group" dropdown>
-                    <button id="button-basic" dropdownToggle type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            aria-controls="dropdown-basic">
-                        tags <span class="caret"></span>
-                    </button>
-                    <ul *dropdownMenu class="dropdown-menu"
-                                      role="menu" aria-labelledby="button-basic">
-                        <li class="dropdown-tag-li" role="menuitem">
-                            <button class="button button-small green"
-                                    id="button-toggle-all-tags"
-                                    (click)="toggleAllTags();($event).stopPropagation()">all</button>
-                        </li>
-                        <li class="dropdown-tag-li" role="menuitem"
-                                *ngFor="let statefulTag of statefulTags"
-                                (click)="($event).stopPropagation()">
-                            <div class="my-checkbox">
-                                <input type="checkbox" id="checkbox-{{statefulTag.tag}}"
-                                    [checked]="statefulTag.checked"
-                                    (change)="toggleTag(statefulTag)">
-                                <label for="checkbox-{{statefulTag.tag}}">{{ statefulTag.tag }}</label>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+        <div class="block settings-block" id="settings-block-test-both-ways">
+            <div class="my-checkbox">
+                <input type="checkbox" id="checkbox-test-both-ways"
+                    [checked]="doTestBothWays"
+                    (change)="toggleTestBothWays()">
+                <label for="checkbox-test-both-ways">Test both ways</label>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
 
-    <div class="row">
-        <section class="block col-7 container-fluid" id="testing-main-column">
-            <div class="row justify-content-around">
-                <div class="col-5 box" id="testing-query">
-                    <span class="primary-text-dark" id="word-to-translate">
-                        {{ wordEntry ? wordEntry.word : "" }}
-                    </span>
-                    <span class="secondary-text-2" id="lang-label">
-                        {{ maybeLanguageSrc() }}
-                    </span>
-                    <span class="secondary-text-1" id="tags-label">
-                        [{{ wordEntry ? wordEntry.tags.join(";") : "" }}]
-                    </span>
-                    <span class="secondary-text-1" id="word-score">
-                        {{ wordEntry ? roundToStr(wordEntry.score) : 0.0 }}
-                    </span>
-                </div>
 
-                <textarea class="col-5 box primary-text-dark"
-                          id="testing-user-input"
-                          placeholder="Type answer here"
-                          [(ngModel)]="userInput"
-                          (keyup.enter)="submit()"
-                          [disabled]="textareaDisabled()"
-                        ></textarea>
-            </div>
-        </section>
-    </div>
+    <!-- <section class="" id="settings&#45;block&#45;test&#45;both&#45;ways"> -->
+    <!--     <div class="block my&#45;checkbox"> -->
+    <!--         <input type="checkbox" id="checkbox&#45;test&#45;both&#45;ways" -->
+    <!--             [checked]="true" -->
+    <!--             (change)="toggleTestBothWays()"> -->
+    <!--         <label for="checkbox&#45;test&#45;both&#45;ways">Test both ways</label> -->
+    <!--     </div> -->
+    <!-- </section> -->
 
-    <div class="row">
-        <div class="block col-7" id="result-panel"
+
+    <section class="block " id="testing-main-column">
+        <div class="box" id="testing-query">
+            <span class="primary-text-dark" id="word-to-translate">
+                {{ translationSrc() }}
+            </span>
+            <span class="secondary-text-2" id="lang-label">
+                {{ maybeLanguageSrc() }}
+            </span>
+            <span class="secondary-text-1" id="tags-label">
+                [{{ wordEntry ? wordEntry.tags.join(";") : "" }}]
+            </span>
+            <span class="secondary-text-1" id="word-score">
+                {{ wordEntry ? roundToStr(wordEntry.score) : 0.0 }}
+            </span>
+        </div>
+
+        <textarea class="box primary-text-dark"
+                  id="testing-user-input"
+                  placeholder="Type answer here"
+                  [(ngModel)]="userInput"
+                  (keyup.enter)="submit()"
+                  [disabled]="textareaDisabled()"
+                  ></textarea>
+    </section>
+
+
+    <div class="block " id="result-panel"
             [ngClass]="{'result-full-match': resultIsFull(),
                         'result-partial-match': resultIsPartial(),
                         'result-insufficient-match': resultIsInsufficient() || !wordEntry }">
 
-            <div *ngIf="!wordEntry" id="error-notifier">
-                <p>NO WORDS TO TEST</p>
-            </div>
-
-            <div>
-                <!-- The *ngIf is on <p> instead of the parent <div> because we want -->
-                <!-- at least 2 items to be present at all times inside the result parent, -->
-                <!-- otherwise the button shifts to the left. -->
-                <p *ngIf="doDisplayResult()">
-                    <span class="primary-text-light" id="correct-answer-text">
-                        {{ resultIsInsufficient() ? "Corect answer: " : "All translations: " }}
-                    </span>
-                    <span class="primary-text-light" id="correct-answer">
-                        {{ wordEntry ? wordEntry.translations.join("; ") : ""}}
-                    </span>
-                    <span class="primary-text-dark" id="answer-delta"
-                          [ngClass]="{'score-correct': resultIsFull() || resultIsPartial(),
-                                      'score-wrong': resultIsInsufficient() }">
-                        {{ resultDelta >= 0 ? "+" : "" }}{{ resultDelta }}
-                    </span>
-                </p>
-            </div>
-
-            <button class="button button-big green"
-                    id="button-submit"
-                    (click)="submit()"
-                    [disabled]="!userInput || userInput.trim().length == 0 || !wordEntry">
-                {{ submitButtonText() }}
-            </button>
+        <div *ngIf="!wordEntry" id="error-notifier">
+            <p>NO WORDS TO TEST</p>
         </div>
+
+        <div>
+            <!-- The *ngIf is on <p> instead of the parent <div> because we want -->
+            <!-- at least 2 items to be present at all times inside the result parent, -->
+            <!-- otherwise the button shifts to the left. -->
+            <p *ngIf="doDisplayResult()">
+                <span class="primary-text-light" id="correct-answer-text">
+                    {{ resultIsInsufficient() ? "Corect answer: " : "All translations: " }}
+                </span>
+                <span class="primary-text-light" id="correct-answer">
+                    {{ translationDst() }}
+                </span>
+                <span class="primary-text-dark" id="answer-delta"
+                      [ngClass]="{'score-correct': resultIsFull() || resultIsPartial(),
+                                  'score-wrong': resultIsInsufficient() }">
+                    {{ resultDelta >= 0 ? "+" : "" }}{{ resultDelta }}
+                </span>
+            </p>
+        </div>
+
+        <button class="button button-big green"
+                id="button-submit"
+                (click)="submit()"
+                [disabled]="!userInput || userInput.trim().length == 0 || !wordEntry">
+            {{ submitButtonText() }}
+        </button>
     </div>
 </div>

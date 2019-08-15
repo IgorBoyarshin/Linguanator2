@@ -84,6 +84,10 @@ body {
     justify-content: space-between;
     padding: 0px; /* To remove padding on the sides of col-7 */
     color: white;
+    flex-wrap: wrap;
+}
+.settings > * {
+    min-width: 20%;
 }
 .settings-block {
     display: flex;
@@ -94,8 +98,14 @@ body {
 .settings-block > :nth-child(1) {
     margin-right: 0.5em;
 }
+#settings-block-test-both-ways > :nth-child(1) {
+    margin-right: 0em;
+}
 
 
+.my-checkbox input {
+    display: none;
+}
 .my-checkbox input[type="checkbox"] {
     opacity: 0;
 }

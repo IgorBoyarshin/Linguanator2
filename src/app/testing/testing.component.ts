@@ -60,6 +60,9 @@ export class TestingComponent {
     private languageIndexer: LanguageIndexer;
     languages: string[];
 
+    doTestBothWays: boolean = true;
+    testingReverse: boolean;
+
     constructor(
             private dataProviderFactory: DataProviderFactoryService,
             private entriesDatabaseService: EntriesDatabaseService,
@@ -74,13 +77,15 @@ export class TestingComponent {
     }
 
     private maybeLanguageSrc(): string {
-        // XXX: In future must account for both directions
-        return this.languagePair ? this.languageIndexer.nameOf(this.languagePair.src) : "";
+        if (!this.languagePair) return "";
+        const target = this.testingReverse ? this.languagePair.dst : this.languagePair.src;
+        return this.languageIndexer.nameOf(target);
     }
 
     private maybeLanguageDst(): string {
-        // XXX: In future must account for both directions
-        return this.languagePair ? this.languageIndexer.nameOf(this.languagePair.dst) : "";
+        if (!this.languagePair) return "";
+        const target = this.testingReverse ? this.languagePair.src : this.languagePair.dst;
+        return this.languageIndexer.nameOf(target);
     }
 
     submit() {
@@ -89,7 +94,7 @@ export class TestingComponent {
             if (this.userInput.length == 0) return;
 
             const answers = this.userInput.split(';');
-            const correctAnswers = this.wordEntry.translations;
+            const correctAnswers = this.testingReverse ? [this.wordEntry.word] : this.wordEntry.translations;
 
             const evaluationStats = this.checkAnswers(answers, correctAnswers);
             const delta = this.scoreDeltaFromStats(evaluationStats);
@@ -114,6 +119,8 @@ export class TestingComponent {
                 this.statefulTags = statefulTags;
                 this.entriesDatabaseService.randomWordEntryForWithStatefulTags(languagePair, statefulTags)
                     .subscribe(entry => this.wordEntry = entry);
+                if (this.doTestBothWays) this.testingReverse = Math.random() < 0.5;
+                else                     this.testingReverse = false;
             });
     }
 
@@ -149,7 +156,9 @@ export class TestingComponent {
     }
 
     private evaluateMatchOfIn(str: string, array: string[]): Match {
-        str = str.toLowerCase();
+        // Trim only _str_ because _array_ supposedly contains only the reference
+        // (copletely valid) answers that are already trimmed.
+        str = str.trim().toLowerCase();
         array = array.map(str => str.toLowerCase());
 
         if (array.includes(str)) {
@@ -274,5 +283,24 @@ export class TestingComponent {
 
     toggleAllTags() {
         this.settingsService.toggleAllTags().subscribe(() => this.reloadEntry());
+    }
+
+    toggleTestBothWays() {
+        this.doTestBothWays = !this.doTestBothWays;
+        if (this.state == State.UserInput) {
+            if (this.testingReverse && !this.doTestBothWays) this.reloadEntry();
+        }
+    }
+
+    translationSrc(): string {
+        if (!this.wordEntry) return "";
+        if (this.testingReverse) return this.wordEntry.translations.join("; ");
+        else                     return this.wordEntry.word;
+    }
+
+    translationDst(): string {
+        if (!this.wordEntry) return "";
+        if (this.testingReverse) return this.wordEntry.word;
+        else                     return this.wordEntry.translations.join("; ")
     }
 }
