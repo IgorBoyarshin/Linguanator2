@@ -1,5 +1,6 @@
 export class WordEntry {
     constructor(
+        public userId: number,
         public id: number,
         public from: number,
         public to: number,

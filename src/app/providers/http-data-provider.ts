@@ -1,15 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { share, shareReplay, tap, map, catchError } from 'rxjs/operators';
 
 import { Language } from '../language-model';
 import { DataProvider } from './data-provider';
 import { WordEntry } from '../word-entry.model';
 import { LanguageIndexer } from '../language-indexer';
+import { AuthService } from '../auth.service';
 
 class DbWordEntry {
     constructor(
+        public userId: number,
         public id: number,
         public fromlanguage: number,
         public tolanguage: number,
@@ -22,6 +24,7 @@ class DbWordEntry {
 
 class DbWordEntryNoId {
     constructor(
+        public userId: number,
         public fromLanguage: number,
         public toLanguage: number,
         public word: string,
@@ -37,14 +40,14 @@ export class HttpDataProvider implements DataProvider {
     private entriesUrl = 'https://whateveryouwannacallit.tk/entries';
     private languageIndexerUrl = 'https://whateveryouwannacallit.tk/languages';
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private authService: AuthService) {}
 
-    toWordEntry({id, fromlanguage, tolanguage, word, translations, score, tags}: DbWordEntry): WordEntry {
-        return new WordEntry(id, fromlanguage, tolanguage, word, translations, score, tags);
+    toWordEntry({userId, id, fromlanguage, tolanguage, word, translations, score, tags}: DbWordEntry): WordEntry {
+        return new WordEntry(userId, id, fromlanguage, tolanguage, word, translations, score, tags);
     }
 
-    toDbWordEntryNoId({id, from, to, word, translations, score, tags}: WordEntry): DbWordEntryNoId {
-        return new DbWordEntryNoId(from, to, word, translations, score, tags);
+    toDbWordEntryNoId({userId, id, from, to, word, translations, score, tags}: WordEntry): DbWordEntryNoId {
+        return new DbWordEntryNoId(userId, from, to, word, translations, score, tags);
     }
 
     retrieveEntries(): Observable<WordEntry[]> {
@@ -66,6 +69,14 @@ export class HttpDataProvider implements DataProvider {
 
     retrieveLanguageIndexer(): Observable<LanguageIndexer> {
         if (!this.languageIndexer) {
+            // TODO: need to store the created observable and return it
+            // console.log('Pre-tapping get() from retrieveLanguageIndexer()');
+            // return this.http.get(this.languageIndexerUrl).pipe(
+            //     tap(_ => console.log('Tapping get() from retrieveLanguageIndexer()')),
+            //     map((languages: Language[]) => new LanguageIndexer(languages)),
+            //     tap(languageIndexer => this.languageIndexer = languageIndexer),
+            //     shareReplay()
+            // );
             return Observable.create(subscriber => {
                 console.log('Sending get() from retrieveLanguageIndexer()');
                 this.http.get(this.languageIndexerUrl).subscribe((languages: Language[]) => {

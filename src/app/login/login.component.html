@@ -1,0 +1,17 @@
+<div class="wrapper">
+    <form [formGroup]="form" class="block" id="main">
+        <legend>Sign in to your account</legend>
+
+        <div class="">
+            <label class="">Username</label>
+            <input class="my-input" type="text" name="username" formControlName="username" placeholder="Type your username">
+        </div>
+
+        <div class="">
+            <label class="">Password</label>
+            <input class="my-input" type="password" name="password" formControlName="password" placeholder="Type your password">
+        </div>
+
+        <button class="button button-big green" type="submit" (click)="login()">Sign in</button>
+    </form>
+</div>

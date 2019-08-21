@@ -39,7 +39,9 @@ export class StaticDataProvider implements DataProvider {
         return Observable.create(subscriber => {
             const DEFAULT_TAGS = ['main'];
             if (tags.length == 0) tags = DEFAULT_TAGS;
-            this.entries.push(new WordEntry(this.nextWordEntryIdToUse, from, to, word, translations, score, tags));
+            // const currentUserId = this.authService.current
+            const currentUserId = 1; // TODO
+            this.entries.push(new WordEntry(currentUserId, this.nextWordEntryIdToUse, from, to, word, translations, score, tags));
             this.nextWordEntryIdToUse++;
             subscriber.next();
         });
@@ -76,36 +78,37 @@ export class StaticDataProvider implements DataProvider {
     private initEntries(languageIndexer: LanguageIndexer): WordEntry[] {
         const ger = languageIndexer.indexOf("German");
         const eng = languageIndexer.indexOf("English");
+        const userId = 1;
         let nextId = 1;
         return [
-            new WordEntry(nextId++, ger, eng, 'weit', ['wide', 'far', 'broad'], 2, ['tag1', 'tag2']),
-            new WordEntry(nextId++, ger, eng, 'aufmerksam', ['attentive', 'mindful', 'thoughtful'], 0, ['tag1']),
-            new WordEntry(nextId++, ger, eng, 'gehorsam', ['obedient', 'submissive'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'die Einsamkeit', ['the loneliness', 'the solitude'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'regungslos', ['motionless', 'dead still'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'die Kerze', ['the candle'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'zu zweit', ['in pairs'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'der Fels', ['the rock', 'the cliff'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'kundtun', ['make known', 'proclaim'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'das Verlangen', ['the demand', 'the desire', 'the request'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'verderben', ['spoil', 'ruin', 'corrupt'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'wesentlich', ['significant', 'essential', 'crucial', 'fundamental'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'die Sünde', ['the sin'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'auswendig', ['by heart'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'der Schatz', ['the treasure', 'the sweetheart', 'the honey'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'anschauen', ['look at', 'watch', 'view'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'unbeteiligt', ['unconcerned', 'uninvolved', 'indifferent'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'beweisen', ['prove', 'demonstrate', 'show'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'leuchten', ['light', 'shine', 'glow'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'allerdings', ['however', 'certainly', 'admittedly', 'though'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'sich mit etwas begnügen', ['content oneself with something', 'make do with something'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'ungefähr', ['approximate', 'rough', 'nearly'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'bestätigen', ['confirm', 'acknowledge', 'verify'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'die Verachtung', ['the disdain', 'the disgust'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'zur selben Zeit', ['at the same time'], 1, ['main']),
-            new WordEntry(nextId++, ger, eng, 'das Gedicht', ['the poem', 'the ode'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'weit', ['wide', 'far', 'broad'], 2, ['tag1', 'tag2']),
+            new WordEntry(userId, nextId++, ger, eng, 'aufmerksam', ['attentive', 'mindful', 'thoughtful'], 0, ['tag1']),
+            new WordEntry(userId, nextId++, ger, eng, 'gehorsam', ['obedient', 'submissive'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'die Einsamkeit', ['the loneliness', 'the solitude'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'regungslos', ['motionless', 'dead still'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'die Kerze', ['the candle'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'zu zweit', ['in pairs'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'der Fels', ['the rock', 'the cliff'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'kundtun', ['make known', 'proclaim'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'das Verlangen', ['the demand', 'the desire', 'the request'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'verderben', ['spoil', 'ruin', 'corrupt'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'wesentlich', ['significant', 'essential', 'crucial', 'fundamental'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'die Sünde', ['the sin'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'auswendig', ['by heart'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'der Schatz', ['the treasure', 'the sweetheart', 'the honey'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'anschauen', ['look at', 'watch', 'view'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'unbeteiligt', ['unconcerned', 'uninvolved', 'indifferent'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'beweisen', ['prove', 'demonstrate', 'show'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'leuchten', ['light', 'shine', 'glow'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'allerdings', ['however', 'certainly', 'admittedly', 'though'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'sich mit etwas begnügen', ['content oneself with something', 'make do with something'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'ungefähr', ['approximate', 'rough', 'nearly'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'bestätigen', ['confirm', 'acknowledge', 'verify'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'die Verachtung', ['the disdain', 'the disgust'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'zur selben Zeit', ['at the same time'], 1, ['main']),
+            new WordEntry(userId, nextId++, ger, eng, 'das Gedicht', ['the poem', 'the ode'], 1, ['main']),
 
-            new WordEntry(nextId++, eng, ger, 'the boy', ['der Junge', 'der Knabe'], 3, ['main']),
+            new WordEntry(userId, nextId++, eng, ger, 'the boy', ['der Junge', 'der Knabe'], 3, ['main']),
         ];
     }
 
