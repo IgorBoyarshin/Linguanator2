@@ -24,22 +24,31 @@ export class SettingsService {
     private tags: string[];
     private currentTags: string[];
 
-    //
-    // TODO: data dependency chain is broken in several places
-    //
-
     constructor(
         private authService: AuthService,
         private dataProviderFactory: DataProviderFactoryService
     ) {
-        this.authService.logoutNotificator().subscribe(() => this.resetCache());
-        this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer()
-            .subscribe(languageIndexer => this.languageIndexer = languageIndexer);
+        this.authService.loginNotificator().subscribe(() =>
+            this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer()
+                .subscribe(languageIndexer => {
+                    this.languageIndexer = languageIndexer;
+                    this.currentLanguagePair = new LanguagePair(
+                        languageIndexer.indexOf("German"),
+                        languageIndexer.indexOf("English")
+                    );
+                })
+        );
+        this.authService.logoutNotificator().subscribe(() => this.resetTotalCache());
     }
 
-    resetCache() {
+    private resetTotalCache() {
         this.languageIndexer = null;
         this.currentLanguagePair = null;
+        this.tags = null;
+        this.currentTags = null;
+    }
+
+    resetTagsCache() {
         this.tags = null;
         this.currentTags = null;
     }
@@ -121,6 +130,14 @@ export class SettingsService {
         return of(this.currentLanguagePair);
     }
 
+    // It makes little sense to make the changeLanguageTo functions family
+    // to return an Observable (which we need because we depend on languageIndexer
+    // in order to perform the change). The way we manage to pull off the lack
+    // of return is by retrieving LanguageIndexer early (upon user login) and
+    // then we HOPE that by the time the user changes the language the languageIndexer
+    // is already resolved and ready (this is probable since these methods are triggered
+    // by user and not by application init logic, so we take advantage of the
+    // user's slow interaction with our application).
     changeSrcLanguageTo(language: string) {
         this.changeLanguageTo(true, language);
     }
@@ -130,7 +147,11 @@ export class SettingsService {
     }
 
     private changeLanguageTo(changeSrc: boolean, language: string) {
-        // We HOPE that by this time languageIndexer is already resolved
+        if (!this.languageIndexer || !this.currentLanguagePair) {
+            console.error('===== ASSERTION FAILED =======');
+            return;
+        }
+
         const newIndex = this.languageIndexer.indexOf(language);
         const theOtherIndex = changeSrc ? this.currentLanguagePair.dst
                                         : this.currentLanguagePair.src;

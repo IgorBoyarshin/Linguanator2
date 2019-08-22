@@ -10,3 +10,11 @@ export class WordEntry {
         public tags: string[]
     ) {}
 }
+
+export class EditedWordEntry {
+    constructor(
+        public word: string,
+        public translations: string[],
+        public tags: string[]
+    ) {}
+}

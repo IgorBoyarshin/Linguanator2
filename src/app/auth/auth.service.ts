@@ -14,6 +14,7 @@ import * as moment from 'moment';
 export class AuthService {
     private loginUrl = 'https://whateveryouwannacallit.tk/login';
     private reloginUrl = 'https://whateveryouwannacallit.tk/relogin';
+    private loginNotificatorSubject = new Subject<void>();
     private logoutNotificatorSubject = new Subject<void>();
 
     private reloginSubject; // TODO: set type
@@ -22,12 +23,14 @@ export class AuthService {
 
     login(username: string, password: string): any { // TODO: set type
         return this.http.post<any>(this.loginUrl, { username, password }).pipe(
+            tap(_ => this.loginNotificatorSubject.next()),
             tap(res => this.setSession(res, username)),
             shareReplay()
         );
     }
 
     private relogin(username: string) {
+        console.log('------ Relogging --------');
         this.reloginSubject.unsubscribe(); // finish previous
         // TODO: posting {} since the only data we need to send (token) is in the header
         this.http.post<any>(this.reloginUrl, {}).pipe(
@@ -72,6 +75,10 @@ export class AuthService {
 
     currentUsername(): string {
         return localStorage.getItem(this.usernameTag);
+    }
+
+    loginNotificator(): Subject<void> {
+        return this.loginNotificatorSubject;
     }
 
     logoutNotificator(): Subject<void> {

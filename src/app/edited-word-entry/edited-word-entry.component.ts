@@ -3,7 +3,7 @@ import { Output, EventEmitter } from '@angular/core';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { LanguagePair } from '../language-pair.model';
-import { WordEntry } from '../word-entry.model';
+import { EditedWordEntry } from '../word-entry.model';
 
 import { Observable } from 'rxjs';
 
@@ -13,9 +13,6 @@ import { Observable } from 'rxjs';
     styleUrls: ['./edited-word-entry.component.css']
 })
 export class EditedWordEntryComponent implements OnInit, OnDestroy {
-    id: number;
-    score: number;
-
     // [(ngModel)]
     word: string;
     translations: string;
@@ -23,27 +20,18 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
 
     editingExistingEntry: boolean;
 
-    @Input() languagePair: LanguagePair;
-
-    @Output() submitEntry = new EventEmitter<WordEntry>();
-
+    @Output() submitEntry = new EventEmitter<EditedWordEntry>();
+    @Input() events: Observable<EditedWordEntry>;
     private displayEntrySubscription: any;
-    @Input() events: Observable<WordEntry>;
 
-    constructor() {
-        this.clear();
-    }
+    constructor() { this.clear(); }
 
     ngOnInit() {
-        this.displayEntrySubscription = this.events.subscribe(({id, word, translations, score, tags}: WordEntry) => {
-            // We assume that the LanguagePair of the requested to edit WordEntry conicides
-            // with the LanguagePair we receive as the @Input from our parent.
+        this.displayEntrySubscription = this.events.subscribe(({ word, translations, tags }: EditedWordEntry) => {
             this.editingExistingEntry = true;
 
-            this.id = id;
             this.word = word;
             this.translations = translations.join(";");
-            this.score = score;
             this.tags = tags.join(";");
         });
     }
@@ -61,13 +49,9 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
     }
 
     submit() {
-        const fakeUserId = -1;
-        const fakeId = -1;
-        const {src, dst} = this.languagePair;
         const translations = this.translations.split(';');
         const tags = this.tags.length == 0 ? [] : this.tags.split(';');
-        const newWordEntry = new WordEntry(fakeUserId, fakeId, src, dst,
-            this.word, translations, this.score, tags);
+        const newWordEntry = new EditedWordEntry(this.word, translations, tags);
         this.submitEntry.emit(newWordEntry);
         this.clear();
     }
@@ -80,8 +64,6 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
         this.word = "";
         this.translations = "";
         this.tags = "";
-        this.id = -1;
-        this.score = 0;
         this.editingExistingEntry = false;
     }
 }
