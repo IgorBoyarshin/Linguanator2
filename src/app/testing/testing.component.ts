@@ -77,12 +77,12 @@ export class TestingComponent {
     }
 
     private maybeLanguageSrc(): string {
-        if (!this.languagePair) return "";
+        if (!this.languageIndexer || !this.languagePair) return "";
         return this.languageIndexer.nameOf(this.languagePair.src);
     }
 
     private maybeLanguageDst(): string {
-        if (!this.languagePair) return "";
+        if (!this.languageIndexer || !this.languagePair) return "";
         return this.languageIndexer.nameOf(this.languagePair.dst);
     }
 
