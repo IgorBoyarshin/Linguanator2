@@ -78,14 +78,12 @@ export class TestingComponent {
 
     private maybeLanguageSrc(): string {
         if (!this.languagePair) return "";
-        const target = this.testingReverse ? this.languagePair.dst : this.languagePair.src;
-        return this.languageIndexer.nameOf(target);
+        return this.languageIndexer.nameOf(this.languagePair.src);
     }
 
     private maybeLanguageDst(): string {
         if (!this.languagePair) return "";
-        const target = this.testingReverse ? this.languagePair.src : this.languagePair.dst;
-        return this.languageIndexer.nameOf(target);
+        return this.languageIndexer.nameOf(this.languagePair.dst);
     }
 
     submit() {
