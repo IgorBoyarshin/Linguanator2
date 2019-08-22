@@ -7,7 +7,7 @@ import { Language } from '../language-model';
 import { DataProvider } from './data-provider';
 import { WordEntry } from '../word-entry.model';
 import { LanguageIndexer } from '../language-indexer';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../auth/auth.service';
 
 class DbWordEntry {
     constructor(

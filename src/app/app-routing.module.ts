@@ -6,7 +6,7 @@ import { DatabaseComponent } from './database/database.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { SettingsComponent } from './settings/settings.component';
 import { LoginComponent } from './login/login.component';
-import { AuthGuardService as AuthGuard } from './auth-guard.service';
+import { AuthGuardService as AuthGuard } from './auth/auth-guard.service';
 
 const routes: Routes = [
     { path: '', redirectTo: '/testing', pathMatch: 'full' },

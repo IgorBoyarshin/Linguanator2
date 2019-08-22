@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { OnDestroy } from '@angular/core';
 
-import { User } from './user.model';
+import { User } from '../user.model';
 
 import * as moment from 'moment';
 
