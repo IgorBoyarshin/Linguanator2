@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { DataProvider } from './data-provider';
-import { StaticDataProvider } from './static-data-provider';
+// import { StaticDataProvider } from './static-data-provider';
 import { HttpDataProvider } from './http-data-provider';
 import { AuthService } from '../auth/auth.service';
 

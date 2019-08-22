@@ -109,10 +109,14 @@ export class DatabaseComponent {
 
     submitEntry(wordEntry: WordEntry) {
         if (this.editedEntryId === undefined) { // adding a new Entry
-            this.dataProviderFactory.dataProviderInUse().addWordEntry(wordEntry)
+            const { word, translations, tags } = wordEntry; // TODO
+            this.dataProviderFactory.dataProviderInUse()
+                .addWordEntry(this.languagePair, word, translations, tags)
                 .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
         } else { // submitting changes to an existing Entry
-            this.dataProviderFactory.dataProviderInUse().updateWordEntry(this.editedEntryId, wordEntry)
+            const { word, translations, score, tags } = wordEntry; // TODO
+            this.dataProviderFactory.dataProviderInUse()
+                .updateWordEntry(this.editedEntryId, this.languagePair, word, translations, score, tags)
                 .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
             this.editedEntryId = undefined;
         }
