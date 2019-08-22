@@ -1,20 +1,50 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
 nav {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 10;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #252525;
+    color: #eee;
+}
+nav ul {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+nav li {
+    list-style-type: none;
+}
+.navigation-item {
+    font-size: 1.1em;
+    margin-right: 1.0rem;
+}
+nav a {
+    text-decoration: none;
+    color: inherit;
 }
 
 .navbar-brand {
     font-weight: bold;
     font-size: 1.3em;
-    margin-right: 1.7rem;
+    margin-right: 1.3rem;
+    padding: 1rem;
 }
 
-.navbar {
-    background-color: #252525 !important;
+#loginStuff {
+    margin-right: 1.0rem;
 }
-
-li > p {
-    color: white;
+#userName {
+    margin-right: 0.5rem;
+}
+#logoutLink {
+    margin-left: 1.1rem;
 }
