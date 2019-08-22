@@ -37,10 +37,16 @@ class DbWordEntryNoId {
 export class HttpDataProvider implements DataProvider {
     private entries: WordEntry[];
     private languageIndexer: LanguageIndexer;
+
     private entriesUrl = 'https://whateveryouwannacallit.tk/entries';
     private languageIndexerUrl = 'https://whateveryouwannacallit.tk/languages';
 
-    constructor(private http: HttpClient, private authService: AuthService) {}
+    constructor(private http: HttpClient, private authService: AuthService) {
+        this.authService.logoutNotificator().subscribe(() => {
+            this.entries = null;
+            this.languageIndexer = null;
+        });
+    }
 
     toWordEntry({userId, id, fromlanguage, tolanguage, word, translations, score, tags}: DbWordEntry): WordEntry {
         return new WordEntry(userId, id, fromlanguage, tolanguage, word, translations, score, tags);

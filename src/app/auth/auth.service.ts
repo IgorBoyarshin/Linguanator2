@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { tap, shareReplay } from 'rxjs/operators';
 
 import { HttpClient } from '@angular/common/http';
@@ -14,44 +14,62 @@ import * as moment from 'moment';
 })
 export class AuthService implements OnDestroy {
     private loginUrl = 'https://whateveryouwannacallit.tk/login';
+    private logoutNotificatorSubject = new Subject<void>();
 
     constructor(private http: HttpClient) {}
 
     ngOnDestroy() {
         // TODO
-        console.log('Destroying');
-        this.logout();
+        // console.log('Destroying');
+        // this.logout();
     }
 
-    login(username: string, password: string) {
+    login(username: string, password: string): any { // TODO
         return this.http.post<any>(this.loginUrl, { username, password }).pipe(
-            tap(res => this.setSession(res)),
+            tap(res => this.setSession(res, username)),
             shareReplay()
         );
     }
 
-    private setSession(res) {
+    private setSession(res, username: string) {
         const expiresAt = moment().add(res.expiresIn, 'second');
 
-        localStorage.setItem(this.idTokenName, res.idToken);
-        localStorage.setItem(this.expiresAtName, JSON.stringify(expiresAt.valueOf()));
+        localStorage.setItem(this.usernameTag, username);
+        localStorage.setItem(this.idTokenTag, res.idToken);
+        localStorage.setItem(this.expiresAtTag, JSON.stringify(expiresAt.valueOf()));
     }
 
     logout() {
-        localStorage.removeItem(this.idTokenName);
-        localStorage.removeItem(this.expiresAtName);
+        localStorage.removeItem(this.usernameTag);
+        localStorage.removeItem(this.idTokenTag);
+        localStorage.removeItem(this.expiresAtTag);
+
+        this.logoutNotificatorSubject.next();
     }
 
-    tokenExpiration () {
-        const expiresAt = JSON.parse(localStorage.getItem(this.expiresAtName));
+    private tokenExpiration (): any { // TODO
+        const item = localStorage.getItem(this.expiresAtTag);
+        if (!item) return null;
+        const expiresAt = JSON.parse(item);
         return moment(expiresAt);
     }
 
-    tokenExpired() {
+    tokenExpired(): boolean {
+        const expiration = this.tokenExpiration();
+        if (!expiration) return true;
         return moment().isAfter(this.tokenExpiration());
     }
 
+    currentUsername(): string {
+        return localStorage.getItem(this.usernameTag);
+    }
+
+    logoutNotificator(): Subject<void> {
+        return this.logoutNotificatorSubject;
+    }
+
     // TODO: use private members or not?
-    get idTokenName(): string { return 'id_token'; }
-    get expiresAtName(): string { return 'expires_at'; }
+    get usernameTag(): string { return 'username'; }
+    get idTokenTag(): string { return 'id_token'; }
+    get expiresAtTag(): string { return 'expires_at'; }
 }

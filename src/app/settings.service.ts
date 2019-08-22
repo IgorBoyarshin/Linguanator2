@@ -5,6 +5,7 @@ import { combineLatest } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
+import { AuthService } from './auth/auth.service';
 import { DataProviderFactoryService } from './providers/data-provider-factory.service';
 import { LanguagePair } from './language-pair.model';
 import { LanguageIndexer } from './language-indexer';
@@ -23,12 +24,22 @@ export class SettingsService {
     private tags: string[];
     private currentTags: string[];
 
-    constructor(private dataProviderFactory: DataProviderFactoryService) {
+    //
+    // TODO: data dependency chain is broken in several places
+    //
+
+    constructor(
+        private authService: AuthService,
+        private dataProviderFactory: DataProviderFactoryService
+    ) {
+        this.authService.logoutNotificator().subscribe(() => this.resetCache());
         this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer()
             .subscribe(languageIndexer => this.languageIndexer = languageIndexer);
     }
 
     resetCache() {
+        this.languageIndexer = null;
+        this.currentLanguagePair = null;
         this.tags = null;
         this.currentTags = null;
     }

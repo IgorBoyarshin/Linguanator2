@@ -2,7 +2,7 @@ import { Subject, Observable } from 'rxjs';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { WordEntry } from '../word-entry.model';
 import { LanguagePair } from '../language-pair.model';
@@ -10,6 +10,7 @@ import { EntriesDatabaseService } from '../entries-database.service';
 import { SettingsService, StatefulTag } from '../settings.service';
 import { LanguageIndexer } from '../language-indexer';
 import { DataProviderFactoryService } from '../providers/data-provider-factory.service';
+// import { AuthService } from '../auth/auth.service';
 
 
 @Component({
@@ -31,14 +32,24 @@ export class DatabaseComponent {
     private languageIndexer: LanguageIndexer;
 
     constructor(
+            // private authService: AuthService,
             private dataProviderFactory: DataProviderFactoryService,
             private entriesDatabaseService: EntriesDatabaseService,
             private settingsService: SettingsService) {
+        // this.authService.logoutNotificator().subscribe(() => this.selfReset());
+
         this.reloadLanguageIndexerAndLanguages();
         this.reloadLanguagePairAndTagsAndEntries();
         this.reloadPrimaryAndSecondaryLanguages();
         this.allStatefulTagsObservable = settingsService.allStatefulTags();
     }
+
+    // ngOnInit() {
+    //     console.log('inittiing....................');
+    // }
+    // ngOnDestroy() {
+    //     console.log('destroying....................');
+    // }
 
     private reloadLanguageIndexerAndLanguages() {
         this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer().subscribe(languageIndexer => {
@@ -70,6 +81,17 @@ export class DatabaseComponent {
                 .pipe(map(entries => entries.reverse()));
         });
     }
+
+    // private selfReset() {
+    //     this.entries = null;
+    //     this.languageIndexer = null
+    //     this.languages = null;
+    //     this.languagePair = null;
+    //     this.primaryLanguage = null;
+    //     this.secondaryLanguage = null;
+    //     this.allStatefulTagsObservable = null;
+    //     this.editedEntryId = null;
+    // }
 
     private resetCacheAndReloadTagsAndEntries(languagePair: LanguagePair) {
         this.entriesDatabaseService.resetCache();

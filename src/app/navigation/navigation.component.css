@@ -14,3 +14,7 @@ nav {
 .navbar {
     background-color: #252525 !important;
 }
+
+li > p {
+    color: white;
+}

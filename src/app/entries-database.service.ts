@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
 import { Dictionary } from './dictionary.model';
 import { WordEntry } from './word-entry.model';
 import { LanguagePair } from './language-pair.model';
+import { AuthService } from './auth/auth.service';
 import { DataProviderFactoryService } from './providers/data-provider-factory.service';
 import { StatefulTag } from './settings.service';
 
@@ -16,7 +17,12 @@ import { StatefulTag } from './settings.service';
 export class EntriesDatabaseService {
     private dictionary: Dictionary;
 
-    constructor(private dataProviderFactory: DataProviderFactoryService) {}
+    constructor(
+        private authService: AuthService,
+        private dataProviderFactory: DataProviderFactoryService
+    ) {
+        this.authService.logoutNotificator().subscribe(() => this.resetCache());
+    }
 
     // Instead of retrieving the whole entries base on each call of entriesFor()
     // only to access a specific set of entries from there, let us store the
