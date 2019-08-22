@@ -1,9 +1,8 @@
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, timer } from 'rxjs';
 import { tap, shareReplay } from 'rxjs/operators';
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { OnDestroy } from '@angular/core';
 
 import { User } from '../user.model';
 
@@ -12,26 +11,36 @@ import * as moment from 'moment';
 @Injectable({
     providedIn: 'root'
 })
-export class AuthService implements OnDestroy {
+export class AuthService {
     private loginUrl = 'https://whateveryouwannacallit.tk/login';
+    private reloginUrl = 'https://whateveryouwannacallit.tk/relogin';
     private logoutNotificatorSubject = new Subject<void>();
+
+    private reloginSubject; // TODO: set type
 
     constructor(private http: HttpClient) {}
 
-    ngOnDestroy() {
-        // TODO
-        // console.log('Destroying');
-        // this.logout();
-    }
-
-    login(username: string, password: string): any { // TODO
+    login(username: string, password: string): any { // TODO: set type
         return this.http.post<any>(this.loginUrl, { username, password }).pipe(
             tap(res => this.setSession(res, username)),
             shareReplay()
         );
     }
 
+    private relogin(username: string) {
+        this.reloginSubject.unsubscribe(); // finish previous
+        // TODO: posting {} since the only data we need to send (token) is in the header
+        this.http.post<any>(this.reloginUrl, {}).pipe(
+            tap(res => this.setSession(res, username)),
+            shareReplay()
+        ).subscribe();
+    }
+
     private setSession(res, username: string) {
+        // Set relogin
+        const tokenHalflifeMillis = 1000 * res.expiresIn / 2;
+        this.reloginSubject = timer(tokenHalflifeMillis).subscribe(_ => this.relogin(username));
+
         const expiresAt = moment().add(res.expiresIn, 'second');
 
         localStorage.setItem(this.usernameTag, username);
@@ -44,6 +53,7 @@ export class AuthService implements OnDestroy {
         localStorage.removeItem(this.idTokenTag);
         localStorage.removeItem(this.expiresAtTag);
 
+        this.reloginSubject.unsubscribe();
         this.logoutNotificatorSubject.next();
     }
 
