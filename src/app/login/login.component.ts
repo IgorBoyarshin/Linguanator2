@@ -40,7 +40,7 @@ export class LoginComponent {
                 }, err => {
                     switch (err.error.code) {
                         case 'ERR_INVALID_CREDENTIALS':
-                            this.totalErrorDescription = 'Invalid Username/password combination';
+                            this.totalErrorDescription = 'Invalid username/password combination';
                             break;
                         case 'ERR_UNKNOWN': console.error('Something went wrong'); // TODO
                     }
