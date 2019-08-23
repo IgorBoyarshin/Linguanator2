@@ -1,17 +1,38 @@
 <div class="wrapper">
     <form [formGroup]="form" class="block" id="main">
-        <legend>Sign in to your account</legend>
+        <legend>
+            {{ loggingIntoExisting ? "Login to your account" : "Create a new account" }}
+        </legend>
 
         <div class="">
             <label class="">Username</label>
-            <input class="my-input" type="text" name="username" formControlName="username" placeholder="Type your username">
+            <input class="my-input" type="text" name="username"
+                    formControlName="username" placeholder="Type your username"
+                    [ngClass]="{'invalid': invalidUsername()}">
+            <p *ngIf="usernameErrorDescription" id="username-error-description">{{ usernameErrorDescription }}</p>
         </div>
 
         <div class="">
             <label class="">Password</label>
-            <input class="my-input" type="password" name="password" formControlName="password" placeholder="Type your password">
+            <input class="my-input" type="password" name="password"
+                    formControlName="password" placeholder="Type your password"
+                    [ngClass]="{'invalid': invalidPassword()}">
         </div>
 
-        <button class="button button-big green" type="submit" (click)="login()">Sign in</button>
+        <p *ngIf="totalErrorDescription" id="total-error-description">{{ totalErrorDescription }}</p>
+
+        <button class="button button-big green" type="submit" (click)="submit()">
+            {{ loggingIntoExisting ? "LOGIN" : "CREATE" }}
+        </button>
+
+        <section id="account-create">
+            <p>
+                {{ loggingIntoExisting ? "Don't have an account?" : "Already have an account?" }}
+            </p>
+            <!-- <a href="" (click)="switchMethod()"> -->
+            <p id="link" (click)="switchMethod()">
+                {{ loggingIntoExisting ? "Sign up!" : "Log in" }}
+            </p>
+        </section>
     </form>
 </div>

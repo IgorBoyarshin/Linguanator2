@@ -12,6 +12,7 @@ import * as moment from 'moment';
     providedIn: 'root'
 })
 export class AuthService {
+    private createAccountUrl = 'https://whateveryouwannacallit.tk/create';
     private loginUrl = 'https://whateveryouwannacallit.tk/login';
     private reloginUrl = 'https://whateveryouwannacallit.tk/relogin';
     private loginNotificatorSubject = new Subject<void>();
@@ -20,6 +21,12 @@ export class AuthService {
     private reloginSubject; // TODO: set type
 
     constructor(private http: HttpClient) {}
+
+    createAccount(username: string, password: string): any { // TODO: set type
+        return this.http.post<any>(this.createAccountUrl, { username, password }).pipe(
+            shareReplay()
+        );
+    }
 
     login(username: string, password: string): any { // TODO: set type
         return this.http.post<any>(this.loginUrl, { username, password }).pipe(
