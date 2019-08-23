@@ -30,8 +30,8 @@ export class AuthService {
 
     login(username: string, password: string): any { // TODO: set type
         return this.http.post<any>(this.loginUrl, { username, password }).pipe(
-            tap(_ => this.loginNotificatorSubject.next()),
             tap(res => this.setSession(res, username)),
+            tap(_ => this.loginNotificatorSubject.next()),
             shareReplay()
         );
     }
