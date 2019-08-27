@@ -2,7 +2,7 @@ import { Subject, Observable } from 'rxjs';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Component } from '@angular/core';
+import { ViewChild, Component } from '@angular/core';
 
 import { WordEntry, EditedWordEntry } from '../word-entry.model';
 import { LanguagePair } from '../language-pair.model';
@@ -11,6 +11,8 @@ import { SettingsService, StatefulTag } from '../settings.service';
 import { LanguageIndexer } from '../language-indexer';
 import { DataProviderFactoryService } from '../providers/data-provider-factory.service';
 
+import { EditedWordEntryComponent } from '../edited-word-entry/edited-word-entry.component';
+
 
 @Component({
     selector: 'app-database',
@@ -18,6 +20,9 @@ import { DataProviderFactoryService } from '../providers/data-provider-factory.s
     styleUrls: ['./database.component.css']
 })
 export class DatabaseComponent {
+    // To be able to call its 'clear()' method
+    @ViewChild(EditedWordEntryComponent, {static: false}) editedWordEntryComponent;
+
     entries: Observable<WordEntry[]>;
     languages: string[];
     languagePair: LanguagePair;
@@ -29,6 +34,11 @@ export class DatabaseComponent {
 
     editedEntryId?: number;
     editedEntryScore?: number;
+
+    // We have a separate boolean variable because we want the text to remain
+    // there for the whole duration of the fade-out animation.
+    errorDescription: string = "stuff";
+    displayErrorDescription: boolean = false;
 
     private languageIndexer: LanguageIndexer;
 
@@ -87,18 +97,58 @@ export class DatabaseComponent {
         this.settingsService.toggleAllTags().subscribe(() => this.reloadLanguagePairAndTagsAndEntries());
     }
 
+    private entryUnique(targetWord: string, exceptForId?: number): Observable<boolean> {
+        return this.entries.pipe(map(entries => {
+                const result = entries.find(({ word }) => word == targetWord);
+                console.log('Found ', result);
+                if (!result) return true;
+                return result.id === exceptForId; // takes case of undefined exceptForId
+            }));
+    }
+
     submitEntry({ word, translations, tags }: EditedWordEntry) {
-        if (this.editedEntryId === undefined) { // adding a new Entry
-            this.dataProviderFactory.dataProviderInUse()
-                .addWordEntry(this.languagePair, word, translations, tags)
-                .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
-        } else { // submitting changes to an existing Entry
-            this.dataProviderFactory.dataProviderInUse()
-                .updateWordEntry(this.editedEntryId, this.languagePair, word, translations, this.editedEntryScore, tags)
-                .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
-            this.editedEntryId = undefined;
-            this.editedEntryScore = undefined;
-        }
+        this.entryUnique(word, this.editedEntryId).subscribe(unique => {
+            if (!unique) {
+                this.errorDescription = "Entry with such word already exists!";
+                this.displayErrorDescription = true;
+                setTimeout(() => this.displayErrorDescription = false, 3000); // TODO
+                return;
+            }
+
+            if (this.editedEntryId === undefined) { // adding a new Entry
+                this.dataProviderFactory.dataProviderInUse()
+                    .addWordEntry(this.languagePair, word, translations, tags)
+                    .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
+            } else { // submitting changes to an existing Entry
+                this.dataProviderFactory.dataProviderInUse()
+                    .updateWordEntry(this.editedEntryId, this.languagePair,
+                                     word, translations, this.editedEntryScore, tags)
+                    .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
+                this.editedEntryId = undefined;
+                this.editedEntryScore = undefined;
+            }
+
+            this.editedWordEntryComponent.clear();
+        });
+        // if (!this.entryUnique(word, this.editedEntryId)) {
+        //     this.errorDescription = "Entry with such word already exists!";
+        //     this.displayErrorDescription = true;
+        //     setTimeout(() => this.displayErrorDescription = false, 3000); // TODO
+        //     return;
+        // }
+        //
+        // if (this.editedEntryId === undefined) { // adding a new Entry
+        //     this.dataProviderFactory.dataProviderInUse()
+        //         .addWordEntry(this.languagePair, word, translations, tags)
+        //         .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
+        // } else { // submitting changes to an existing Entry
+        //     this.dataProviderFactory.dataProviderInUse()
+        //         .updateWordEntry(this.editedEntryId, this.languagePair,
+        //                          word, translations, this.editedEntryScore, tags)
+        //         .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
+        //     this.editedEntryId = undefined;
+        //     this.editedEntryScore = undefined;
+        // }
     }
 
     removeEntry(id: number) {

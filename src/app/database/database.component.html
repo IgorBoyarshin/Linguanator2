@@ -87,6 +87,11 @@
         [events]="displayEditedEntry.asObservable()"
         (submitEntry)="submitEntry($event)">
     </edited-word-entry>
+
+</section>
+<section class="edited-word-entry-after"
+        [ngClass]="{'visible': displayErrorDescription}">
+    {{ errorDescription }}
 </section>
 
 

@@ -3,10 +3,33 @@
 }
 .edited-word-entry-container {
     /* margin-bottom: 1rem; */
-    border-bottom: 1rem solid #ddd; /* page background */
+    /*border-bottom: 1rem solid #ddd; /* page background */
     position: -webkit-sticky;
     position: sticky;
     top: 3.5rem;
+}
+.edited-word-entry-after {
+    max-width: 58.333333%;
+    margin: auto;
+
+    background-color: #d00;
+    color: black;
+    height: 2rem;
+    line-height: 2rem; /* must be the same as height */
+    vertical-align: middle;
+
+    padding-left: 1.5rem;
+    margin-bottom: 1rem !important;
+
+    transition: margin 0.5s ease-out;
+
+    position: relative;
+    z-index: -10;
+
+    margin-top: -2rem !important;
+}
+.edited-word-entry-after.visible {
+    margin-top: -0rem !important;
 }
 
 #testing-top {
