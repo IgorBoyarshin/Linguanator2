@@ -23,7 +23,7 @@ export class AuthService {
     constructor(private http: HttpClient) {
         const reloginAtFormatted = localStorage.getItem(this.reloginAtTag);
         if (reloginAtFormatted) {
-            const reloginAt = moment(reloginAtFormatted);
+            const reloginAt = moment(JSON.parse(reloginAtFormatted));
             const now = moment();
             const username = localStorage.getItem(this.usernameTag);
             if (now.isAfter(reloginAt)) this.relogin(username);
@@ -61,25 +61,24 @@ export class AuthService {
     private setSession(res, username: string) {
         const tokenHalflifeSeconds = res.expiresIn / 2;
         this.setReloginTimerIn(tokenHalflifeSeconds, username);
-        const reloginAtFormatted = moment().add(tokenHalflifeSeconds, 'seconds').format();
-        const expiresAt = moment().add(res.expiresIn, 'seconds'); // TODO
+        const expiresAt = moment().add(res.expiresIn, 'seconds');
+        const reloginAt = moment().add(tokenHalflifeSeconds, 'seconds');
 
-        localStorage.setItem(this.reloginAtTag, reloginAtFormatted);
         localStorage.setItem(this.usernameTag, username);
         localStorage.setItem(this.idTokenTag, res.idToken);
         localStorage.setItem(this.expiresAtTag, JSON.stringify(expiresAt.valueOf()));
+        localStorage.setItem(this.reloginAtTag, JSON.stringify(reloginAt.valueOf()));
     }
 
     private setReloginTimerIn(halflifeSeconds: number, username: string) {
-        // if (this.reloginSubject) this.reloginSubject.unsubscribe();
         this.reloginSubject = timer(1000 * halflifeSeconds).subscribe(_ => this.relogin(username));
     }
 
     logout() {
-        localStorage.removeItem(this.reloginAtTag);
         localStorage.removeItem(this.usernameTag);
         localStorage.removeItem(this.idTokenTag);
         localStorage.removeItem(this.expiresAtTag);
+        localStorage.removeItem(this.reloginAtTag);
 
         this.reloginSubject.unsubscribe();
         this.logoutNotificatorSubject.next();
