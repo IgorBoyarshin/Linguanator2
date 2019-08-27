@@ -53,7 +53,6 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
         const tags = this.tags.length == 0 ? [] : this.tags.split(';');
         const newWordEntry = new EditedWordEntry(this.word, translations, tags);
         this.submitEntry.emit(newWordEntry);
-        // this.clear();
     }
 
     discard() {

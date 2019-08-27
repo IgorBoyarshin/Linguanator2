@@ -20,7 +20,19 @@ export class AuthService {
 
     private reloginSubject; // TODO: set type
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) {
+        const reloginAtFormatted = localStorage.getItem(this.reloginAtTag);
+        if (reloginAtFormatted) {
+            const reloginAt = moment(reloginAtFormatted);
+            const now = moment();
+            const username = localStorage.getItem(this.usernameTag);
+            if (now.isAfter(reloginAt)) this.relogin(username);
+            else {
+                const countdownSeconds = reloginAt.diff(now, 'seconds');
+                this.setReloginTimerIn(countdownSeconds, username);
+            }
+        }
+    }
 
     createAccount(username: string, password: string): any { // TODO: set type
         return this.http.post<any>(this.createAccountUrl, { username, password }).pipe(
@@ -47,18 +59,24 @@ export class AuthService {
     }
 
     private setSession(res, username: string) {
-        // Set relogin
-        const tokenHalflifeMillis = 1000 * res.expiresIn / 2;
-        this.reloginSubject = timer(tokenHalflifeMillis).subscribe(_ => this.relogin(username));
+        const tokenHalflifeSeconds = res.expiresIn / 2;
+        this.setReloginTimerIn(tokenHalflifeSeconds, username);
+        const reloginAtFormatted = moment().add(tokenHalflifeSeconds, 'seconds').format();
+        const expiresAt = moment().add(res.expiresIn, 'seconds'); // TODO
 
-        const expiresAt = moment().add(res.expiresIn, 'second');
-
+        localStorage.setItem(this.reloginAtTag, reloginAtFormatted);
         localStorage.setItem(this.usernameTag, username);
         localStorage.setItem(this.idTokenTag, res.idToken);
         localStorage.setItem(this.expiresAtTag, JSON.stringify(expiresAt.valueOf()));
     }
 
+    private setReloginTimerIn(halflifeSeconds: number, username: string) {
+        // if (this.reloginSubject) this.reloginSubject.unsubscribe();
+        this.reloginSubject = timer(1000 * halflifeSeconds).subscribe(_ => this.relogin(username));
+    }
+
     logout() {
+        localStorage.removeItem(this.reloginAtTag);
         localStorage.removeItem(this.usernameTag);
         localStorage.removeItem(this.idTokenTag);
         localStorage.removeItem(this.expiresAtTag);
@@ -96,4 +114,5 @@ export class AuthService {
     get usernameTag(): string { return 'username'; }
     get idTokenTag(): string { return 'id_token'; }
     get expiresAtTag(): string { return 'expires_at'; }
+    get reloginAtTag(): string { return 'relogin_at'; }
 }

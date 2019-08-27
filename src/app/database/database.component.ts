@@ -100,7 +100,6 @@ export class DatabaseComponent {
     private entryUnique(targetWord: string, exceptForId?: number): Observable<boolean> {
         return this.entries.pipe(map(entries => {
                 const result = entries.find(({ word }) => word == targetWord);
-                console.log('Found ', result);
                 if (!result) return true;
                 return result.id === exceptForId; // takes case of undefined exceptForId
             }));
