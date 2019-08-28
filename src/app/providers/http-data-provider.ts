@@ -31,11 +31,11 @@ export class HttpDataProvider implements DataProvider {
 
     constructor(private http: HttpClient) {}
 
-    toWordEntry({userId, id, fromlanguage, tolanguage, word, translations, score, tags}: DbWordEntry): WordEntry {
+    public toWordEntry({userId, id, fromlanguage, tolanguage, word, translations, score, tags}: DbWordEntry): WordEntry {
         return new WordEntry(userId, id, fromlanguage, tolanguage, word, translations, score, tags);
     }
 
-    retrieveEntries(): Observable<WordEntry[]> {
+    public retrieveEntries(): Observable<WordEntry[]> {
         // TODO: Potentially creates multiple Observables, each one sent to query
         // the result and rewrite this.entries upon arrival
         if (!this.entries) {
@@ -52,7 +52,7 @@ export class HttpDataProvider implements DataProvider {
         return of(this.entries);
     }
 
-    retrieveLanguageIndexer(): Observable<LanguageIndexer> {
+    public retrieveLanguageIndexer(): Observable<LanguageIndexer> {
         if (!this.languageIndexer) {
             // TODO: need to store the created observable and return it
             // console.log('Pre-tapping get() from retrieveLanguageIndexer()');
@@ -79,10 +79,10 @@ export class HttpDataProvider implements DataProvider {
     }
 
 
-    addWordEntry({ src, dst }: LanguagePair,
-                 word: string,
-                 translations: string[],
-                 tags: string[]): Observable<void> {
+    public addWordEntry({ src, dst }: LanguagePair,
+                        word: string,
+                        translations: string[],
+                        tags: string[]): Observable<void> {
         return Observable.create(subscriber => {
             console.log('Sending post() from addWordEntry()');
             this.http.post<any>(this.entriesUrl,
@@ -96,12 +96,12 @@ export class HttpDataProvider implements DataProvider {
         }).pipe(catchError((err) => {console.error('HERE3', err); return of();}));
     }
 
-    updateWordEntry(id: number,
-                    { src, dst }: LanguagePair,
-                    word: string,
-                    translations: string[],
-                    score: number,
-                    tags: string[]): Observable<void> {
+    public updateWordEntry(id: number,
+                           { src, dst }: LanguagePair,
+                           word: string,
+                           translations: string[],
+                           score: number,
+                           tags: string[]): Observable<void> {
         return Observable.create(subscriber => {
             console.log('Sending update() from updateWordEntry()');
             const url = this.entriesUrl + `/${id}`;
@@ -115,7 +115,7 @@ export class HttpDataProvider implements DataProvider {
         });
     }
 
-    removeWordEntry(id: number): Observable<void> {
+    public removeWordEntry(id: number): Observable<void> {
         return Observable.create(subscriber => {
             console.log('Sending delete() from removeWordEntry()');
             const url = this.entriesUrl + `/${id}`;

@@ -22,7 +22,7 @@ export class Destination extends LanguageContainer {
 class Destinations {
     constructor(private destinations: Destination[] = []) {}
 
-    to(language: number): WordEntry[] {
+    public to(language: number): WordEntry[] {
         for (let destination of this.destinations) {
             if (destination.isFor(language)) {
                 return destination.entriesList;
@@ -38,7 +38,7 @@ class Destinations {
 export class Dictionary {
     constructor(private sources: Source[] = []) {}
 
-    from(language: number): Destinations {
+    public from(language: number): Destinations {
         for (let source of this.sources) {
             if (source.isFor(language)) {
                 return source.destinations;
@@ -50,7 +50,7 @@ export class Dictionary {
         return newSource.destinations;
     }
 
-    add(...entries: WordEntry[]) {
+    public add(...entries: WordEntry[]) {
         for (let entry of entries) {
             this.from(entry.from)
                 .to  (entry.to)
@@ -58,7 +58,7 @@ export class Dictionary {
         }
     }
 
-    clear() {
+    public clear() {
         this.sources = [];
     }
 }

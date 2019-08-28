@@ -40,12 +40,12 @@ export class SettingsService {
         );
     }
 
-    resetTagsCache() {
+    public resetTagsCache() {
         this.tags = null;
         this.currentTags = null;
     }
 
-    toggleAllTags(): Observable<void> {
+    public toggleAllTags(): Observable<void> {
         return Observable.create(subscriber => {
             const allChecked = this.currentTags.length == this.tags.length; // XXX: hack
             if (allChecked) this.currentTags = [];
@@ -55,7 +55,7 @@ export class SettingsService {
         });
     }
 
-    setTagState(tag: string, checked: boolean): Observable<void> {
+    public setTagState(tag: string, checked: boolean): Observable<void> {
         return Observable.create(subscriber => {
             this._setTagState(tag, checked);
             subscriber.next();
@@ -71,7 +71,7 @@ export class SettingsService {
         }
     }
 
-    allStatefulTags(): Observable<StatefulTag[]> {
+    public allStatefulTags(): Observable<StatefulTag[]> {
         return combineLatest(this.allTags(), this.tagsInUse())
             .pipe(map(([allTags, tagsInUse]) => allTags.map(tag => {
                     const checked = tagsInUse.includes(tag);
@@ -80,7 +80,7 @@ export class SettingsService {
             ));
     }
 
-    allTags(): Observable<string[]> {
+    public allTags(): Observable<string[]> {
         if (!this.tags) {
             return Observable.create(subscriber => {
                 this.dataProviderFactory.dataProviderInUse().retrieveEntries().subscribe(entries => {
@@ -106,7 +106,7 @@ export class SettingsService {
         return of(this.currentTags);
     }
 
-    languagePairInUse(): Observable<LanguagePair> {
+    public languagePairInUse(): Observable<LanguagePair> {
         if (!this.currentLanguagePair) {
             return Observable.create(subscriber => {
                 this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer().subscribe(languageIndexer => {
@@ -130,11 +130,11 @@ export class SettingsService {
     // is already resolved and ready (this is probable since these methods are triggered
     // by user and not by application init logic, so we take advantage of the
     // user's slow interaction with our application).
-    changeSrcLanguageTo(language: string) {
+    public changeSrcLanguageTo(language: string) {
         this.changeLanguageTo(true, language);
     }
 
-    changeDstLanguageTo(language: string) {
+    public changeDstLanguageTo(language: string) {
         this.changeLanguageTo(false, language);
     }
 

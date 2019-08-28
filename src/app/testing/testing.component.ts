@@ -22,9 +22,9 @@ enum Match {
 }
 
 class EvaluationStats {
-    full:         number = 0;
-    partial:      number = 0;
-    insufficient: number = 0;
+    public full:         number = 0;
+    public partial:      number = 0;
+    public insufficient: number = 0;
 
     constructor(matches: Match[]) {
         for (let match of matches) {
@@ -47,21 +47,21 @@ class EvaluationStats {
     }
 })
 export class TestingComponent {
-    userInput: string = "";
-    wordEntry: WordEntry;
-    languagePair: LanguagePair;
-    state: State;
+    public userInput: string = "";
+    public wordEntry: WordEntry;
+    public languagePair: LanguagePair;
+    public state: State;
 
-    statefulTags: StatefulTag[];
+    public statefulTags: StatefulTag[];
 
-    result: Match | undefined = undefined;
-    resultDelta: number;
+    public result: Match | undefined = undefined;
+    public resultDelta: number;
 
     private languageIndexer: LanguageIndexer;
-    languages: string[];
+    public languages: string[];
 
-    doTestBothWays: boolean = true;
-    testingReverse: boolean;
+    public doTestBothWays: boolean = true;
+    public testingReverse: boolean;
 
     constructor(
             private dataProviderFactory: DataProviderFactoryService,
@@ -86,7 +86,7 @@ export class TestingComponent {
         return this.languageIndexer.nameOf(this.languagePair.dst);
     }
 
-    submit() {
+    public submit() {
         if (this.state == State.UserInput) { // Accept answer and display the result
             this.userInput = this.userInput.trim();
             if (this.userInput.length == 0) return;
@@ -225,21 +225,21 @@ export class TestingComponent {
         return true;
     }
 
-    changeSrcLanguageTo(language: string) {
+    public changeSrcLanguageTo(language: string) {
         this.settingsService.changeSrcLanguageTo(language);
         this.reloadEntry();
     }
 
-    changeDstLanguageTo(language: string) {
+    public changeDstLanguageTo(language: string) {
         this.settingsService.changeDstLanguageTo(language);
         this.reloadEntry();
     }
 
-    submitButtonText(): string {
+    public submitButtonText(): string {
         return (this.state == State.UserInput) ? "Submit" : "Next";
     }
 
-    textareaDisabled(): boolean {
+    public textareaDisabled(): boolean {
         return this.state != State.UserInput;
     }
 
@@ -254,48 +254,48 @@ export class TestingComponent {
         }
     }
 
-    resultIs(match: Match): boolean {
+    public resultIs(match: Match): boolean {
         return (this.result === match);
     }
 
-    resultIsFull(): boolean {
+    public resultIsFull(): boolean {
         return this.resultIs(Match.Full);
     }
 
-    resultIsPartial(): boolean {
+    public resultIsPartial(): boolean {
         return this.resultIs(Match.Partial);
     }
 
-    resultIsInsufficient(): boolean {
+    public resultIsInsufficient(): boolean {
         return this.resultIs(Match.Insufficient);
     }
 
-    doDisplayResult(): boolean {
+    public doDisplayResult(): boolean {
         return this.state == State.DisplayResult;
     }
 
-    toggleTag({tag, checked}: StatefulTag) {
+    public toggleTag({tag, checked}: StatefulTag) {
         this.settingsService.setTagState(tag, !checked).subscribe(() => this.reloadEntry());
     }
 
-    toggleAllTags() {
+    public toggleAllTags() {
         this.settingsService.toggleAllTags().subscribe(() => this.reloadEntry());
     }
 
-    toggleTestBothWays() {
+    public toggleTestBothWays() {
         this.doTestBothWays = !this.doTestBothWays;
         if (this.state == State.UserInput) {
             if (this.testingReverse && !this.doTestBothWays) this.reloadEntry();
         }
     }
 
-    translationSrc(): string {
+    public translationSrc(): string {
         if (!this.wordEntry) return "";
         if (this.testingReverse) return this.wordEntry.translations.join("; ");
         else                     return this.wordEntry.word;
     }
 
-    translationDst(): string {
+    public translationDst(): string {
         if (!this.wordEntry) return "";
         if (this.testingReverse) return this.wordEntry.word;
         else                     return this.wordEntry.translations.join("; ")

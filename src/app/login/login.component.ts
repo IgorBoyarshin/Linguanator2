@@ -10,13 +10,13 @@ import { AuthService } from '../auth/auth.service';
     styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-    form: FormGroup;
+    public form: FormGroup;
 
-    loggingIntoExisting = true;
+    public loggingIntoExisting = true;
 
     // TODO Check states everywhere
-    usernameErrorDescription?: string;
-    totalErrorDescription?: string;
+    public usernameErrorDescription?: string;
+    public totalErrorDescription?: string;
 
     constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
         this.form = this.fb.group({
@@ -25,7 +25,7 @@ export class LoginComponent {
         });
     }
 
-    submit() {
+    public submit() {
         const { username, password } = this.form.value;
         if (username && password) {
             // To give at least a small period of corectness to give a visual
@@ -61,17 +61,17 @@ export class LoginComponent {
         }
     }
 
-    invalidUsername(): boolean {
+    public invalidUsername(): boolean {
         // TODO
         return Boolean(this.totalErrorDescription) || Boolean(this.usernameErrorDescription);
     }
 
-    invalidPassword(): boolean {
+    public invalidPassword(): boolean {
         // TODO
         return Boolean(this.totalErrorDescription);
     }
 
-    switchMethod() {
+    public switchMethod() {
         this.loggingIntoExisting = !this.loggingIntoExisting;
 
         // clear

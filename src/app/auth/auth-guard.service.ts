@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 export class AuthGuardService implements CanActivate {
     constructor(public auth: AuthService, public router: Router) {}
 
-    canActivate(): boolean {
+    public canActivate(): boolean {
         if (!this.auth.tokenExpired()) return true;
 
         this.router.navigateByUrl('/login');

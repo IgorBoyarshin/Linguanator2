@@ -33,13 +33,13 @@ export class AuthService {
         }
     }
 
-    createAccount(username: string, password: string): any { // TODO: set type
+    public createAccount(username: string, password: string): any { // TODO: set type
         return this.http.post<any>(this.createAccountUrl, { username, password }).pipe(
             shareReplay()
         );
     }
 
-    login(username: string, password: string): any { // TODO: set type
+    public login(username: string, password: string): any { // TODO: set type
         return this.http.post<any>(this.loginUrl, { username, password }).pipe(
             tap(res => this.setSession(res, username)),
             tap(_ => this.loginNotificatorSubject.next()),
@@ -73,7 +73,7 @@ export class AuthService {
         this.reloginSubject = timer(1000 * halflifeSeconds).subscribe(_ => this.relogin(username));
     }
 
-    logout() {
+    public logout() {
         localStorage.removeItem(this.usernameTag);
         localStorage.removeItem(this.idTokenTag);
         localStorage.removeItem(this.expiresAtTag);
@@ -89,17 +89,17 @@ export class AuthService {
         return moment(expiresAt);
     }
 
-    tokenExpired(): boolean {
+    public tokenExpired(): boolean {
         const expiration = this.tokenExpiration();
         if (!expiration) return true;
         return moment().isAfter(this.tokenExpiration());
     }
 
-    currentUsername(): string {
+    public currentUsername(): string {
         return localStorage.getItem(this.usernameTag);
     }
 
-    loginNotificator(): Subject<void> {
+    public loginNotificator(): Subject<void> {
         return this.loginNotificatorSubject;
     }
 

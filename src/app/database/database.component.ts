@@ -23,22 +23,22 @@ export class DatabaseComponent {
     // To be able to call its 'clear()' method
     @ViewChild(EditedWordEntryComponent, {static: false}) editedWordEntryComponent;
 
-    entries: Observable<WordEntry[]>;
-    languages: string[];
-    languagePair: LanguagePair;
-    primaryLanguage: string;
-    secondaryLanguage: string;
-    allStatefulTagsObservable: Observable<StatefulTag[]>;
+    public entries: Observable<WordEntry[]>;
+    public languages: string[];
+    public languagePair: LanguagePair;
+    public primaryLanguage: string;
+    public secondaryLanguage: string;
+    public allStatefulTagsObservable: Observable<StatefulTag[]>;
 
     private displayEditedEntry = new Subject<EditedWordEntry>(); // to child component
 
-    editedEntryId?: number;
-    editedEntryScore?: number;
+    public editedEntryId?: number;
+    public editedEntryScore?: number;
 
     // We have a separate boolean variable because we want the text to remain
     // there for the whole duration of the fade-out animation.
-    errorDescription: string = "stuff";
-    displayErrorDescription: boolean = false;
+    public errorDescription: string = "stuff";
+    public displayErrorDescription: boolean = false;
 
     private languageIndexer: LanguageIndexer;
 
@@ -89,11 +89,11 @@ export class DatabaseComponent {
         this.reloadTagsAndEntries(languagePair);
     }
 
-    toggleTag({tag, checked}: StatefulTag) {
+    public toggleTag({tag, checked}: StatefulTag) {
         this.settingsService.setTagState(tag, !checked).subscribe(() => this.reloadLanguagePairAndTagsAndEntries());
     }
 
-    toggleAllTags() {
+    public toggleAllTags() {
         this.settingsService.toggleAllTags().subscribe(() => this.reloadLanguagePairAndTagsAndEntries());
     }
 
@@ -105,7 +105,7 @@ export class DatabaseComponent {
             }));
     }
 
-    submitEntry({ word, translations, tags }: EditedWordEntry) {
+    public submitEntry({ word, translations, tags }: EditedWordEntry) {
         this.entryUnique(word, this.editedEntryId).subscribe(unique => {
             if (!unique) {
                 this.errorDescription = "Entry with such word already exists!";
@@ -150,24 +150,24 @@ export class DatabaseComponent {
         // }
     }
 
-    removeEntry(id: number) {
+    public removeEntry(id: number) {
         this.dataProviderFactory.dataProviderInUse().removeWordEntry(id)
             .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
     }
 
-    editEntry({ id, word, translations, score, tags }: WordEntry) {
+    public editEntry({ id, word, translations, score, tags }: WordEntry) {
         this.editedEntryId = id;
         this.editedEntryScore = score;
         this.displayEditedEntry.next(new EditedWordEntry(word, translations, tags));
     }
 
-    changeSrcLanguageTo(language: string) {
+    public changeSrcLanguageTo(language: string) {
         this.settingsService.changeSrcLanguageTo(language);
         this.reloadLanguagePairAndTagsAndEntries();
         this.reloadPrimaryAndSecondaryLanguages();
     }
 
-    changeDstLanguageTo(language: string) {
+    public changeDstLanguageTo(language: string) {
         this.settingsService.changeDstLanguageTo(language);
         this.reloadLanguagePairAndTagsAndEntries();
         this.reloadPrimaryAndSecondaryLanguages();

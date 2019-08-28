@@ -9,17 +9,17 @@ import { AuthService } from '../auth/auth.service';
 })
 export class NavigationComponent implements OnInit {
     constructor(private authService: AuthService) {}
-    ngOnInit() {}
+    public ngOnInit() {}
 
-    currentUsername(): string {
+    public currentUsername(): string {
         return this.authService.currentUsername();
     }
 
-    loggedIn(): boolean {
+    public loggedIn(): boolean {
         return !this.authService.tokenExpired();
     }
 
-    logout() {
+    public logout() {
         this.authService.logout();
         window.location.reload();
     }

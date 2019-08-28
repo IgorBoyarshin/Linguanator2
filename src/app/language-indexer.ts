@@ -3,7 +3,7 @@ import { Language } from './language-model';
 export class LanguageIndexer {
     constructor(private languages: Language[]) {}
 
-    nameOf(id: number): string {
+    public nameOf(id: number): string {
         for (let language of this.languages) {
             if (language.id == id) return language.name;
         }
@@ -11,7 +11,7 @@ export class LanguageIndexer {
         return '';
     }
 
-    indexOf(name: string): number {
+    public indexOf(name: string): number {
         for (let language of this.languages) {
             if (language.name == name) return language.id;
         }
@@ -19,7 +19,7 @@ export class LanguageIndexer {
         return -1;
     }
 
-    allNames(): string[] {
+    public allNames(): string[] {
         return this.languages.map(language => language.name);
     }
 }

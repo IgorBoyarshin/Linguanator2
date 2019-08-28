@@ -14,19 +14,19 @@ import { Observable } from 'rxjs';
 })
 export class EditedWordEntryComponent implements OnInit, OnDestroy {
     // [(ngModel)]
-    word: string;
-    translations: string;
-    tags: string;
+    public word: string;
+    public translations: string;
+    public tags: string;
 
-    editingExistingEntry: boolean;
+    public editingExistingEntry: boolean;
 
-    @Output() submitEntry = new EventEmitter<EditedWordEntry>();
-    @Input() events: Observable<EditedWordEntry>;
+    @Output() public submitEntry = new EventEmitter<EditedWordEntry>();
+    @Input() public events: Observable<EditedWordEntry>;
     private displayEntrySubscription: any;
 
     constructor() { this.clear(); }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.displayEntrySubscription = this.events.subscribe(({ word, translations, tags }: EditedWordEntry) => {
             this.editingExistingEntry = true;
 
@@ -36,26 +36,26 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
         });
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         this.displayEntrySubscription.unsubscribe();
     }
 
-    canSubmit(): boolean {
+    public canSubmit(): boolean {
         return (this.word.trim().length > 0) && (this.translations.trim().length > 0);
     }
 
-    canDiscard(): boolean {
+    public canDiscard(): boolean {
         return (this.word.length > 0) || (this.translations.length > 0) || (this.tags.length > 0);
     }
 
-    submit() {
+    public submit() {
         const translations = this.translations.split(';');
         const tags = this.tags.length == 0 ? [] : this.tags.split(';');
         const newWordEntry = new EditedWordEntry(this.word, translations, tags);
         this.submitEntry.emit(newWordEntry);
     }
 
-    discard() {
+    public discard() {
         this.clear();
     }
 
