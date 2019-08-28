@@ -38,14 +38,6 @@ export class SettingsService {
                     );
                 })
         );
-        this.authService.logoutNotificator().subscribe(() => this.resetTotalCache());
-    }
-
-    private resetTotalCache() {
-        this.languageIndexer = null;
-        this.currentLanguagePair = null;
-        this.tags = null;
-        this.currentTags = null;
     }
 
     resetTagsCache() {

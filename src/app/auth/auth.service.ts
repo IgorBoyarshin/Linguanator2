@@ -16,7 +16,6 @@ export class AuthService {
     private loginUrl = 'https://whateveryouwannacallit.tk/login';
     private reloginUrl = 'https://whateveryouwannacallit.tk/relogin';
     private loginNotificatorSubject = new Subject<void>();
-    private logoutNotificatorSubject = new Subject<void>();
 
     private reloginSubject; // TODO: set type
 
@@ -81,7 +80,6 @@ export class AuthService {
         localStorage.removeItem(this.reloginAtTag);
 
         this.reloginSubject.unsubscribe();
-        this.logoutNotificatorSubject.next();
     }
 
     private tokenExpiration (): any { // TODO
@@ -103,10 +101,6 @@ export class AuthService {
 
     loginNotificator(): Subject<void> {
         return this.loginNotificatorSubject;
-    }
-
-    logoutNotificator(): Subject<void> {
-        return this.logoutNotificatorSubject;
     }
 
     // TODO: use private members or not?
