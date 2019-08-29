@@ -33,41 +33,44 @@ export class LoginComponent {
             this.usernameErrorDescription = null;
             this.totalErrorDescription = null;
 
-            if (this.loggingIntoExisting) {
-                this.authService.login(username, password).subscribe(() => {
-                    console.log('Got logged in!');
-                    this.router.navigateByUrl('/testing');
-                }, err => {
-                    switch (err.error.code) {
-                        case 'ERR_INVALID_CREDENTIALS':
-                            this.totalErrorDescription = 'Invalid username/password combination';
-                            break;
-                        case 'ERR_UNKNOWN': console.error('Something went wrong'); // TODO
-                    }
-                });
-            } else {
-                this.authService.createAccount(username, password).subscribe(() => {
-                    console.log('Created new account!');
-                    this.loggingIntoExisting = true;
-                }, err => {
-                    switch (err.error.code) {
-                        case 'ERR_USERNAME_EXISTS':
-                            this.usernameErrorDescription = 'This username already exists';
-                            break;
-                        case 'ERR_UNKNOWN': console.error('Something went wrong'); // TODO
-                    }
-                });
-            }
+            if (this.loggingIntoExisting) this.login        (username, password);
+            else                          this.createAccount(username, password);
         }
     }
 
+    private login(username: string, password: string) {
+        this.authService.login(username, password).subscribe(() => {
+            console.log('Got logged in!');
+            this.router.navigateByUrl('/testing');
+        }, err => {
+            switch (err.error.code) {
+                case 'ERR_INVALID_CREDENTIALS':
+                    this.totalErrorDescription = 'Invalid username/password combination';
+                    break;
+                case 'ERR_UNKNOWN': console.error('Something went wrong'); // TODO
+            }
+        });
+    }
+
+    private createAccount(username: string, password: string) {
+        this.authService.createAccount(username, password).subscribe(() => {
+            console.log('Created new account!');
+            this.login(username, password); // login at once after a successful create
+        }, err => {
+            switch (err.error.code) {
+                case 'ERR_USERNAME_EXISTS':
+                    this.usernameErrorDescription = 'This username already exists';
+                    break;
+                case 'ERR_UNKNOWN': console.error('Something went wrong'); // TODO
+            }
+        });
+    }
+
     public invalidUsername(): boolean {
-        // TODO
         return Boolean(this.totalErrorDescription) || Boolean(this.usernameErrorDescription);
     }
 
     public invalidPassword(): boolean {
-        // TODO
         return Boolean(this.totalErrorDescription);
     }
 
