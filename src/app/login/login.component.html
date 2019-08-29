@@ -29,10 +29,9 @@
             <p>
                 {{ loggingIntoExisting ? "Don't have an account?" : "Already have an account?" }}
             </p>
-            <!-- <a href="" (click)="switchMethod()"> -->
-            <p id="link" (click)="switchMethod()">
+            <a href="#" (click)="switchMethod($event)">
                 {{ loggingIntoExisting ? "Sign up!" : "Log in" }}
-            </p>
+            </a>
         </section>
     </form>
 </div>

@@ -71,11 +71,15 @@ export class LoginComponent {
         return Boolean(this.totalErrorDescription);
     }
 
-    public switchMethod() {
+    public switchMethod(event) {
+        event.stopPropagation();
+
         this.loggingIntoExisting = !this.loggingIntoExisting;
 
         // clear
         this.usernameErrorDescription = null
         this.totalErrorDescription = null;
+
+        return false; // in order to stop propagation
     }
 }
