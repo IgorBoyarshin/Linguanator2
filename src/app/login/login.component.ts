@@ -14,7 +14,6 @@ export class LoginComponent {
 
     public loggingIntoExisting = true;
 
-    // TODO Check states everywhere
     public usernameErrorDescription?: string;
     public totalErrorDescription?: string;
 
@@ -47,7 +46,10 @@ export class LoginComponent {
                 case 'ERR_INVALID_CREDENTIALS':
                     this.totalErrorDescription = 'Invalid username/password combination';
                     break;
-                case 'ERR_UNKNOWN': console.error('Something went wrong'); // TODO
+                case 'ERR_UNKNOWN':
+                    this.totalErrorDescription = 'Unknown error...';
+                    console.error('Unknown error...');
+                    break;
             }
         });
     }
@@ -55,13 +57,16 @@ export class LoginComponent {
     private createAccount(username: string, password: string) {
         this.authService.createAccount(username, password).subscribe(() => {
             console.log('Created new account!');
-            this.login(username, password); // login at once after a successful create
+            this.login(username, password); // login at once after a successful creation
         }, err => {
             switch (err.error.code) {
                 case 'ERR_USERNAME_EXISTS':
                     this.usernameErrorDescription = 'This username already exists';
                     break;
-                case 'ERR_UNKNOWN': console.error('Something went wrong'); // TODO
+                case 'ERR_UNKNOWN':
+                    this.usernameErrorDescription = 'Unknown error...';
+                    console.error('Unknown error...');
+                    break;
             }
         });
     }

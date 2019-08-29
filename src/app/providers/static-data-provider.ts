@@ -14,8 +14,6 @@
 //     constructor() {}
 //
 //     retrieveEntries(): Observable<WordEntry[]> {
-//         // TODO: Potentially creates multiple Observables, each one sent to query
-//         // the result and rewrite this.entries upon arrival
 //         if (!this.entries) {
 //             return Observable.create(subscriber => {
 //                 this.retrieveLanguageIndexer().subscribe(languageIndexer => {

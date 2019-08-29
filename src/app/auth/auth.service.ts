@@ -6,8 +6,6 @@ import { Injectable } from '@angular/core';
 
 import * as TAGS from './local-storage-tags';
 
-import { User } from '../user.model';
-
 import * as moment from 'moment';
 
 @Injectable({
