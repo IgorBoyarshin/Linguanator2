@@ -97,20 +97,32 @@ export class DatabaseComponent {
         this.settingsService.toggleAllTags().subscribe(() => this.reloadLanguagePairAndTagsAndEntries());
     }
 
-    private entryUnique(targetWord: string, exceptForId?: number): Observable<boolean> {
+    // Allow for multiple empty translations
+    private entryUnique(targetWord: string, targetTranslations: string[], exceptForId?: number): Observable<boolean> {
         return this.entries.pipe(map(entries => {
-                const result = entries.find(({ word }) => word == targetWord);
-                if (!result) return true;
-                return result.id === exceptForId; // takes case of undefined exceptForId
-            }));
+            const result = entries.find(({ word, translations }) =>
+                (word == targetWord) || (this.arraysSameButNotEmpty(translations, targetTranslations)));
+            if (!result) return true;
+            return result.id === exceptForId; // takes care of exceptForId being undefined
+        }));
+    }
+
+    private arraysSameButNotEmpty(a1: any[], a2: any[]): boolean {
+        if (a1.length != a2.length) return false;
+        if (a1.length == 0) return false; // a2.length == a1.length
+
+        for (let i = 0; i < a1.length; i++) {
+            if (a1[i] != a2[i]) return false;
+        }
+        return true;
     }
 
     public submitEntry({ word, translations, tags }: EditedWordEntry) {
-        this.entryUnique(word, this.editedEntryId).subscribe(unique => {
+        this.entryUnique(word, translations, this.editedEntryId).subscribe(unique => {
             if (!unique) {
-                this.errorDescription = "Entry with such word already exists!";
+                this.errorDescription = "Entry with such word or translations already exists!";
                 this.displayErrorDescription = true;
-                setTimeout(() => this.displayErrorDescription = false, 3000); // TODO
+                setTimeout(() => this.displayErrorDescription = false, 3000);
                 return;
             }
 
@@ -129,25 +141,6 @@ export class DatabaseComponent {
 
             this.editedWordEntryComponent.clear();
         });
-        // if (!this.entryUnique(word, this.editedEntryId)) {
-        //     this.errorDescription = "Entry with such word already exists!";
-        //     this.displayErrorDescription = true;
-        //     setTimeout(() => this.displayErrorDescription = false, 3000); // TODO
-        //     return;
-        // }
-        //
-        // if (this.editedEntryId === undefined) { // adding a new Entry
-        //     this.dataProviderFactory.dataProviderInUse()
-        //         .addWordEntry(this.languagePair, word, translations, tags)
-        //         .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
-        // } else { // submitting changes to an existing Entry
-        //     this.dataProviderFactory.dataProviderInUse()
-        //         .updateWordEntry(this.editedEntryId, this.languagePair,
-        //                          word, translations, this.editedEntryScore, tags)
-        //         .subscribe(() => this.resetCacheAndReloadTagsAndEntries(this.languagePair));
-        //     this.editedEntryId = undefined;
-        //     this.editedEntryScore = undefined;
-        // }
     }
 
     public removeEntry(id: number) {

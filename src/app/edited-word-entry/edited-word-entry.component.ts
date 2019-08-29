@@ -41,7 +41,7 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
     }
 
     public canSubmit(): boolean {
-        return (this.word.trim().length > 0) && (this.translations.trim().length > 0);
+        return (this.word.trim().length > 0);
     }
 
     public canDiscard(): boolean {
@@ -49,7 +49,7 @@ export class EditedWordEntryComponent implements OnInit, OnDestroy {
     }
 
     public submit() {
-        const translations = this.translations.split(';');
+        const translations = this.translations.length == 0 ? [] : this.translations.split(';');
         const tags = this.tags.length == 0 ? [] : this.tags.split(';');
         const newWordEntry = new EditedWordEntry(this.word, translations, tags);
         this.submitEntry.emit(newWordEntry);

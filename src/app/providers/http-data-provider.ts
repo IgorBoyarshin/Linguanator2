@@ -32,6 +32,8 @@ export class HttpDataProvider implements DataProvider {
     constructor(private http: HttpClient) {}
 
     public toWordEntry({userId, id, fromlanguage, tolanguage, word, translations, score, tags}: DbWordEntry): WordEntry {
+        // DB allows for multiple null translations and stores them as such
+        if (!translations) translations = [];
         return new WordEntry(userId, id, fromlanguage, tolanguage, word, translations, score, tags);
     }
 
@@ -83,6 +85,9 @@ export class HttpDataProvider implements DataProvider {
                         word: string,
                         translations: string[],
                         tags: string[]): Observable<void> {
+        // DB allows for multiple null translations and stores them as such
+        if (translations.length == 0) translations = null;
+
         return Observable.create(subscriber => {
             console.log('Sending post() from addWordEntry()');
             this.http.post<any>(this.entriesUrl,
@@ -102,6 +107,9 @@ export class HttpDataProvider implements DataProvider {
                            translations: string[],
                            score: number,
                            tags: string[]): Observable<void> {
+        // DB allows for multiple null translations and stores them as such
+        if (translations.length == 0) translations = null;
+
         return Observable.create(subscriber => {
             console.log('Sending update() from updateWordEntry()');
             const url = this.entriesUrl + `/${id}`;
