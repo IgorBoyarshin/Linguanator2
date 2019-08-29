@@ -101,7 +101,7 @@ export class DatabaseComponent {
     private entryUnique(targetWord: string, targetTranslations: string[], exceptForId?: number): Observable<boolean> {
         return this.entries.pipe(map(entries => {
             const result = entries.find(({ word, translations }) =>
-                (word == targetWord) || (this.arraysSameButNotEmpty(translations, targetTranslations)));
+                (word == targetWord) || this.arraysSameButNotEmpty(translations, targetTranslations));
             if (!result) return true;
             return result.id === exceptForId; // takes care of exceptForId being undefined
         }));
