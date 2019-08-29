@@ -1,4 +1,4 @@
-import { Observable, Subject, timer } from 'rxjs';
+import { Subscription, Observable, Subject, timer } from 'rxjs';
 import { tap, shareReplay } from 'rxjs/operators';
 
 import { HttpClient } from '@angular/common/http';
@@ -7,6 +7,13 @@ import { Injectable } from '@angular/core';
 import * as TAGS from './local-storage-tags';
 
 import * as moment from 'moment';
+
+
+interface LoginResponse {
+    idToken: string;
+    expiresIn: number;
+}
+
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +24,7 @@ export class AuthService {
     private reloginUrl = 'https://whateveryouwannacallit.tk/relogin';
     private loginNotificatorSubject = new Subject<void>();
 
-    private reloginSubject; // TODO: set type
+    private reloginSubject: Subscription;
 
     constructor(private http: HttpClient) {
         const reloginAtFormatted = localStorage.getItem(TAGS.reloginAt);
@@ -33,14 +40,14 @@ export class AuthService {
         }
     }
 
-    public createAccount(username: string, password: string): any { // TODO: set type
-        return this.http.post<any>(this.createAccountUrl, { username, password }).pipe(
+    public createAccount(username: string, password: string): Observable<void> {
+        return this.http.post<void>(this.createAccountUrl, { username, password }).pipe(
             shareReplay()
         );
     }
 
-    public login(username: string, password: string): any { // TODO: set type
-        return this.http.post<any>(this.loginUrl, { username, password }).pipe(
+    public login(username: string, password: string): Observable<LoginResponse> {
+        return this.http.post<LoginResponse>(this.loginUrl, { username, password }).pipe(
             tap(res => this.setSession(res, username)),
             tap(_ => this.loginNotificatorSubject.next()),
             shareReplay()
@@ -50,21 +57,21 @@ export class AuthService {
     private relogin(username: string) {
         console.log('------ Relogging --------');
         this.reloginSubject.unsubscribe(); // finish previous
-        // TODO: posting {} since the only data we need to send (token) is in the header
-        this.http.post<any>(this.reloginUrl, {}).pipe(
+        // Posting {} since the only data we need to send (token) is in the header
+        this.http.post<LoginResponse>(this.reloginUrl, {}).pipe(
             tap(res => this.setSession(res, username)),
             shareReplay()
         ).subscribe();
     }
 
-    private setSession(res, username: string) {
-        const tokenHalflifeSeconds = res.expiresIn / 2;
+    private setSession({ idToken, expiresIn }: LoginResponse, username: string) {
+        const tokenHalflifeSeconds = expiresIn / 2;
         this.setReloginTimerIn(tokenHalflifeSeconds, username);
-        const expiresAt = moment().add(res.expiresIn, 'seconds');
+        const expiresAt = moment().add(expiresIn, 'seconds');
         const reloginAt = moment().add(tokenHalflifeSeconds, 'seconds');
 
         localStorage.setItem(TAGS.username, username);
-        localStorage.setItem(TAGS.idToken, res.idToken);
+        localStorage.setItem(TAGS.idToken, idToken);
         localStorage.setItem(TAGS.expiresAt, JSON.stringify(expiresAt.valueOf()));
         localStorage.setItem(TAGS.reloginAt, JSON.stringify(reloginAt.valueOf()));
     }
@@ -82,7 +89,7 @@ export class AuthService {
         this.reloginSubject.unsubscribe();
     }
 
-    private tokenExpiration (): any { // TODO
+    private tokenExpiration(): moment.Moment {
         const item = localStorage.getItem(TAGS.expiresAt);
         if (!item) return null;
         const expiresAt = JSON.parse(item);
