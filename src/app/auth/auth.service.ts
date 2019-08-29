@@ -4,7 +4,7 @@ import { tap, shareReplay } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import * as TAGS from './local-storage-tags';
+import * as Tags from './local-storage-tags';
 
 import * as moment from 'moment';
 
@@ -27,11 +27,11 @@ export class AuthService {
     private reloginSubject: Subscription;
 
     constructor(private http: HttpClient) {
-        const reloginAtFormatted = localStorage.getItem(TAGS.reloginAt);
+        const reloginAtFormatted = localStorage.getItem(Tags.RELOGIN_AT);
         if (reloginAtFormatted) {
             const reloginAt = moment(JSON.parse(reloginAtFormatted));
             const now = moment();
-            const username = localStorage.getItem(TAGS.username);
+            const username = localStorage.getItem(Tags.USERNAME);
             if (now.isAfter(reloginAt)) this.relogin(username);
             else {
                 const countdownSeconds = reloginAt.diff(now, 'seconds');
@@ -70,10 +70,10 @@ export class AuthService {
         const expiresAt = moment().add(expiresIn, 'seconds');
         const reloginAt = moment().add(tokenHalflifeSeconds, 'seconds');
 
-        localStorage.setItem(TAGS.username, username);
-        localStorage.setItem(TAGS.idToken, idToken);
-        localStorage.setItem(TAGS.expiresAt, JSON.stringify(expiresAt.valueOf()));
-        localStorage.setItem(TAGS.reloginAt, JSON.stringify(reloginAt.valueOf()));
+        localStorage.setItem(Tags.USERNAME, username);
+        localStorage.setItem(Tags.ID_TOKEN, idToken);
+        localStorage.setItem(Tags.EXPIRES_AT, JSON.stringify(expiresAt.valueOf()));
+        localStorage.setItem(Tags.RELOGIN_AT, JSON.stringify(reloginAt.valueOf()));
     }
 
     private setReloginTimerIn(halflifeSeconds: number, username: string) {
@@ -81,16 +81,16 @@ export class AuthService {
     }
 
     public logout() {
-        localStorage.removeItem(TAGS.username);
-        localStorage.removeItem(TAGS.idToken);
-        localStorage.removeItem(TAGS.expiresAt);
-        localStorage.removeItem(TAGS.reloginAt);
+        localStorage.removeItem(Tags.USERNAME);
+        localStorage.removeItem(Tags.ID_TOKEN);
+        localStorage.removeItem(Tags.EXPIRES_AT);
+        localStorage.removeItem(Tags.RELOGIN_AT);
 
         this.reloginSubject.unsubscribe();
     }
 
     private tokenExpiration(): moment.Moment {
-        const item = localStorage.getItem(TAGS.expiresAt);
+        const item = localStorage.getItem(Tags.EXPIRES_AT);
         if (!item) return null;
         const expiresAt = JSON.parse(item);
         return moment(expiresAt);
@@ -103,7 +103,7 @@ export class AuthService {
     }
 
     public currentUsername(): string {
-        return localStorage.getItem(TAGS.username);
+        return localStorage.getItem(Tags.USERNAME);
     }
 
     public loginNotificator(): Subject<void> {
