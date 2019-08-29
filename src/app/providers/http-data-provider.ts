@@ -23,8 +23,8 @@ class DbWordEntry {
 }
 
 export class HttpDataProvider implements DataProvider {
-    private entries: WordEntry[];
-    private languageIndexer: LanguageIndexer;
+    private entriesObservable: Observable<WordEntry[]>;
+    private languageIndexerObservable: Observable<LanguageIndexer>;
 
     private entriesUrl = 'https://whateveryouwannacallit.tk/entries';
     private languageIndexerUrl = 'https://whateveryouwannacallit.tk/languages';
@@ -38,46 +38,29 @@ export class HttpDataProvider implements DataProvider {
     }
 
     public retrieveEntries(): Observable<WordEntry[]> {
-        // TODO: Potentially creates multiple Observables, each one sent to query
-        // the result and rewrite this.entries upon arrival
-        if (!this.entries) {
-            return Observable.create(subscriber => {
-                console.log('Sending get() from retrieveEntries()');
-                this.http.get(this.entriesUrl).subscribe((dbEntries: DbWordEntry[]) => {
-                    const entries = dbEntries.map(this.toWordEntry);
-                    console.log('Processing result in retrieveEntries()');
-                    this.entries = entries;
-                    subscriber.next(entries);
-                });
-            });
+        if (!this.entriesObservable) {
+            this.entriesObservable = this.http.get<DbWordEntry[]>(this.entriesUrl).pipe(
+                tap(_ => console.log('Tapping get() from retrieveEntries()')),
+                map(entries => entries.map(this.toWordEntry)),
+                shareReplay()
+            );
         }
-        return of(this.entries);
+        return this.entriesObservable;
     }
 
     public retrieveLanguageIndexer(): Observable<LanguageIndexer> {
-        if (!this.languageIndexer) {
-            // TODO: need to store the created observable and return it
-            // console.log('Pre-tapping get() from retrieveLanguageIndexer()');
-            // return this.http.get(this.languageIndexerUrl).pipe(
-            //     tap(_ => console.log('Tapping get() from retrieveLanguageIndexer()')),
-            //     map((languages: Language[]) => new LanguageIndexer(languages)),
-            //     tap(languageIndexer => this.languageIndexer = languageIndexer),
-            //     shareReplay()
-            // );
-            return Observable.create(subscriber => {
-                console.log('Sending get() from retrieveLanguageIndexer()');
-                this.http.get(this.languageIndexerUrl).subscribe((languages: Language[]) => {
-                    console.log('Processing result in retrieveLanguageIndexer()');
-                    this.languageIndexer = new LanguageIndexer(languages);
-                    subscriber.next(this.languageIndexer);
-                });
-            });
+        if (!this.languageIndexerObservable) {
+            this.languageIndexerObservable = this.http.get<Language[]>(this.languageIndexerUrl).pipe(
+                tap(_ => console.log('Tapping get() from retrieveLanguageIndexer()')),
+                map(languages => new LanguageIndexer(languages)),
+                shareReplay()
+            );
         }
-        return of(this.languageIndexer);
+        return this.languageIndexerObservable;
     }
 
     private resetEntries() {
-        this.entries = null;
+        this.entriesObservable = null;
     }
 
 
