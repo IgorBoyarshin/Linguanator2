@@ -4,10 +4,10 @@
             <a class="navbar-brand" href="#">Linguanator 2</a>
         </li>
 
-        <li class="navigation-item" [routerLinkActive]="['active']">
+        <li class="navigation-item" [routerLinkActive]="['active']" *ngIf="loggedIn()">
             <a class="" href="#" routerLink="/testing">Testing</a>
         </li>
-        <li class="navigation-item" [routerLinkActive]="['active']">
+        <li class="navigation-item" [routerLinkActive]="['active']" *ngIf="loggedIn()">
             <a class="" href="#" routerLink="/database">Database</a>
         </li>
         <!-- <li class="navigation&#45;item" [routerLinkActive]="['active']"> -->

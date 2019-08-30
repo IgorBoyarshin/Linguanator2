@@ -24,22 +24,10 @@ export class AuthService {
     private reloginUrl = 'https://whateveryouwannacallit.tk/relogin';
     private loginNotificatorSubject = new Subject<void>();
 
-    private reloginTimer: Subscription;
     private presenceTimer: Subscription;
+    private lastLogin: moment.Moment;
 
-    constructor(private http: HttpClient) {
-        const reloginAtFormatted = localStorage.getItem(Tags.RELOGIN_AT);
-        if (reloginAtFormatted) {
-            const reloginAt = moment(JSON.parse(reloginAtFormatted));
-            const now = moment();
-            const username = localStorage.getItem(Tags.USERNAME);
-            if (now.isAfter(reloginAt)) this.relogin(username);
-            else {
-                const countdownSeconds = reloginAt.diff(now, 'seconds');
-                this.setReloginTimerIn(countdownSeconds, username);
-            }
-        }
-    }
+    constructor(private http: HttpClient) {}
 
     public createAccount(username: string, password: string): Observable<void> {
         return this.http.post<void>(this.createAccountUrl, { username, password }).pipe(
@@ -48,6 +36,7 @@ export class AuthService {
     }
 
     public login(username: string, password: string): Observable<LoginResponse> {
+        this.lastLogin = moment();
         return this.http.post<LoginResponse>(this.loginUrl, { username, password }).pipe(
             tap(res => this.setSession(res, username)),
             tap(_ => this.loginNotificatorSubject.next()),
@@ -57,7 +46,8 @@ export class AuthService {
 
     private relogin(username: string) {
         console.log('------ Relogging --------');
-        this.reloginTimer.unsubscribe(); // finish previous
+        this.lastLogin = moment();
+
         // Posting {} since the only data we need to send (token) is in the header
         this.http.post<LoginResponse>(this.reloginUrl, {}).pipe(
             tap(res => this.setSession(res, username)),
@@ -66,28 +56,19 @@ export class AuthService {
     }
 
     private setSession({ idToken, expiresIn }: LoginResponse, username: string) {
-        const tokenHalflifeSeconds = expiresIn / 2;
-        this.setReloginTimerIn(tokenHalflifeSeconds, username);
         const expiresAt = moment().add(expiresIn, 'seconds');
-        const reloginAt = moment().add(tokenHalflifeSeconds, 'seconds');
 
         localStorage.setItem(Tags.USERNAME, username);
         localStorage.setItem(Tags.ID_TOKEN, idToken);
         localStorage.setItem(Tags.EXPIRES_AT, JSON.stringify(expiresAt.valueOf()));
-        localStorage.setItem(Tags.RELOGIN_AT, JSON.stringify(reloginAt.valueOf()));
-    }
-
-    private setReloginTimerIn(halflifeSeconds: number, username: string) {
-        this.reloginTimer = timer(1000 * halflifeSeconds).subscribe(_ => this.relogin(username));
     }
 
     public logout() {
         localStorage.removeItem(Tags.USERNAME);
         localStorage.removeItem(Tags.ID_TOKEN);
         localStorage.removeItem(Tags.EXPIRES_AT);
-        localStorage.removeItem(Tags.RELOGIN_AT);
 
-        this.reloginTimer.unsubscribe();
+        window.location.reload();
     }
 
     private tokenExpiration(): moment.Moment {
@@ -113,8 +94,16 @@ export class AuthService {
 
     public resetPresenceTimer() {
         if (!this.tokenExpired()) { // if the user is logged in
+            // Get a new JWT for this session
+            const checkedRecently = moment().subtract(5, 'seconds').isBefore(this.lastLogin);
+            if (!checkedRecently) {
+                const username = localStorage.getItem(Tags.USERNAME);
+                this.relogin(username);
+            }
+
+            // Reset timer
             if (this.presenceTimer) this.presenceTimer.unsubscribe();
-            const presenceTimeoutMillis = 5 * 1000;
+            const presenceTimeoutMillis = 60 * 1000;
             this.presenceTimer = timer(presenceTimeoutMillis).subscribe(_ => this.logout());
         }
     }
