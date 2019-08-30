@@ -24,7 +24,8 @@ export class AuthService {
     private reloginUrl = 'https://whateveryouwannacallit.tk/relogin';
     private loginNotificatorSubject = new Subject<void>();
 
-    private reloginSubject: Subscription;
+    private reloginTimer: Subscription;
+    private presenceTimer: Subscription;
 
     constructor(private http: HttpClient) {
         const reloginAtFormatted = localStorage.getItem(Tags.RELOGIN_AT);
@@ -56,7 +57,7 @@ export class AuthService {
 
     private relogin(username: string) {
         console.log('------ Relogging --------');
-        this.reloginSubject.unsubscribe(); // finish previous
+        this.reloginTimer.unsubscribe(); // finish previous
         // Posting {} since the only data we need to send (token) is in the header
         this.http.post<LoginResponse>(this.reloginUrl, {}).pipe(
             tap(res => this.setSession(res, username)),
@@ -77,7 +78,7 @@ export class AuthService {
     }
 
     private setReloginTimerIn(halflifeSeconds: number, username: string) {
-        this.reloginSubject = timer(1000 * halflifeSeconds).subscribe(_ => this.relogin(username));
+        this.reloginTimer = timer(1000 * halflifeSeconds).subscribe(_ => this.relogin(username));
     }
 
     public logout() {
@@ -86,7 +87,7 @@ export class AuthService {
         localStorage.removeItem(Tags.EXPIRES_AT);
         localStorage.removeItem(Tags.RELOGIN_AT);
 
-        this.reloginSubject.unsubscribe();
+        this.reloginTimer.unsubscribe();
     }
 
     private tokenExpiration(): moment.Moment {
@@ -108,5 +109,13 @@ export class AuthService {
 
     public loginNotificator(): Subject<void> {
         return this.loginNotificatorSubject;
+    }
+
+    public resetPresenceTimer() {
+        if (!this.tokenExpired()) { // if the user is logged in
+            if (this.presenceTimer) this.presenceTimer.unsubscribe();
+            const presenceTimeoutMillis = 5 * 1000;
+            this.presenceTimer = timer(presenceTimeoutMillis).subscribe(_ => this.logout());
+        }
     }
 }

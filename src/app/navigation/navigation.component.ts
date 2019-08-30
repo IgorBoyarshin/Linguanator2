@@ -21,6 +21,5 @@ export class NavigationComponent implements OnInit {
 
     public logout() {
         this.authService.logout();
-        window.location.reload();
     }
 }
