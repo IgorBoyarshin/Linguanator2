@@ -25,6 +25,8 @@ export class AuthService {
     private loginNotificatorSubject = new Subject<void>();
 
     private presenceTimer: Subscription;
+    private youStillHereTimer: Subscription;
+    private isAfk: boolean;
     private lastLogin: moment.Moment;
 
     constructor(private http: HttpClient) {}
@@ -95,16 +97,28 @@ export class AuthService {
     public resetPresenceTimer() {
         if (!this.tokenExpired()) { // if the user is logged in
             // Get a new JWT for this session
-            const checkedRecently = moment().subtract(5, 'seconds').isBefore(this.lastLogin);
+            const minReloginDelaySeconds = 60;
+            const checkedRecently = moment().subtract(minReloginDelaySeconds, 'seconds').isBefore(this.lastLogin);
             if (!checkedRecently) {
                 const username = localStorage.getItem(Tags.USERNAME);
                 this.relogin(username);
             }
 
-            // Reset timer
+            // Reset presence timer
             if (this.presenceTimer) this.presenceTimer.unsubscribe();
-            const presenceTimeoutMillis = 60 * 1000;
+            const presenceTimeoutMillis = 120 * 1000;
             this.presenceTimer = timer(presenceTimeoutMillis).subscribe(_ => this.logout());
+
+            // Reset you-still-here timer
+            if (this.youStillHereTimer) this.youStillHereTimer.unsubscribe();
+            const youStillHereTimeoutMillis = 90 * 1000;
+            this.youStillHereTimer = timer(youStillHereTimeoutMillis).subscribe(_ => this.isAfk = true);
+
+            this.isAfk = false;
         }
+    }
+
+    public afkLongEnough(): boolean {
+        return this.isAfk;
     }
 }

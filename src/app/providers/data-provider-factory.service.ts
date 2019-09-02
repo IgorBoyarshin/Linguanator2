@@ -17,8 +17,8 @@ export class DataProviderFactoryService {
     public dataProviderInUse(): DataProvider {
         if (!this.dataProvider) {
             // DataProvider to be used throughout the application is set here
-            this.dataProvider = new StaticDataProvider();
-            // this.dataProvider = new HttpDataProvider(this.http);
+            // this.dataProvider = new StaticDataProvider();
+            this.dataProvider = new HttpDataProvider(this.http);
         }
         return this.dataProvider;
     }

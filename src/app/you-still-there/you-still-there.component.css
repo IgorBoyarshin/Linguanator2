@@ -1,0 +1,27 @@
+.main {
+    z-index: 100;
+    top: 0px;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(20, 20, 20, 0.7);
+    text-align: center;
+}
+
+.box {
+    margin-top: 15%;
+    padding: 3rem 4rem 3rem 4rem;
+    background-color: #eee;
+    display: inline-block;
+}
+
+p {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+#keep-session {
+
+}
+#logout {
+    margin-left: 1rem;
+}

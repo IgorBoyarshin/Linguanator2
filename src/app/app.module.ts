@@ -17,6 +17,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditedWordEntryComponent } from './edited-word-entry/edited-word-entry.component';
+import { YouStillThere } from './you-still-there/you-still-there.component';
 
 @NgModule({
     declarations: [
@@ -27,7 +28,8 @@ import { EditedWordEntryComponent } from './edited-word-entry/edited-word-entry.
         SettingsComponent,
         NavigationComponent,
         LoginComponent,
-        EditedWordEntryComponent
+        EditedWordEntryComponent,
+        YouStillThere
     ],
     imports: [
         FormsModule,
