@@ -1,1 +1,1 @@
-check that upon WordEntry edit the word remains unique in the database
+insert word case
