@@ -38,9 +38,10 @@ export class HttpDataProvider implements DataProvider {
     }
 
     public retrieveEntries(): Observable<WordEntry[]> {
+        // We take advantage of the 'lazy loading' because this way we do not refetch
+        // the data on every access.
         if (!this.entriesObservable) {
             this.entriesObservable = this.http.get<DbWordEntry[]>(this.entriesUrl).pipe(
-                tap(_ => console.log('Tapping get() from retrieveEntries()')),
                 map(entries => entries.map(this.toWordEntry)),
                 shareReplay()
             );
@@ -49,9 +50,10 @@ export class HttpDataProvider implements DataProvider {
     }
 
     public retrieveLanguageIndexer(): Observable<LanguageIndexer> {
+        // We take advantage of the 'lazy loading' because this way we do not refetch
+        // the data on every access.
         if (!this.languageIndexerObservable) {
             this.languageIndexerObservable = this.http.get<Language[]>(this.languageIndexerUrl).pipe(
-                tap(_ => console.log('Tapping get() from retrieveLanguageIndexer()')),
                 map(languages => new LanguageIndexer(languages)),
                 shareReplay()
             );
@@ -63,25 +65,16 @@ export class HttpDataProvider implements DataProvider {
         this.entriesObservable = null;
     }
 
-
     public addWordEntry({ src, dst }: LanguagePair,
                         word: string,
                         translations: string[],
                         tags: string[]): Observable<void> {
         // DB allows for multiple null translations and stores them as such
         if (translations.length == 0) translations = null;
-
-        return Observable.create(subscriber => {
-            console.log('Sending post() from addWordEntry()');
-            this.http.post<any>(this.entriesUrl,
-                    { fromLanguage: src, toLanguage: dst, word, translations, tags })
-                .pipe(catchError((err) => {console.error('HERE', err); return of();}))
-                .subscribe(res => {
-                    console.log('Processing result in addWordEntry(): ', res);
-                    this.resetEntries();
-                    subscriber.next();
-                }, err => console.error('HERE2', err));
-        }).pipe(catchError((err) => {console.error('HERE3', err); return of();}));
+        const payload = { fromLanguage: src, toLanguage: dst, word, translations, tags };
+        return this.http.post<any>(this.entriesUrl, payload).pipe(
+            tap(_ => this.resetEntries()),
+        );
     }
 
     public updateWordEntry(id: number,
@@ -92,30 +85,18 @@ export class HttpDataProvider implements DataProvider {
                            tags: string[]): Observable<void> {
         // DB allows for multiple null translations and stores them as such
         if (translations.length == 0) translations = null;
-
-        return Observable.create(subscriber => {
-            console.log('Sending update() from updateWordEntry()');
-            const url = this.entriesUrl + `/${id}`;
-            this.http.put<any>(url,
-                    { fromLanguage: src, toLanguage: dst, word, translations, score, tags })
-                .subscribe(res => {
-                    console.log('Processing result in updateWordEntry(): ', res);
-                    this.resetEntries();
-                    subscriber.next();
-                }, err => console.error(err));
-        });
+        const url = this.entriesUrl + `/${id}`;
+        const payload = { fromLanguage: src, toLanguage: dst, word, translations, score, tags };
+        return this.http.put<any>(url, payload).pipe(
+            tap(_ => this.resetEntries())
+        );
     }
 
     public removeWordEntry(id: number): Observable<void> {
-        return Observable.create(subscriber => {
-            console.log('Sending delete() from removeWordEntry()');
-            const url = this.entriesUrl + `/${id}`;
-            this.http.delete(url).subscribe(res => {
-                console.log('Processing result in removeWordEntry(): ', res);
-                this.resetEntries();
-                subscriber.next();
-            }, err => console.error(err));
-        });
+        const url = this.entriesUrl + `/${id}`;
+        return this.http.delete<any>(url).pipe(
+            tap(_ => this.resetEntries())
+        );
     }
 
     private indexValidIn(array: any[], index: number): boolean {
