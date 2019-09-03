@@ -94,6 +94,10 @@ export class AuthService {
         return this.loginNotificatorSubject;
     }
 
+    // Because this method is called in the Interceptor, upon page reload there
+    // are bound to be http connections to the backend, thus the Interceptor is
+    // triggered and thus this method is fired. That is how the timers survive
+    // page reload.
     public resetPresenceTimer() {
         if (!this.tokenExpired()) { // if the user is logged in
             // Get a new JWT for this session
