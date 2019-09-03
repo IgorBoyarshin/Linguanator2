@@ -98,8 +98,8 @@ export class AuthService {
         if (!this.tokenExpired()) { // if the user is logged in
             // Get a new JWT for this session
             const minReloginDelaySeconds = 60;
-            const checkedRecently = moment().subtract(minReloginDelaySeconds, 'seconds').isBefore(this.lastLogin);
-            if (!checkedRecently) {
+            const reloggedRecently = moment().subtract(minReloginDelaySeconds, 'seconds').isBefore(this.lastLogin);
+            if (!reloggedRecently) {
                 const username = localStorage.getItem(Tags.USERNAME);
                 this.relogin(username);
             }
