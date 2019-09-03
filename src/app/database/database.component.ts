@@ -101,20 +101,24 @@ export class DatabaseComponent {
     private entryUnique(targetWord: string, targetTranslations: string[], exceptForId?: number): Observable<boolean> {
         return this.entries.pipe(map(entries => {
             const result = entries.find(({ word, translations }) =>
-                (word == targetWord) || this.arraysSameButNotEmpty(translations, targetTranslations));
+                this.lowercaseStringsEqual(word, targetWord) || this.arraysSameButNotEmpty(translations, targetTranslations));
             if (!result) return true;
             return result.id === exceptForId; // takes care of exceptForId being undefined
         }));
     }
 
-    private arraysSameButNotEmpty(a1: any[], a2: any[]): boolean {
+    private arraysSameButNotEmpty(a1: string[], a2: string[]): boolean {
         if (a1.length != a2.length) return false;
-        if (a1.length == 0) return false; // a2.length == a1.length
+        if (a1.length == 0) return false; // (a2.length == a1.length)
 
         for (let i = 0; i < a1.length; i++) {
-            if (a1[i] != a2[i]) return false;
+            if (!this.lowercaseStringsEqual(a1[i], a2[i])) return false;
         }
         return true;
+    }
+
+    private lowercaseStringsEqual(str1: string, str2: string): boolean {
+        return str1.toLowerCase() == str2.toLowerCase();
     }
 
     public submitEntry({ word, translations, tags }: EditedWordEntry) {
