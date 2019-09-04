@@ -99,13 +99,12 @@ export class DatabaseComponent {
 
     // Allow for multiple empty translations
     private entryUnique(targetWord: string, targetTranslations: string[], exceptForId?: number): Observable<boolean> {
-        return of(true);
-        // return this.entries.pipe(map(entries => {
-        //     const result = entries.find(({ word, translations }) =>
-        //         this.lowercaseStringsEqual(word, targetWord) || this.arraysSameButNotEmpty(translations, targetTranslations));
-        //     if (!result) return true;
-        //     return result.id === exceptForId; // takes care of exceptForId being undefined
-        // }));
+        return this.entries.pipe(map(entries => {
+            const result = entries.find(({ word, translations }) =>
+                this.lowercaseStringsEqual(word, targetWord) || this.arraysSameButNotEmpty(translations, targetTranslations));
+            if (!result) return true;
+            return result.id === exceptForId; // takes care of exceptForId being undefined
+        }));
     }
 
     private arraysSameButNotEmpty(a1: string[], a2: string[]): boolean {
