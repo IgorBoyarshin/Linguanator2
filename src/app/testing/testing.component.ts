@@ -122,9 +122,9 @@ export class TestingComponent {
             });
     }
 
-    private updateDeltaBy({id, word, translations, score, tags}: WordEntry, delta: number) {
-        score += delta;
-        if (score < 0) score = 0;
+    private updateDeltaBy(wordEntry: WordEntry, delta: number) {
+        wordEntry.score += delta;
+        if (wordEntry.score < 0) wordEntry.score = 0;
         // The following may result in a loss of score points if the same entry
         // is used for testing 2 times in a row and the update request has not
         // reached the database yet. This can be remedied by using a cached
@@ -133,9 +133,11 @@ export class TestingComponent {
         // Although possible, the scenario is made less likely by the fact that
         // we are in the result state for some time and hopefully that timespan
         // is enough for the update request to reach its destination.
+        const { id, word, translations, score, tags } = wordEntry;
         this.dataProviderFactory.dataProviderInUse()
             .updateWordEntry(id, this.languagePair, word, translations, score, tags)
             .subscribe(() => {});
+        this.entriesDatabaseService.resetCache();
     }
 
     private resultOf({full, partial, insufficient}: EvaluationStats): Match {
