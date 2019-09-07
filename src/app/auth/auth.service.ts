@@ -21,6 +21,7 @@ interface LoginResponse {
 export class AuthService {
     private createAccountUrl = 'https://whateveryouwannacallit.tk/create';
     private loginUrl = 'https://whateveryouwannacallit.tk/login';
+    private logoutUrl = 'https://whateveryouwannacallit.tk/logout';
     private reloginUrl = 'https://whateveryouwannacallit.tk/relogin';
     private loginNotificatorSubject = new Subject<void>();
 
@@ -66,11 +67,14 @@ export class AuthService {
     }
 
     public logout() {
-        localStorage.removeItem(Tags.USERNAME);
-        localStorage.removeItem(Tags.ID_TOKEN);
-        localStorage.removeItem(Tags.EXPIRES_AT);
-
-        window.location.reload();
+        // Posting {} since the only data we need to send (token) is in the header
+        this.http.post<any>(this.logoutUrl, {}).subscribe(_ => {
+            // We need this data in the Interceptor of this request (the one we're in)
+            localStorage.removeItem(Tags.USERNAME);
+            localStorage.removeItem(Tags.ID_TOKEN);
+            localStorage.removeItem(Tags.EXPIRES_AT);
+            window.location.reload();
+        });
     }
 
     private tokenExpiration(): moment.Moment {
