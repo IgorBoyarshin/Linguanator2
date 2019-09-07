@@ -17,7 +17,7 @@ export class YouStillThere {
     constructor(private authService: AuthService) {}
 
     public confirmPresence() {
-        console.log("====== Resetting presence timer!");
+        console.log("====== Presence confirmed!");
         this.authService.resetPresenceTimer();
     }
 

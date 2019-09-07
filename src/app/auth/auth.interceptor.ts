@@ -1,3 +1,5 @@
+import { filter } from 'rxjs/operators';
+import { Router, NavigationEnd } from "@angular/router";
 import { Injectable } from '@angular/core';
 import {
     HttpRequest,
@@ -13,7 +15,11 @@ import * as Tags from './local-storage-tags';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService, private router: Router) {
+        router.events.pipe(
+            filter(e => e instanceof NavigationEnd)
+        ).subscribe(_ => this.authService.resetPresenceTimer());
+    }
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         this.authService.resetPresenceTimer();

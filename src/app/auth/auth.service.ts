@@ -26,7 +26,7 @@ export class AuthService {
 
     private presenceTimer: Subscription;
     private youStillHereTimer: Subscription;
-    private isAfk: boolean;
+    private isAfk: boolean = false;
     private lastLogin: moment.Moment;
 
     constructor(private http: HttpClient) {}
@@ -116,8 +116,12 @@ export class AuthService {
             // Reset you-still-here timer
             if (this.youStillHereTimer) this.youStillHereTimer.unsubscribe();
             const youStillHereTimeoutMillis = 90 * 1000;
-            this.youStillHereTimer = timer(youStillHereTimeoutMillis).subscribe(_ => this.isAfk = true);
+            this.youStillHereTimer = timer(youStillHereTimeoutMillis).subscribe(_ => {
+                console.log('=== Became AFK');
+                this.isAfk = true;
+            });
 
+            console.log('=== Is not AFK');
             this.isAfk = false;
         }
     }
