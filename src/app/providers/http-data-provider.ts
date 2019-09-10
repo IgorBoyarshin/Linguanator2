@@ -8,6 +8,7 @@ import { DataProvider } from './data-provider';
 import { WordEntry } from '../word-entry.model';
 import { LanguagePair } from '../language-pair.model';
 import { LanguageIndexer } from '../language-indexer';
+import { AuthService } from '../auth/auth.service';
 
 class DbWordEntry {
     constructor(
@@ -22,6 +23,17 @@ class DbWordEntry {
     ) {}
 }
 
+interface TokenEntry {
+    idToken: string;
+    expiresAt: string;
+}
+
+
+interface Response<T> {
+    tokenEntry: TokenEntry;
+    data: T;
+}
+
 export class HttpDataProvider implements DataProvider {
     private entriesObservable: Observable<WordEntry[]>;
     private languageIndexerObservable: Observable<LanguageIndexer>;
@@ -29,7 +41,7 @@ export class HttpDataProvider implements DataProvider {
     private entriesUrl = 'https://whateveryouwannacallit.tk/entries';
     private languageIndexerUrl = 'https://whateveryouwannacallit.tk/languages';
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private authService: AuthService) {}
 
     public toWordEntry({userId, id, fromlanguage, tolanguage, word, translations, score, tags}: DbWordEntry): WordEntry {
         // DB allows for multiple null translations and stores them as such
@@ -41,8 +53,9 @@ export class HttpDataProvider implements DataProvider {
         // We take advantage of the 'lazy loading' because this way we do not refetch
         // the data on every access.
         if (!this.entriesObservable) {
-            this.entriesObservable = this.http.get<DbWordEntry[]>(this.entriesUrl).pipe(
-                map(entries => entries.map(this.toWordEntry)),
+            this.entriesObservable = this.http.get<Response<DbWordEntry[]>>(this.entriesUrl).pipe(
+                tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
+                map(({ data: entries }) => entries.map(this.toWordEntry)),
                 shareReplay()
             );
         }
@@ -53,8 +66,9 @@ export class HttpDataProvider implements DataProvider {
         // We take advantage of the 'lazy loading' because this way we do not refetch
         // the data on every access.
         if (!this.languageIndexerObservable) {
-            this.languageIndexerObservable = this.http.get<Language[]>(this.languageIndexerUrl).pipe(
-                map(languages => new LanguageIndexer(languages)),
+            this.languageIndexerObservable = this.http.get<Response<Language[]>>(this.languageIndexerUrl).pipe(
+                tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
+                map(({ data: languages }) => new LanguageIndexer(languages)),
                 shareReplay()
             );
         }
@@ -73,6 +87,7 @@ export class HttpDataProvider implements DataProvider {
         if (translations.length == 0) translations = null;
         const payload = { fromLanguage: src, toLanguage: dst, word, translations, tags };
         return this.http.post<any>(this.entriesUrl, payload).pipe(
+            tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
             tap(_ => this.resetEntries()),
         );
     }
@@ -88,6 +103,7 @@ export class HttpDataProvider implements DataProvider {
         const url = this.entriesUrl + `/${id}`;
         const payload = { fromLanguage: src, toLanguage: dst, word, translations, score, tags };
         return this.http.put<any>(url, payload).pipe(
+            tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
             tap(_ => this.resetEntries())
         );
     }
@@ -95,6 +111,7 @@ export class HttpDataProvider implements DataProvider {
     public removeWordEntry(id: number): Observable<void> {
         const url = this.entriesUrl + `/${id}`;
         return this.http.delete<any>(url).pipe(
+            tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
             tap(_ => this.resetEntries())
         );
     }

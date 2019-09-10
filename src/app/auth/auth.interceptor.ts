@@ -18,7 +18,11 @@ export class AuthInterceptor implements HttpInterceptor {
     constructor(private authService: AuthService, private router: Router) {
         router.events.pipe(
             filter(e => e instanceof NavigationEnd)
-        ).subscribe(_ => this.authService.resetPresenceTimer());
+        ).subscribe(e => {
+            if (!this.authService.isLoggingOut()) {
+                this.authService.doRelogin();
+            }
+        });
     }
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
