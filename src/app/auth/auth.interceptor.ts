@@ -16,17 +16,23 @@ import * as Tags from './local-storage-tags';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
     constructor(private authService: AuthService, private router: Router) {
-        router.events.pipe(
-            filter(e => e instanceof NavigationEnd)
-        ).subscribe(e => {
+        router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(e => {
+            // We do not want there to be relogin requests to the backend after
+            // the logout request has been made
             if (!this.authService.isLoggingOut()) {
-                this.authService.doRelogin();
+                this.authService.confirmPresence();
             }
         });
     }
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        this.authService.resetPresenceTimer();
+        // The idea is to set it once before the event so that all subsequent relogins
+        // are discarded as unnesessary, since one relogin request is on its way already.
+        // We update lastLogin here because we expect that on each our request
+        // the backend will send us (if necessary) a fresh JWT, so we say that
+        // lastLogin is updated.
+        this.authService.refreshedJwt();
+        this.authService.confirmPresence();
 
         const idToken = localStorage.getItem(Tags.ID_TOKEN);
         if (!idToken) return next.handle(req);

@@ -17,7 +17,7 @@ export class YouStillThere {
     constructor(private authService: AuthService) {}
 
     public confirmPresence() {
-        this.authService.doRelogin();
+        this.authService.confirmPresence();
     }
 
     public display(): boolean {

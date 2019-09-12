@@ -10,6 +10,8 @@ import { LanguagePair } from '../language-pair.model';
 import { LanguageIndexer } from '../language-indexer';
 import { AuthService } from '../auth/auth.service';
 
+import { TokenEntry, Response } from '../http-response.model';
+
 class DbWordEntry {
     constructor(
         public userId: number,
@@ -23,16 +25,6 @@ class DbWordEntry {
     ) {}
 }
 
-interface TokenEntry {
-    idToken: string;
-    expiresAt: string;
-}
-
-
-interface Response<T> {
-    tokenEntry: TokenEntry;
-    data: T;
-}
 
 export class HttpDataProvider implements DataProvider {
     private entriesObservable: Observable<WordEntry[]>;

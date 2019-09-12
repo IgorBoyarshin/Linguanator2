@@ -10,7 +10,7 @@ export class AuthGuardService implements CanActivate {
     constructor(public auth: AuthService, public router: Router) {}
 
     public canActivate(): boolean {
-        if (!this.auth.tokenExpired()) return true;
+        if (this.auth.loggedIn()) return true;
 
         this.router.navigateByUrl('/login');
         return false;
