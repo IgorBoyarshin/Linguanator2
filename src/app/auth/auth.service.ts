@@ -85,7 +85,7 @@ export class AuthService {
         // JWT's lifespan. This sum is the maximum possible timespan without a
         // JWT renewal (achieved by resetting the timers just before
         // the end of maxJwtRefreshDelaySeconds timeframe).
-        const maxJwtRefreshDelaySeconds = 10;
+        const maxJwtRefreshDelaySeconds = 45;
         // lastJwtRefresh is set through refreshedJwt() inside the interceptor
         // just before this method (confirmPresence) is called.
         const refreshedJwtRecently = this.lastJwtRefresh.isAfter(
@@ -98,12 +98,12 @@ export class AuthService {
 
         // Reset presence timer
         if (this.presenceTimer) this.presenceTimer.unsubscribe();
-        const presenceTimeoutMillis = 20 * 1000;
+        const presenceTimeoutMillis = 120 * 1000;
         this.presenceTimer = timer(presenceTimeoutMillis).subscribe(_ => this.logout());
 
         // Reset you-still-here timer
         if (this.youStillHereTimer) this.youStillHereTimer.unsubscribe();
-        const youStillHereTimeoutMillis = 15 * 1000;
+        const youStillHereTimeoutMillis = 90 * 1000;
         this.youStillHereTimer = timer(youStillHereTimeoutMillis).subscribe(_ => this.isAfk = true);
         this.isAfk = false;
     }
