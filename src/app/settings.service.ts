@@ -33,8 +33,8 @@ export class SettingsService {
                 .subscribe(languageIndexer => {
                     this.languageIndexer = languageIndexer;
                     this.currentLanguagePair = new LanguagePair(
-                        languageIndexer.indexOf("German"),
-                        languageIndexer.indexOf("English")
+                        languageIndexer.idOf("German"),
+                        languageIndexer.idOf("English")
                     );
                 })
         );
@@ -112,8 +112,8 @@ export class SettingsService {
                 this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer().subscribe(languageIndexer => {
                     this.languageIndexer = languageIndexer;
                     this.currentLanguagePair = new LanguagePair(
-                        languageIndexer.indexOf("German"),
-                        languageIndexer.indexOf("English")
+                        languageIndexer.idOf("German"),
+                        languageIndexer.idOf("English")
                     );
                     subscriber.next(this.currentLanguagePair);
                 });
@@ -144,7 +144,7 @@ export class SettingsService {
             return;
         }
 
-        const newIndex = this.languageIndexer.indexOf(language);
+        const newIndex = this.languageIndexer.idOf(language);
         const theOtherIndex = changeSrc ? this.currentLanguagePair.dst
                                         : this.currentLanguagePair.src;
         if (newIndex == theOtherIndex) { // then just flip

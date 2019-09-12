@@ -108,8 +108,8 @@ export class StaticDataProvider implements DataProvider {
     }
 
     private initEntries(languageIndexer: LanguageIndexer): WordEntry[] {
-        const ger = languageIndexer.indexOf("German");
-        const eng = languageIndexer.indexOf("English");
+        const ger = languageIndexer.idOf("German");
+        const eng = languageIndexer.idOf("English");
         const userId1 = 1;
         const userId2 = 2;
         let id = 1;

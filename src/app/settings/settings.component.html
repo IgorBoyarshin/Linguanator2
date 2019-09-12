@@ -1,1 +1,41 @@
-<p>settings-component works!</p>
+<section class="container">
+    <section class="languages">
+        <div class="header">
+            LANGUAGES
+        </div>
+
+
+        <table class="languages-table">
+            <thead>
+                <tr>
+                    <th>Language</th>
+                    <th>Words from</th>
+                    <th>Words to</th>
+                    <th>Total words</th>
+                    <th>Edit name</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let language of languageEntries | async">
+                    <td>{{ language.name }}</td>
+                    <td>{{ language.wordsCountFrom }}</td>
+                    <td>{{ language.wordsCountTo }}</td>
+                    <td>{{ language.totalWordsCount }}</td>
+                    <td class="nostretch" id="words-table-edit">
+                        <button
+                            (click)="editLanguage()"
+                            class="button button-small yellow">Edit
+                        </button>
+                    </td>
+                    <td class="nostretch" id="words-table-delete">
+                        <button
+                            (click)="removeLanguage()"
+                            class="button button-small red">Delete
+                        </button>
+                    </td>
+                </tr>
+                <tbody>
+        </table>
+    </section>
+</section>

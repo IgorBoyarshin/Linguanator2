@@ -11,7 +11,7 @@ export class LanguageIndexer {
         return '';
     }
 
-    public indexOf(name: string): number {
+    public idOf(name: string): number {
         for (let language of this.languages) {
             if (language.name == name) return language.id;
         }
@@ -21,5 +21,9 @@ export class LanguageIndexer {
 
     public allNames(): string[] {
         return this.languages.map(language => language.name);
+    }
+
+    public allIds(): number[] {
+        return this.languages.map(language => language.id);
     }
 }
