@@ -20,7 +20,12 @@ class LanguageEntry {
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent {
-    private languageEntries: Observable<LanguageEntry[]>;
+    public languageEntries: Observable<LanguageEntry[]>;
+
+    private selectedLanguageIndex: number; // common
+    public selectedLanguageName: string; // determines the pop-up's visibility
+    public editedLanguageName: string; // determines the pop-up's visibility
+    public selectedLanguageTotalWordsCount: number; // only for Removal
 
     constructor(
         private dataProviderFactory: DataProviderFactoryService
@@ -39,4 +44,35 @@ export class SettingsComponent {
             );
     }
 
+    public editLanguage({ name }: LanguageEntry, index: number) {
+        this.editedLanguageName = name;
+        this.selectedLanguageIndex = index;
+    }
+
+    public onConfirmRename(newName: string) {
+        // TODO
+        this.onCancelRename(); // clean-up
+    }
+
+    public onCancelRename() {
+        this.editedLanguageName = null;
+        this.selectedLanguageIndex = null;
+    }
+
+    public removeLanguage({ name, totalWordsCount }: LanguageEntry, index: number) {
+        this.selectedLanguageName = name;
+        this.selectedLanguageTotalWordsCount = totalWordsCount;
+        this.selectedLanguageIndex = index;
+    }
+
+    public onConfirmRemoval() {
+        // TODO
+        this.onCancelRemoval(); // clean-up
+    }
+
+    public onCancelRemoval() {
+        this.selectedLanguageName = null;
+        this.selectedLanguageTotalWordsCount = null;
+        this.selectedLanguageIndex = null;
+    }
 }

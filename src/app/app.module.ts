@@ -18,6 +18,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditedWordEntryComponent } from './edited-word-entry/edited-word-entry.component';
 import { YouStillThere } from './you-still-there/you-still-there.component';
+import { ConfirmLanguageRemovalComponent } from './settings/confirm-language-removal/confirm-language-removal.component';
+import { EditLanguageComponent } from './settings/edit-language/edit-language.component';
 
 @NgModule({
     declarations: [
@@ -29,7 +31,9 @@ import { YouStillThere } from './you-still-there/you-still-there.component';
         NavigationComponent,
         LoginComponent,
         EditedWordEntryComponent,
-        YouStillThere
+        YouStillThere,
+        ConfirmLanguageRemovalComponent,
+        EditLanguageComponent
     ],
     imports: [
         FormsModule,

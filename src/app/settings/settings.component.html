@@ -25,13 +25,13 @@
                         <td>{{ language.totalWordsCount }}</td>
                         <td class="nostretch" id="words-table-edit">
                             <button
-                                (click)="editLanguage()"
+                                (click)="editLanguage(language, index)"
                                 class="button button-small yellow">Edit
                             </button>
                         </td>
                         <td class="nostretch" id="words-table-delete">
                             <button
-                                (click)="removeLanguage()"
+                                (click)="removeLanguage(language, index)"
                                 class="button button-small red">Delete
                             </button>
                         </td>
@@ -41,3 +41,18 @@
         </section>
     </section>
 </section>
+
+
+<confirm-language-removal
+    [languageName]="selectedLanguageName"
+    [totalWordsCount]="selectedLanguageTotalWordsCount"
+    (doRemove)="onConfirmRemoval()"
+    (cancelRemoval)="onCancelRemoval()"
+></confirm-language-removal>
+
+
+<edit-language
+    [languageName]="editedLanguageName"
+    (doRename)="onConfirmRename($event)"
+    (cancelRename)="onCancelRename()"
+></edit-language>
