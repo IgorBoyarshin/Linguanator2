@@ -6,7 +6,7 @@
 
 
         <section class="block the-table">
-            <table class="languages-table">
+            <table class="some-table">
                 <thead>
                     <tr>
                         <th>Language</th>
@@ -23,15 +23,56 @@
                         <td>{{ language.wordsCountFrom }}</td>
                         <td>{{ language.wordsCountTo }}</td>
                         <td>{{ language.totalWordsCount }}</td>
-                        <td class="nostretch" id="words-table-edit">
+                        <td class="nostretch">
                             <button
                                 (click)="editLanguage(language, index)"
                                 class="button button-small yellow">Edit
                             </button>
                         </td>
-                        <td class="nostretch" id="words-table-delete">
+                        <td class="nostretch">
                             <button
                                 (click)="removeLanguage(language, index)"
+                                class="button button-small red">Delete
+                            </button>
+                        </td>
+                    </tr>
+                    <tbody>
+            </table>
+        </section>
+    </section>
+
+
+    <section class="tags">
+        <div class="header block">
+            MANIPULATE YOUR TAGS
+        </div>
+
+
+        <section class="block the-table">
+            <table class="some-table">
+                <thead>
+                    <tr>
+                        <th>Tag</th>
+                        <th *ngFor="let language of languageEntries | async">In {{ language.name }}</th>
+                        <th>Total</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let tag of tagEntries | async">
+                        <td>{{ tag.name }}</td>
+                        <td *ngFor="let count of tag.wordsCountInLanguages">{{ count }}</td>
+                        <td>{{ tag.totalWordsCount }}</td>
+                        <td class="nostretch">
+                            <button
+                                (click)="editTag(tag, index)"
+                                class="button button-small yellow">Edit
+                            </button>
+                        </td>
+                        <td class="nostretch">
+                            <button
+                                (click)="removeTag(tag, index)"
                                 class="button button-small red">Delete
                             </button>
                         </td>
@@ -46,13 +87,28 @@
 <confirm-language-removal
     [languageName]="selectedLanguageName"
     [totalWordsCount]="selectedLanguageTotalWordsCount"
-    (doRemove)="onConfirmRemoval()"
-    (cancelRemoval)="onCancelRemoval()"
+    (doRemove)="onConfirmLanguageRemoval()"
+    (cancelRemoval)="onCancelLanguageRemoval()"
 ></confirm-language-removal>
 
 
 <edit-language
     [languageName]="editedLanguageName"
-    (doRename)="onConfirmRename($event)"
-    (cancelRename)="onCancelRename()"
+    (doRename)="onConfirmLanguageRename($event)"
+    (cancelRename)="onCancelLanguageRename()"
 ></edit-language>
+
+
+<confirm-tag-removal
+    [tagName]="selectedTagName"
+    [totalWordsCount]="selectedTagTotalWordsCount"
+    (doRemove)="onConfirmTagRemoval()"
+    (cancelRemoval)="onCancelTagRemoval()"
+></confirm-tag-removal>
+
+
+<edit-tag
+    [tagName]="editedTagName"
+    (doRename)="onConfirmTagRename($event)"
+    (cancelRename)="onCancelTagRename()"
+></edit-tag>

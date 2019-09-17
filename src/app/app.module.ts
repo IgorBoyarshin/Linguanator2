@@ -20,6 +20,8 @@ import { EditedWordEntryComponent } from './edited-word-entry/edited-word-entry.
 import { YouStillThere } from './you-still-there/you-still-there.component';
 import { ConfirmLanguageRemovalComponent } from './settings/confirm-language-removal/confirm-language-removal.component';
 import { EditLanguageComponent } from './settings/edit-language/edit-language.component';
+import { ConfirmTagRemovalComponent } from './settings/confirm-tag-removal/confirm-tag-removal.component';
+import { EditTagComponent } from './settings/edit-tag/edit-tag.component';
 
 @NgModule({
     declarations: [
@@ -33,7 +35,9 @@ import { EditLanguageComponent } from './settings/edit-language/edit-language.co
         EditedWordEntryComponent,
         YouStillThere,
         ConfirmLanguageRemovalComponent,
-        EditLanguageComponent
+        EditLanguageComponent,
+        ConfirmTagRemovalComponent,
+        EditTagComponent
     ],
     imports: [
         FormsModule,

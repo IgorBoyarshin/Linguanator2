@@ -1,0 +1,8 @@
+<div class="main" *ngIf="display()">
+    <div class="box">
+        <p>This will remove the {{ name }} tag and all {{ totalWordsCount }} words associated with it!</p>
+        <p>Are you sure you want to continue?</p>
+        <button class="button button-small red" id="remove-tag" (click)="remove()">Remove Tag</button>
+        <button class="button button-small green" id="cancel-removal" (click)="cancel()">Cancel</button>
+    </div>
+</div>
