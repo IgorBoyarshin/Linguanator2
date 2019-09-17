@@ -112,11 +112,8 @@ export class AuthService {
         return this.isAfk;
     }
 
-    public isLoggingOut(): boolean {
-        return this.loggingOut;
-    }
-
     public loggedIn(): boolean {
+        if (this.loggingOut) return false;
         const expiresAt = localStorage.getItem(Tags.EXPIRES_AT);
         if (!expiresAt) return false;
         return moment().isBefore(moment(expiresAt));

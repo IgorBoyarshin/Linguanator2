@@ -16,13 +16,8 @@ import * as Tags from './local-storage-tags';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
     constructor(private authService: AuthService, private router: Router) {
-        router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(e => {
-            // We do not want there to be relogin requests to the backend after
-            // the logout request has been made
-            if (!this.authService.isLoggingOut()) {
-                this.authService.confirmPresence();
-            }
-        });
+        router.events.pipe(filter(e => e instanceof NavigationEnd))
+            .subscribe(_ => this.authService.confirmPresence());
     }
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -30,7 +25,7 @@ export class AuthInterceptor implements HttpInterceptor {
         // are discarded as unnesessary, since one relogin request is on its way already.
         // We update lastLogin here because we expect that on each our request
         // the backend will send us (if necessary) a fresh JWT, so we say that
-        // lastLogin is updated.
+        // JWT is refreshed.
         this.authService.refreshedJwt();
         this.authService.confirmPresence();
 
