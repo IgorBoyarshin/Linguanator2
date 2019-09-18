@@ -41,6 +41,7 @@ export class LoginComponent {
         this.authService.login(username, password).subscribe(() => {
             console.log('Got logged in!');
             this.router.navigateByUrl('/testing');
+            console.log('done nagivation');
         }, err => {
             switch (err.error.code) {
                 case 'ERR_INVALID_CREDENTIALS':
