@@ -21,4 +21,8 @@ export class NavigationComponent {
     public logout() {
         this.authService.logout();
     }
+
+    public userIsAdmin() {
+        return this.authService.currentUserIsAdmin();
+    }
 }

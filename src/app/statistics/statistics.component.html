@@ -1,0 +1,20 @@
+<section class="container">
+    <section class="block the-table">
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Is Admin</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users | async">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.isAdmin }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</section>

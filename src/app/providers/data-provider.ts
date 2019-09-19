@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { WordEntry } from '../word-entry.model';
 import { LanguagePair } from '../language-pair.model';
 import { LanguageIndexer } from '../language-indexer';
+import { StatisticsUser } from '../statistics-user.model';
 
 export interface DataProvider {
     retrieveEntries():         Observable<WordEntry[]>;
@@ -19,4 +20,7 @@ export interface DataProvider {
                     score: number,
                     tags: string[]): Observable<void>;
     removeWordEntry(id: number): Observable<void>;
+
+    // For Admin
+    retrieveStatisticsUsers(): Observable<StatisticsUser[]>;
 }

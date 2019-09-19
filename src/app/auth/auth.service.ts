@@ -25,6 +25,8 @@ export class AuthService {
     private loggingOut = false;
     private lastJwtRefresh: moment.Moment;
 
+    private isAdmin: boolean;
+
     constructor(private http: HttpClient) {}
 
     public createAccount(username: string, password: string): Observable<void> {
@@ -35,8 +37,9 @@ export class AuthService {
     }
 
     public login(username: string, password: string): Observable<void> {
-        return this.http.post<Response<any>>(this.loginUrl, { username, password }).pipe(
+        return this.http.post<Response<{ isAdmin: boolean }>>(this.loginUrl, { username, password }).pipe(
             tap(({ tokenEntry }) => this.setSession(tokenEntry, username)),
+            tap(({ data }) => this.isAdmin = data.isAdmin),
             tap(_ => this.loginNotificatorSubject.next()),
             map(_ => void(0)), // do not leak the data
             shareReplay()
@@ -125,5 +128,9 @@ export class AuthService {
 
     public loginNotificator(): Subject<void> {
         return this.loginNotificatorSubject;
+    }
+
+    public currentUserIsAdmin(): boolean {
+        return this.isAdmin;
     }
 }

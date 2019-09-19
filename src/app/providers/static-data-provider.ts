@@ -6,6 +6,7 @@ import { WordEntry } from '../word-entry.model';
 import { Language } from '../language-model';
 import { LanguagePair } from '../language-pair.model';
 import { LanguageIndexer } from '../language-indexer';
+import { StatisticsUser } from '../statistics-user.model';
 
 import * as Tags from '../auth/local-storage-tags';
 
@@ -198,5 +199,11 @@ export class StaticDataProvider implements DataProvider {
             new User(1, 'Igorek', 'igorekpass'),
             new User(2, 'Joe', 'joepass')
         ];
+    }
+
+    // For Admin
+    public retrieveStatisticsUsers(): Observable<StatisticsUser[]> {
+        // TODO
+        return of();
     }
 }

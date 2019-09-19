@@ -10,6 +10,7 @@ import { LanguagePair } from '../language-pair.model';
 import { LanguageIndexer } from '../language-indexer';
 import { AuthService } from '../auth/auth.service';
 
+import { StatisticsUser } from '../statistics-user.model';
 import { TokenEntry, Response } from '../http-response.model';
 
 class DbWordEntry {
@@ -30,6 +31,7 @@ export class HttpDataProvider implements DataProvider {
     private entriesObservable: Observable<WordEntry[]>;
     private languageIndexerObservable: Observable<LanguageIndexer>;
 
+    private statisticsUsersUrl = 'https://whateveryouwannacallit.tk/stats/users';
     private entriesUrl = 'https://whateveryouwannacallit.tk/entries';
     private languageIndexerUrl = 'https://whateveryouwannacallit.tk/languages';
 
@@ -42,6 +44,7 @@ export class HttpDataProvider implements DataProvider {
     }
 
     public retrieveEntries(): Observable<WordEntry[]> {
+        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting retrieveEntries() from admin user!');
         // We take advantage of the 'lazy loading' because this way we do not refetch
         // the data on every access.
         if (!this.entriesObservable) {
@@ -55,6 +58,7 @@ export class HttpDataProvider implements DataProvider {
     }
 
     public retrieveLanguageIndexer(): Observable<LanguageIndexer> {
+        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting retrieveLanguageIndexer() from admin user!');
         // We take advantage of the 'lazy loading' because this way we do not refetch
         // the data on every access.
         if (!this.languageIndexerObservable) {
@@ -75,6 +79,7 @@ export class HttpDataProvider implements DataProvider {
                         word: string,
                         translations: string[],
                         tags: string[]): Observable<void> {
+        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting addWordEntry() from admin user!');
         // DB allows for multiple null translations and stores them as such
         if (translations.length == 0) translations = null;
         const payload = { fromLanguage: src, toLanguage: dst, word, translations, tags };
@@ -90,6 +95,7 @@ export class HttpDataProvider implements DataProvider {
                            translations: string[],
                            score: number,
                            tags: string[]): Observable<void> {
+        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting updateWordEntry() from admin user!');
         // DB allows for multiple null translations and stores them as such
         if (translations.length == 0) translations = null;
         const url = this.entriesUrl + `/${id}`;
@@ -101,6 +107,7 @@ export class HttpDataProvider implements DataProvider {
     }
 
     public removeWordEntry(id: number): Observable<void> {
+        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting removeWordEntry() from admin user!');
         const url = this.entriesUrl + `/${id}`;
         return this.http.delete<any>(url).pipe(
             tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
@@ -110,5 +117,18 @@ export class HttpDataProvider implements DataProvider {
 
     private indexValidIn(array: any[], index: number): boolean {
         return (0 <= index) && (index < array.length);
+    }
+
+
+    // For Admin
+    public retrieveStatisticsUsers(): Observable<StatisticsUser[]> {
+        console.assert(this.authService.currentUserIsAdmin(), 'Requesting retrieveStatisticsUsers() from non-admin user!');
+        // We take advantage of the 'lazy loading' because this way we do not refetch
+        // the data on every access.
+        return this.http.get<Response<StatisticsUser[]>>(this.statisticsUsersUrl).pipe(
+            tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
+            map(({ data: statisticsUsers }) => statisticsUsers),
+            shareReplay()
+        );
     }
 }

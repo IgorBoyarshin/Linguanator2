@@ -40,7 +40,11 @@ export class LoginComponent {
     private login(username: string, password: string) {
         this.authService.login(username, password).subscribe(() => {
             console.log('Got logged in!');
-            this.router.navigateByUrl('/testing');
+            if (this.authService.currentUserIsAdmin()) {
+                this.router.navigateByUrl('/statistics');
+            } else {
+                this.router.navigateByUrl('/testing');
+            }
             console.log('done nagivation');
         }, err => {
             switch (err.error.code) {

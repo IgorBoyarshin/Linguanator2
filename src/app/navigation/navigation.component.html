@@ -4,14 +4,19 @@
             <a class="navbar-brand" href="#">Linguanator 2</a>
         </li>
 
-        <li class="navigation-item" [routerLinkActive]="['active']" *ngIf="loggedIn()">
+        <li class="navigation-item" [routerLinkActive]="['active']" *ngIf="loggedIn() && !userIsAdmin()">
             <a class="" href="#" routerLink="/testing">Testing</a>
         </li>
-        <li class="navigation-item" [routerLinkActive]="['active']" *ngIf="loggedIn()">
+        <li class="navigation-item" [routerLinkActive]="['active']" *ngIf="loggedIn() && !userIsAdmin()">
             <a class="" href="#" routerLink="/database">Database</a>
         </li>
-        <li class="navigation-item" [routerLinkActive]="['active']" *ngIf="loggedIn()">
+        <li class="navigation-item" [routerLinkActive]="['active']" *ngIf="loggedIn() && !userIsAdmin()">
             <a class="" href="#" routerLink="/settings">Settings</a>
+        </li>
+
+        <!-- For Admin -->
+        <li class="navigation-item" [routerLinkActive]="['active']" *ngIf="loggedIn() && userIsAdmin()">
+            <a class="" href="#" routerLink="/statistics">Statistics</a>
         </li>
     </ul>
 

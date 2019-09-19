@@ -9,6 +9,7 @@ import { TestingComponent } from './testing/testing.component';
 import { DatabaseComponent } from './database/database.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { SettingsComponent } from './settings/settings.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { LoginComponent } from './login/login.component';
 import { AuthInterceptor } from './auth/auth.interceptor';
@@ -30,6 +31,7 @@ import { EditTagComponent } from './settings/edit-tag/edit-tag.component';
         DatabaseComponent,
         NotFoundComponent,
         SettingsComponent,
+        StatisticsComponent,
         NavigationComponent,
         LoginComponent,
         EditedWordEntryComponent,
