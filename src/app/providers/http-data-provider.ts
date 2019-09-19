@@ -49,7 +49,7 @@ export class HttpDataProvider implements DataProvider {
         // the data on every access.
         if (!this.entriesObservable) {
             this.entriesObservable = this.http.get<Response<DbWordEntry[]>>(this.entriesUrl).pipe(
-                tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
+                tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
                 map(({ data: entries }) => entries.map(this.toWordEntry)),
                 shareReplay()
             );
@@ -63,7 +63,7 @@ export class HttpDataProvider implements DataProvider {
         // the data on every access.
         if (!this.languageIndexerObservable) {
             this.languageIndexerObservable = this.http.get<Response<Language[]>>(this.languageIndexerUrl).pipe(
-                tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
+                tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
                 map(({ data: languages }) => new LanguageIndexer(languages)),
                 shareReplay()
             );
@@ -84,7 +84,7 @@ export class HttpDataProvider implements DataProvider {
         if (translations.length == 0) translations = null;
         const payload = { fromLanguage: src, toLanguage: dst, word, translations, tags };
         return this.http.post<any>(this.entriesUrl, payload).pipe(
-            tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
             tap(_ => this.resetEntries()),
         );
     }
@@ -101,7 +101,7 @@ export class HttpDataProvider implements DataProvider {
         const url = this.entriesUrl + `/${id}`;
         const payload = { fromLanguage: src, toLanguage: dst, word, translations, score, tags };
         return this.http.put<any>(url, payload).pipe(
-            tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
             tap(_ => this.resetEntries())
         );
     }
@@ -110,7 +110,7 @@ export class HttpDataProvider implements DataProvider {
         console.assert(!this.authService.currentUserIsAdmin(), 'Requesting removeWordEntry() from admin user!');
         const url = this.entriesUrl + `/${id}`;
         return this.http.delete<any>(url).pipe(
-            tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
             tap(_ => this.resetEntries())
         );
     }
@@ -126,7 +126,7 @@ export class HttpDataProvider implements DataProvider {
         // We take advantage of the 'lazy loading' because this way we do not refetch
         // the data on every access.
         return this.http.get<Response<StatisticsUser[]>>(this.statisticsUsersUrl).pipe(
-            tap(({ tokenEntry }) => this.authService.updateSession(tokenEntry)),
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
             map(({ data: statisticsUsers }) => statisticsUsers),
             shareReplay()
         );

@@ -6,4 +6,5 @@ export interface TokenEntry {
 export interface Response<T> {
     tokenEntry: TokenEntry;
     data: T;
+    isAdmin: boolean;
 }

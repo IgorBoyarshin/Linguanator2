@@ -38,8 +38,7 @@ export class AuthService {
 
     public login(username: string, password: string): Observable<void> {
         return this.http.post<Response<{ isAdmin: boolean }>>(this.loginUrl, { username, password }).pipe(
-            tap(({ tokenEntry }) => this.setSession(tokenEntry, username)),
-            tap(({ data }) => this.isAdmin = data.isAdmin),
+            tap(({ tokenEntry, isAdmin }) => this.setSession(tokenEntry, username, isAdmin)),
             tap(_ => this.loginNotificatorSubject.next()),
             map(_ => void(0)), // do not leak the data
             shareReplay()
@@ -51,12 +50,13 @@ export class AuthService {
         this.lastJwtRefresh = moment();
     }
 
-    private setSession(tokenEntry: TokenEntry, username: string) {
-        this.updateSession(tokenEntry)
+    private setSession(tokenEntry: TokenEntry, username: string, isAdmin: boolean) {
+        this.updateSession(tokenEntry, isAdmin)
         localStorage.setItem(Tags.USERNAME, username);
     }
 
-    public updateSession({ idToken, expiresAt }: TokenEntry) {
+    public updateSession({ idToken, expiresAt }: TokenEntry, isAdmin: boolean) {
+        this.isAdmin = isAdmin;
         localStorage.setItem(Tags.ID_TOKEN, idToken);
         localStorage.setItem(Tags.EXPIRES_AT, expiresAt);
     }
@@ -81,6 +81,8 @@ export class AuthService {
     // are bound to be http connections to the backend, thus the Interceptor is
     // triggered and thus this method is fired. That is how the timers survive
     // page reload.
+    // This method is also called in ngOnInit() of Navigator (so on page reload finish).
+    // The latter is done to make sure isAdmin and possibly other variables survive page reload.
     public confirmPresence() {
         if (!this.loggedIn()) return;
 
@@ -91,12 +93,12 @@ export class AuthService {
         const maxJwtRefreshDelaySeconds = 45;
         // lastJwtRefresh is set through refreshedJwt() inside the interceptor
         // just before this method (confirmPresence) is called.
-        const refreshedJwtRecently = this.lastJwtRefresh.isAfter(
+        const refreshedJwtRecently = this.lastJwtRefresh && this.lastJwtRefresh.isAfter(
             moment().subtract(maxJwtRefreshDelaySeconds, 'seconds'));
         if (!refreshedJwtRecently) {
             // Posting {} since the only data we need to send (token) is in the header
             this.http.post<Response<any>>(this.reloginUrl, {})
-                .subscribe(({ tokenEntry }) => this.updateSession(tokenEntry));
+                .subscribe(({ tokenEntry, isAdmin }) => this.updateSession(tokenEntry, isAdmin));
         }
 
         // Reset presence timer
