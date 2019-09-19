@@ -1,25 +1,83 @@
 <section class="container">
-    <div class="header block">
-        STATISTICS ON USERS
-    </div>
+    <section class="users">
+        <div class="header block">
+            STATISTICS ON USERS
+        </div>
 
 
-    <section class="block the-table">
-        <table class="users-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Is Admin</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let user of users | async">
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.isAdmin }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <section class="block the-table">
+            <table class="some-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Admin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of users | async">
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.isAdmin }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </section>
+
+
+    <section class="languages">
+        <div class="header block">
+            STATISTICS ON LANGUAGES
+        </div>
+
+
+        <section class="block horizontal input-panel">
+            <input type="text" placeholder="New language name" [(ngModel)]="newLanguageName"/>
+            <button
+                class="button button-big green"
+                [disabled]="!canSubmitNewLanguage()"
+                (click)="submitNewLanguage()">Add</button>
+            <button
+                class="button button-big red"
+                [disabled]="!canDiscardNewLanguage()"
+                (click)="discardNewLanguage()">Discard</button>
+        </section>
+        <section class="add-new-language-after"
+                [ngClass]="{'visible': displayErrorDescription}">
+            {{ errorDescription }}
+        </section>
+
+
+        <section class="block the-table">
+            <table class="some-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Words from</th>
+                        <th>Words to</th>
+                        <th>Total words</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let language of languages | async">
+                        <td>{{ language.id }}</td>
+                        <td>{{ language.name }}</td>
+                        <td>---TODO---</td>
+                        <td>---TODO---</td>
+                        <td>---TODO---</td>
+                        <td class="nostretch">
+                            <button
+                                (click)="removeLanguage(language, index)"
+                                [disabled]="true"
+                                class="button button-small red">Delete
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
     </section>
 </section>

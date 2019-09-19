@@ -103,12 +103,12 @@ export class AuthService {
 
         // Reset presence timer
         if (this.presenceTimer) this.presenceTimer.unsubscribe();
-        const presenceTimeoutMillis = 120 * 1000;
+        const presenceTimeoutMillis = 3 * 120 * 1000;
         this.presenceTimer = timer(presenceTimeoutMillis).subscribe(_ => this.logout());
 
         // Reset you-still-here timer
         if (this.youStillHereTimer) this.youStillHereTimer.unsubscribe();
-        const youStillHereTimeoutMillis = 90 * 1000;
+        const youStillHereTimeoutMillis = 3 * 90 * 1000;
         this.youStillHereTimer = timer(youStillHereTimeoutMillis).subscribe(_ => this.isAfk = true);
         this.isAfk = false;
     }

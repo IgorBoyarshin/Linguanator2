@@ -9,6 +9,16 @@
 .container > * {
     margin-bottom: 2rem;
 }
+.users > * {
+    margin-bottom: 1rem;
+}
+.languages > * {
+    margin-bottom: 1rem;
+}
+/* (For the error-panel) */
+.languages > *:nth-child(2) {
+    margin-bottom: 0rem;
+}
 
 .header {
     font-family: 'B612', sans-serif;
@@ -25,34 +35,34 @@
 
 .the-table {
 }
-.users-table {
+.some-table {
     margin: auto;
 }
-.users-table thead tr {
+.some-table thead tr {
     color: #eee;
 }
-.users-table thead {
+.some-table thead {
 }
-.users-table tbody {
+.some-table tbody {
     color: #eee;
 }
-.users-table tbody tr:nth-child(odd) {
+.some-table tbody tr:nth-child(odd) {
     background-color: #444;
 }
-.users-table td:nth-child(even) {
+.some-table td:nth-child(even) {
     border-left: 3px solid #000;
     border-right: 3px solid #000;
 }
-.users-table td:last-child {
+.some-table td:last-child {
     border-right: 0px;
 }
-.users-table tr > :nth-child(2) {
+.some-table tr > :nth-child(2) {
     text-align: left;
 }
-.users-table tr {
+.some-table tr {
     text-align: center;
 }
-.users-table th {
+.some-table th {
     text-align: center;
     font-family: 'B612', sans-serif;
     font-weight: bold;
@@ -61,7 +71,7 @@
     padding-top: 0.0em;
     font-size: 1.3rem;
 }
-.users-table td {
+.some-table td {
     font-family: 'Alegreya', sans-serif;
     font-size: 1.2rem;
     padding: 0.6em;
@@ -74,4 +84,59 @@ tbody > :first-child {
 }
 tbody > :last-child {
     border-bottom: 4px solid black;
+}
+
+
+
+section.input-panel {
+    /* padding: 0.8rem; */
+    /* background-color: #252525; */
+    align-items: center;
+    justify-content: center;
+    /* max-width: 58.333333%; */
+    /* margin: auto; */
+}
+section.input-panel > * {
+    margin-right: 1rem;
+}
+section.input-panel > input {
+    border: 2px solid black;
+    border-radius: 0.5rem;
+    /* padding: 0.1rem 0.1rem 0.1rem 0.1rem; */
+    padding: 0.5rem 0.4rem 0.5rem 0.4rem;
+    font-size: 0.9rem;
+    outline: none;
+    background-color: #eee;
+    border: 2px solid #eee;
+    outline: none;
+    color: #000;
+}
+section.input-panel > input:focus {
+    border: 2px solid #f24a07;
+}
+
+
+
+.add-new-language-after {
+    /* max-width: 58.333333%; */
+    /* margin: auto; */
+
+    background-color: #d00;
+    color: black;
+    height: 2rem;
+    line-height: 2rem; /* must be the same as height */
+    vertical-align: middle;
+
+    padding-left: 1.5rem;
+    margin-bottom: 1rem !important;
+
+    transition: margin 0.5s ease-out;
+
+    position: relative;
+    z-index: -10;
+
+    margin-top: -2rem !important;
+}
+.add-new-language-after.visible {
+    margin-top: -0rem !important;
 }

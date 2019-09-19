@@ -11,6 +11,7 @@ import { LanguageIndexer } from '../language-indexer';
 import { AuthService } from '../auth/auth.service';
 
 import { StatisticsUser } from '../statistics-user.model';
+import { StatisticsLanguage } from '../statistics-language.model';
 import { TokenEntry, Response } from '../http-response.model';
 
 class DbWordEntry {
@@ -32,6 +33,7 @@ export class HttpDataProvider implements DataProvider {
     private languageIndexerObservable: Observable<LanguageIndexer>;
 
     private statisticsUsersUrl = 'https://whateveryouwannacallit.tk/stats/users';
+    private statisticsLanguagesUrl = 'https://whateveryouwannacallit.tk/stats/languages';
     private entriesUrl = 'https://whateveryouwannacallit.tk/entries';
     private languageIndexerUrl = 'https://whateveryouwannacallit.tk/languages';
 
@@ -123,11 +125,27 @@ export class HttpDataProvider implements DataProvider {
     // For Admin
     public retrieveStatisticsUsers(): Observable<StatisticsUser[]> {
         console.assert(this.authService.currentUserIsAdmin(), 'Requesting retrieveStatisticsUsers() from non-admin user!');
-        // We take advantage of the 'lazy loading' because this way we do not refetch
-        // the data on every access.
         return this.http.get<Response<StatisticsUser[]>>(this.statisticsUsersUrl).pipe(
             tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
-            map(({ data: statisticsUsers }) => statisticsUsers),
+            map(({ data }) => data),
+            shareReplay()
+        );
+    }
+
+    public retrieveStatisticsLanguages(): Observable<StatisticsLanguage[]> {
+        console.assert(this.authService.currentUserIsAdmin(), 'Requesting retrieveStatisticsLanguages() from non-admin user!');
+        return this.http.get<Response<StatisticsLanguage[]>>(this.statisticsLanguagesUrl).pipe(
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
+            map(({ data }) => data),
+            shareReplay()
+        );
+    }
+
+    public addLanguage(name: string): Observable<void> {
+        console.assert(this.authService.currentUserIsAdmin(), 'Requesting retrieveStatisticsLanguages() from non-admin user!');
+        const payload = { name };
+        return this.http.post<any>(this.statisticsLanguagesUrl, payload).pipe(
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
             shareReplay()
         );
     }

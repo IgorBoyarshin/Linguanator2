@@ -7,6 +7,7 @@ import { Language } from '../language-model';
 import { LanguagePair } from '../language-pair.model';
 import { LanguageIndexer } from '../language-indexer';
 import { StatisticsUser } from '../statistics-user.model';
+import { StatisticsLanguage } from '../statistics-language.model';
 
 import * as Tags from '../auth/local-storage-tags';
 
@@ -204,6 +205,16 @@ export class StaticDataProvider implements DataProvider {
     // For Admin
     public retrieveStatisticsUsers(): Observable<StatisticsUser[]> {
         // TODO
+        return of();
+    }
+
+    public retrieveStatisticsLanguages(): Observable<StatisticsLanguage[]> {
+        // TODO
+        return of();
+    }
+
+    public addLanguage(name: string): Observable<void> {
+        // TODO;
         return of();
     }
 }
