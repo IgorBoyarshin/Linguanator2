@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { Observable, of, combineLatest } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { map, filter, tap } from 'rxjs/operators';
 
 import { DataProviderFactoryService } from '../providers/data-provider-factory.service';
 import { SettingsService } from '../settings.service';
@@ -45,9 +45,12 @@ export class SettingsComponent {
     public selectedTagTotalWordsCount: number; // only for Removal
 
 
-    public unselectedLanguageEntries: Observable<string[]> = of(['Item1', 'Item22222', 'something', 'another']);
+    public unselectedLanguageEntries: Observable<string[]>;
 
-    public noUnselectedLanguages = false;// TODO: flip default
+    // This needs to default to false, so that the div gets displayed and so the
+    // ul with the for-loop gets displayed and thus the async call gets executed.
+    public noUnselectedLanguages = false;
+
     public dropdownOpen: boolean = false;
     public dropdownSelectedName: string;
     public dropdownPress() {
@@ -61,7 +64,7 @@ export class SettingsComponent {
         event.stopPropagation();
         return false;
     }
-    public addLanguageHeadline(): string {
+    public dropdownHeadline(): string {
         if (this.noUnselectedLanguages) {
             return "You have all available languages in your dictionary already!"
         } else {
@@ -91,7 +94,16 @@ export class SettingsComponent {
             })
         ));
 
-        // this.unselectedLanguageEntries = this.dataProviderFactory.dataProviderInUse().retrieveLanguages();
+        this.unselectedLanguageEntries = combineLatest(
+            this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer(),
+            this.dataProviderFactory.dataProviderInUse().retrieveAllLanguages()
+        ).pipe(
+            map(([languageIndexer, allNames]) => {
+                const usedNames = languageIndexer.allNames();
+                return allNames.filter(name => !usedNames.includes(name));
+            }),
+            tap(languages => this.noUnselectedLanguages = languages.length == 0)
+        );
 
         this.tagEntries = combineLatest(
             this.settingsService.allTags(),

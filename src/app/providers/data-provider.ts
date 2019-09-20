@@ -21,6 +21,7 @@ export interface DataProvider {
                     score: number,
                     tags: string[]): Observable<void>;
     removeWordEntry(id: number): Observable<void>;
+    retrieveAllLanguages(): Observable<string[]>;
 
     // For Admin
     retrieveStatisticsUsers(): Observable<StatisticsUser[]>;

@@ -202,6 +202,11 @@ export class StaticDataProvider implements DataProvider {
         ];
     }
 
+    public retrieveAllLanguages(): Observable<string[]> {
+        // TODO
+        return of();
+    }
+
     // For Admin
     public retrieveStatisticsUsers(): Observable<StatisticsUser[]> {
         // TODO

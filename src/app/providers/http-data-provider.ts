@@ -31,11 +31,13 @@ class DbWordEntry {
 export class HttpDataProvider implements DataProvider {
     private entriesObservable: Observable<WordEntry[]>;
     private languageIndexerObservable: Observable<LanguageIndexer>;
+    private allLanguagesObservable: Observable<string[]>;
 
     private statisticsUsersUrl = 'https://whateveryouwannacallit.tk/stats/users';
     private statisticsLanguagesUrl = 'https://whateveryouwannacallit.tk/stats/languages';
     private entriesUrl = 'https://whateveryouwannacallit.tk/entries';
     private languageIndexerUrl = 'https://whateveryouwannacallit.tk/languages';
+    private allLanguagesUrl = 'https://whateveryouwannacallit.tk/alllanguages';
 
     constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -71,6 +73,20 @@ export class HttpDataProvider implements DataProvider {
             );
         }
         return this.languageIndexerObservable;
+    }
+
+    public retrieveAllLanguages(): Observable<string[]> {
+        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting retrieveLanguageIndexer() from admin user!');
+        // We take advantage of the 'lazy loading' because this way we do not refetch
+        // the data on every access.
+        if (!this.allLanguagesObservable) {
+            this.allLanguagesObservable = this.http.get<Response<string[]>>(this.allLanguagesUrl).pipe(
+                tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
+                map(({ data: languages }) => languages),
+                shareReplay()
+            );
+        }
+        return this.allLanguagesObservable;
     }
 
     private resetEntries() {
