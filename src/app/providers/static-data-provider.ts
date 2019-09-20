@@ -219,7 +219,12 @@ export class StaticDataProvider implements DataProvider {
     }
 
     public addLanguage(name: string): Observable<void> {
-        // TODO;
+        // TODO
+        return of();
+    }
+
+    public removeLanguage(id: number): Observable<void> {
+        // TODO
         return of();
     }
 }

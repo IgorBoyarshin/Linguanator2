@@ -43,6 +43,7 @@ export class StatisticsComponent {
     public submitNewLanguage() {
         this.dataProviderFactory.dataProviderInUse().addLanguage(this.newLanguageName).subscribe(_ => {
             this.reloadLanguages();
+            this.resetNewLanguage();
         }, err => {
             switch (err.error.code) {
                 case 'ERR_DUPLICATE':
@@ -58,6 +59,26 @@ export class StatisticsComponent {
                     break;
             }
         });
+    }
+
+    public resetNewLanguage() {
+        this.newLanguageName = "";
+    }
+
+    public canRemoveLanguage(totalWords: number): boolean {
+        // Allow to remove the language only if this has no effect on the system,
+        // so that this action is non-destructive (you can always add the language back).
+        // On the other hand, if you DO need to remove a language that is already in use,
+        // do it via the database directly.
+        // THe general idea is not to let Admin accidentally do something stupid.
+        return totalWords == 0;
+    }
+
+    public removeLanguage(id: number) {
+        // Assume it is same to remove it (otherwise the button should not have
+        // been clickable).
+        this.dataProviderFactory.dataProviderInUse().removeLanguage(id)
+            .subscribe(_ => this.reloadLanguages(), err => console.error(err));
     }
 
     public canSubmitNewLanguage(): boolean {

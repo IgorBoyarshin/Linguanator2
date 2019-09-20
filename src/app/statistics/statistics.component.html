@@ -41,7 +41,7 @@
             <button
                 class="button button-big red"
                 [disabled]="!canDiscardNewLanguage()"
-                (click)="discardNewLanguage()">Discard</button>
+                (click)="resetNewLanguage()">Discard</button>
         </section>
         <section class="add-new-language-after"
                 [ngClass]="{'visible': displayErrorDescription}">
@@ -65,13 +65,13 @@
                     <tr *ngFor="let language of languages | async">
                         <td>{{ language.id }}</td>
                         <td>{{ language.name }}</td>
-                        <td>---TODO---</td>
-                        <td>---TODO---</td>
-                        <td>---TODO---</td>
+                        <td>{{ language.wordsFrom }}</td>
+                        <td>{{ language.wordsTo }}</td>
+                        <td>{{ language.totalWords }}</td>
                         <td class="nostretch">
                             <button
-                                (click)="removeLanguage(language, index)"
-                                [disabled]="true"
+                                (click)="removeLanguage(language.id)"
+                                [disabled]="!canRemoveLanguage(language.totalWords)"
                                 class="button button-small red">Delete
                             </button>
                         </td>

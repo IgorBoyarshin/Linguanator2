@@ -27,4 +27,5 @@ export interface DataProvider {
     retrieveStatisticsUsers(): Observable<StatisticsUser[]>;
     retrieveStatisticsLanguages(): Observable<StatisticsLanguage[]>;
     addLanguage(name: string): Observable<void>;
+    removeLanguage(id: number): Observable<void>;
 }

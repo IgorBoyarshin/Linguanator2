@@ -93,6 +93,10 @@ export class HttpDataProvider implements DataProvider {
         this.entriesObservable = null;
     }
 
+    private resetAllLanguages() {
+        this.allLanguagesObservable = null;
+    }
+
     public addWordEntry({ src, dst }: LanguagePair,
                         word: string,
                         translations: string[],
@@ -101,9 +105,10 @@ export class HttpDataProvider implements DataProvider {
         // DB allows for multiple null translations and stores them as such
         if (translations.length == 0) translations = null;
         const payload = { fromLanguage: src, toLanguage: dst, word, translations, tags };
-        return this.http.post<any>(this.entriesUrl, payload).pipe(
+        return this.http.post<Response<any>>(this.entriesUrl, payload).pipe(
             tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
             tap(_ => this.resetEntries()),
+            map(_ => void(0))
         );
     }
 
@@ -118,18 +123,20 @@ export class HttpDataProvider implements DataProvider {
         if (translations.length == 0) translations = null;
         const url = this.entriesUrl + `/${id}`;
         const payload = { fromLanguage: src, toLanguage: dst, word, translations, score, tags };
-        return this.http.put<any>(url, payload).pipe(
+        return this.http.put<Response<any>>(url, payload).pipe(
             tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
-            tap(_ => this.resetEntries())
+            tap(_ => this.resetEntries()),
+            map(_ => void(0))
         );
     }
 
     public removeWordEntry(id: number): Observable<void> {
         console.assert(!this.authService.currentUserIsAdmin(), 'Requesting removeWordEntry() from admin user!');
         const url = this.entriesUrl + `/${id}`;
-        return this.http.delete<any>(url).pipe(
+        return this.http.delete<Response<any>>(url).pipe(
             tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
-            tap(_ => this.resetEntries())
+            tap(_ => this.resetEntries()),
+            map(_ => void(0))
         );
     }
 
@@ -160,8 +167,21 @@ export class HttpDataProvider implements DataProvider {
     public addLanguage(name: string): Observable<void> {
         console.assert(this.authService.currentUserIsAdmin(), 'Requesting retrieveStatisticsLanguages() from non-admin user!');
         const payload = { name };
-        return this.http.post<any>(this.statisticsLanguagesUrl, payload).pipe(
+        return this.http.post<Response<any>>(this.statisticsLanguagesUrl, payload).pipe(
             tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
+            tap(_ => this.resetAllLanguages()),
+            map(_ => void(0)),
+            shareReplay()
+        );
+    }
+
+    public removeLanguage(id: number): Observable<void> {
+        console.assert(this.authService.currentUserIsAdmin(), 'Requesting retrieveStatisticsLanguages() from non-admin user!');
+        const url = this.allLanguagesUrl + `/${id}`;
+        return this.http.delete<Response<any>>(url).pipe(
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
+            tap(_ => this.resetAllLanguages()),
+            map(_ => void(0)),
             shareReplay()
         );
     }
