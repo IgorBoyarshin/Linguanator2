@@ -23,6 +23,9 @@ export interface DataProvider {
     removeWordEntry(id: number): Observable<void>;
     retrieveAllLanguages(): Observable<string[]>;
 
+    addSelfLanguage(name: string): Observable<void>;
+    removeSelfLanguage(id: number): Observable<void>;
+
     // For Admin
     retrieveStatisticsUsers(): Observable<StatisticsUser[]>;
     retrieveStatisticsLanguages(): Observable<StatisticsLanguage[]>;

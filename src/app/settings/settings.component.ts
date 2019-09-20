@@ -49,6 +49,8 @@ export class SettingsComponent {
 
     // This needs to default to false, so that the div gets displayed and so the
     // ul with the for-loop gets displayed and thus the async call gets executed.
+    // This variable specifies whether or not to display the addLanguage prompt,
+    // or notify the user that he has already selected all available languages.
     public noUnselectedLanguages = false;
 
     public dropdownOpen: boolean = false;
@@ -75,12 +77,43 @@ export class SettingsComponent {
         if (this.dropdownSelectedName) return this.dropdownSelectedName;
         return "select a language";
     }
+    public addLanguage() {
+        const languageName = this.dropdownSelectedName;
+        this.dropdownOpen = false;
+        this.dropdownSelectedName = null;
+        this.dataProviderFactory.dataProviderInUse().addSelfLanguage(languageName)
+            .subscribe(_ => {
+                this.reloadUnselectedEntries()
+                this.reloadLanguageEntries();
+            }, err => console.error(err));
+    }
+
+
+    private reloadUnselectedEntries() {
+        this.unselectedLanguageEntries = combineLatest(
+            this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer(),
+            this.dataProviderFactory.dataProviderInUse().retrieveAllLanguages()
+        ).pipe(
+            map(([languageIndexer, allNames]) => {
+                const usedNames = languageIndexer.allNames();
+                return allNames.filter(name => !usedNames.includes(name));
+            }),
+            tap(languages => this.noUnselectedLanguages = languages.length == 0)
+        );
+    }
 
 
     constructor(
         private dataProviderFactory: DataProviderFactoryService,
         private settingsService: SettingsService
     ) {
+        this.reloadLanguageEntries();
+        this.reloadTagEntries();
+        this.reloadUnselectedEntries();
+    }
+
+
+    private reloadLanguageEntries() {
         this.languageEntries = combineLatest(
             this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer(),
             this.dataProviderFactory.dataProviderInUse().retrieveEntries()
@@ -93,18 +126,9 @@ export class SettingsComponent {
                 return new LanguageEntry(name, wordsCountFrom, wordsCountTo, totalWordsCount);
             })
         ));
+    }
 
-        this.unselectedLanguageEntries = combineLatest(
-            this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer(),
-            this.dataProviderFactory.dataProviderInUse().retrieveAllLanguages()
-        ).pipe(
-            map(([languageIndexer, allNames]) => {
-                const usedNames = languageIndexer.allNames();
-                return allNames.filter(name => !usedNames.includes(name));
-            }),
-            tap(languages => this.noUnselectedLanguages = languages.length == 0)
-        );
-
+    private reloadTagEntries() {
         this.tagEntries = combineLatest(
             this.settingsService.allTags(),
             this.dataProviderFactory.dataProviderInUse().retrieveEntries(),

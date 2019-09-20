@@ -75,6 +75,28 @@ export class HttpDataProvider implements DataProvider {
         return this.languageIndexerObservable;
     }
 
+    public addSelfLanguage(name: string): Observable<void> {
+        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting retrieveLanguageIndexer() from admin user!');
+        const payload = { name };
+        return this.http.post<Response<any>>(this.languageIndexerUrl, payload).pipe(
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
+            tap(_ => this.resetLanguageIndexer()),
+            map(_ => void(0)),
+            shareReplay()
+        );
+    }
+
+    public removeSelfLanguage(id: number): Observable<void> {
+        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting retrieveLanguageIndexer() from admin user!');
+        const url = this.languageIndexerUrl + `/${id}`;
+        return this.http.delete<Response<any>>(url).pipe(
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
+            tap(_ => this.resetLanguageIndexer()),
+            map(_ => void(0)),
+            shareReplay()
+        );
+    }
+
     public retrieveAllLanguages(): Observable<string[]> {
         console.assert(!this.authService.currentUserIsAdmin(), 'Requesting retrieveLanguageIndexer() from admin user!');
         // We take advantage of the 'lazy loading' because this way we do not refetch
@@ -95,6 +117,10 @@ export class HttpDataProvider implements DataProvider {
 
     private resetAllLanguages() {
         this.allLanguagesObservable = null;
+    }
+
+    private resetLanguageIndexer() {
+        this.languageIndexerObservable = null;
     }
 
     public addWordEntry({ src, dst }: LanguagePair,
