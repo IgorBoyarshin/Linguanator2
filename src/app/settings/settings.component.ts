@@ -5,9 +5,11 @@ import { map, filter, tap } from 'rxjs/operators';
 
 import { DataProviderFactoryService } from '../providers/data-provider-factory.service';
 import { SettingsService } from '../settings.service';
+import { EntriesDatabaseService } from '../entries-database.service';
 
 class LanguageEntry {
     constructor(
+        public id: number,
         public name: string,
         public wordsCountFrom: number,
         public wordsCountTo: number,
@@ -34,7 +36,7 @@ export class SettingsComponent {
 
     public tagEntries: Observable<TagEntry[]>;
 
-    private selectedLanguageIndex: number; // common
+    private selectedLanguageId: number; // common
     public selectedLanguageName: string; // determines the pop-up's visibility
     public editedLanguageName: string; // determines the pop-up's visibility
     public selectedLanguageTotalWordsCount: number; // only for Removal
@@ -83,7 +85,7 @@ export class SettingsComponent {
         this.dropdownSelectedName = null;
         this.dataProviderFactory.dataProviderInUse().addSelfLanguage(languageName)
             .subscribe(_ => {
-                this.reloadUnselectedEntries()
+                this.reloadUnselectedEntries();
                 this.reloadLanguageEntries();
             }, err => console.error(err));
     }
@@ -105,6 +107,7 @@ export class SettingsComponent {
 
     constructor(
         private dataProviderFactory: DataProviderFactoryService,
+        private entriesDatabaseService: EntriesDatabaseService,
         private settingsService: SettingsService
     ) {
         this.reloadLanguageEntries();
@@ -123,7 +126,7 @@ export class SettingsComponent {
                 const wordsCountFrom = entries.filter(({ from }) => from == id).length;
                 const wordsCountTo   = entries.filter(({ to   }) => to   == id).length;
                 const totalWordsCount = wordsCountFrom + wordsCountTo;
-                return new LanguageEntry(name, wordsCountFrom, wordsCountTo, totalWordsCount);
+                return new LanguageEntry(id, name, wordsCountFrom, wordsCountTo, totalWordsCount);
             })
         ));
     }
@@ -146,38 +149,26 @@ export class SettingsComponent {
         ));
     }
 
-    public editLanguage({ name }: LanguageEntry, index: number) {
-        this.editedLanguageName = name;
-        this.selectedLanguageIndex = index;
-    }
-
-    public onConfirmLanguageRename(newName: string) {
-        console.log('Renaming language to ', newName);
-        // TODO
-        this.onCancelLanguageRename(); // clean-up
-    }
-
-    public onCancelLanguageRename() {
-        this.editedLanguageName = null;
-        this.selectedLanguageIndex = null;
-    }
-
-    public removeLanguage({ name, totalWordsCount }: LanguageEntry, index: number) {
+    public removeLanguage({ id, name, totalWordsCount }: LanguageEntry) {
         this.selectedLanguageName = name;
         this.selectedLanguageTotalWordsCount = totalWordsCount;
-        this.selectedLanguageIndex = index;
+        this.selectedLanguageId = id;
     }
 
     public onConfirmLanguageRemoval() {
-        console.log('Removing language');
-        // TODO
+        this.dataProviderFactory.dataProviderInUse().removeSelfLanguage(this.selectedLanguageId)
+            .subscribe(_ => {
+                this.reloadUnselectedEntries();
+                this.reloadLanguageEntries();
+                this.entriesDatabaseService.resetCache();
+            }, err => console.error(err));
         this.onCancelLanguageRemoval(); // clean-up
     }
 
     public onCancelLanguageRemoval() {
         this.selectedLanguageName = null;
         this.selectedLanguageTotalWordsCount = null;
-        this.selectedLanguageIndex = null;
+        this.selectedLanguageId = null;
     }
 
 

@@ -13,7 +13,6 @@
                         <th>Words from</th>
                         <th>Words to</th>
                         <th>Total words</th>
-                        <th>Edit</th>
                         <th>Delete</th>
                     </tr>
                 </thead>
@@ -25,13 +24,7 @@
                         <td>{{ language.totalWordsCount }}</td>
                         <td class="nostretch">
                             <button
-                                (click)="editLanguage(language, index)"
-                                class="button button-small yellow">Edit
-                            </button>
-                        </td>
-                        <td class="nostretch">
-                            <button
-                                (click)="removeLanguage(language, index)"
+                                (click)="removeLanguage(language)"
                                 class="button button-small red">Delete
                             </button>
                         </td>
