@@ -36,7 +36,7 @@ body {
     outline: none;
     font-family: Calibri;
     font-weight: bold;
-    border:none;
+    border: none;
 }
 .button:disabled {
     background-color: #A5A5A5;

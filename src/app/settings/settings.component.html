@@ -1,4 +1,4 @@
-<section class="container">
+<section class="container" (click)="resetDropdowns()">
     <section class="languages">
         <div class="header block">
             MANIPULATE YOUR LANGUAGES
@@ -38,6 +38,29 @@
                     </tr>
                 </tbody>
             </table>
+        </section>
+
+
+        <section class="block horizontal add-language">
+            <div>{{ addLanguageHeadline() }}</div>
+
+            <div class="dropdown-select" *ngIf="!noUnselectedLanguages">
+                <button type="button"
+                        (click)="dropdownPress()"
+                        [ngClass]="{ noSelectedItem: !dropdownSelectedName }">
+                    {{ dropdownButtonContent() }}<span> ▼</span>
+                </button>
+                <ul [ngClass]="{'open': dropdownOpen, 'closed': !dropdownOpen}">
+                    <li *ngFor="let item of unselectedLanguageEntries | async; index as i" (click)="dropdownSelectItem(item)">
+                        <div>{{ item }}</div>
+                    </li>
+                </ul>
+            </div>
+
+            <button *ngIf="!noUnselectedLanguages"
+                class="button button-big green"
+                [disabled]="!dropdownSelectedName"
+                (click)="addLanguage()">Add</button>
         </section>
     </section>
 

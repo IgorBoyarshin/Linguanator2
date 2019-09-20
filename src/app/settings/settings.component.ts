@@ -44,6 +44,36 @@ export class SettingsComponent {
     public editedTagName: string; // determines the pop-up's visibility
     public selectedTagTotalWordsCount: number; // only for Removal
 
+
+    public unselectedLanguageEntries: Observable<string[]> = of(['Item1', 'Item22222', 'something', 'another']);
+
+    public noUnselectedLanguages = false;// TODO: flip default
+    public dropdownOpen: boolean = false;
+    public dropdownSelectedName: string;
+    public dropdownPress() {
+        this.dropdownOpen = !this.dropdownOpen;
+        event.stopPropagation();
+        return false;
+    }
+    public dropdownSelectItem(name: string) {
+        this.dropdownSelectedName = name;
+        this.dropdownOpen = false;
+        event.stopPropagation();
+        return false;
+    }
+    public addLanguageHeadline(): string {
+        if (this.noUnselectedLanguages) {
+            return "You have all available languages in your dictionary already!"
+        } else {
+            return "Add another language to your dictionary: ";
+        }
+    }
+    public dropdownButtonContent(): string {
+        if (this.dropdownSelectedName) return this.dropdownSelectedName;
+        return "select a language";
+    }
+
+
     constructor(
         private dataProviderFactory: DataProviderFactoryService,
         private settingsService: SettingsService
@@ -60,6 +90,8 @@ export class SettingsComponent {
                 return new LanguageEntry(name, wordsCountFrom, wordsCountTo, totalWordsCount);
             })
         ));
+
+        // this.unselectedLanguageEntries = this.dataProviderFactory.dataProviderInUse().retrieveLanguages();
 
         this.tagEntries = combineLatest(
             this.settingsService.allTags(),
@@ -146,5 +178,9 @@ export class SettingsComponent {
         this.selectedTagName = null;
         this.selectedTagTotalWordsCount = null;
         this.selectedTagIndex = null;
+    }
+
+    public resetDropdowns() {
+        this.dropdownOpen = false;
     }
 }

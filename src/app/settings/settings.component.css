@@ -80,3 +80,84 @@ tbody > :first-child {
 tbody > :last-child {
     border-bottom: 4px solid black;
 }
+
+
+
+.dropdown-select {
+    display: inline-block;
+}
+.dropdown-select button {
+    outline: none;
+    font-family: Calibri;
+    font-weight: bold;
+    border: none;
+
+    font-size: 1.1rem;
+    padding: 0.4rem 0.8rem 0.4rem 0.8rem;
+    border-radius: 0.2rem;
+    box-shadow: 0.15rem 0.15rem 0.4rem #111;
+    background-color: #44E;
+    color: #EEE;
+}
+.dropdown-select button:hover:enabled {
+    background-color: #55F;
+}
+.dropdown-select button.noSelectedItem {
+    font-style: italic;
+    font-weight: normal;
+}
+.dropdown-select span {
+    color: #333;
+}
+.dropdown-select li {
+    list-style-type: none;
+    cursor: pointer;
+    padding: 0.4em 1.1rem 0.4rem 1.1rem;
+    font-size: 1.2rem;
+}
+.dropdown-select li:hover {
+    background-color: #666;
+    color: #77F;
+}
+.dropdown-select ul {
+    padding: 0px;
+    position: absolute;
+    background-color: #555;
+    z-index: 10;
+}
+.dropdown-select ul.open {
+    display: block;
+}
+.dropdown-select ul.closed {
+    display: none;
+}
+
+
+.add-language {
+    font-size: 1.5rem;
+    /* padding: 0.8rem; */
+    /* background-color: #252525; */
+    align-items: center;
+    justify-content: center;
+    color: white;
+    /* max-width: 58.333333%; */
+    /* margin: auto; */
+}
+.add-language > * {
+    margin-right: 1rem;
+}
+.add-language > input {
+    border: 2px solid black;
+    border-radius: 0.5rem;
+    /* padding: 0.1rem 0.1rem 0.1rem 0.1rem; */
+    padding: 0.5rem 0.4rem 0.5rem 0.4rem;
+    font-size: 0.9rem;
+    outline: none;
+    background-color: #eee;
+    border: 2px solid #eee;
+    outline: none;
+    color: #000;
+}
+.add-language > input:focus {
+    border: 2px solid #f24a07;
+}
