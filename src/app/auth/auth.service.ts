@@ -1,5 +1,5 @@
 import { Subscription, Observable, of, Subject, timer } from 'rxjs';
-import { map, tap, shareReplay } from 'rxjs/operators';
+import { map, tap, shareReplay, finalize } from 'rxjs/operators';
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -65,14 +65,14 @@ export class AuthService {
         console.log('------ Log out --------');
         this.loggingOut = true;
         // Posting {} since the only data we need to send (token) is in the header
-        this.http.post<any>(this.logoutUrl, {}).subscribe(_ => {
+        this.http.post<any>(this.logoutUrl, {}).pipe(finalize(() => {
             // We need this data in the Interceptor of this request (the one we're in),
             // so remove the items only after the backend has received the request
             localStorage.removeItem(Tags.USERNAME);
             localStorage.removeItem(Tags.ID_TOKEN);
             localStorage.removeItem(Tags.EXPIRES_AT);
             window.location.reload();
-        });
+        })).subscribe();
     }
 
     // Presence is confirmed either by a backend request or a routing navigation
