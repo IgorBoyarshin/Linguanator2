@@ -150,9 +150,14 @@ export class SettingsComponent {
     }
 
     public removeLanguage({ id, name, totalWordsCount }: LanguageEntry) {
+        this.selectedLanguageId = id; // needed in onConfirmLanguageRemoval()
+        if (totalWordsCount == 0) {
+            // Totally safe to remove this language => don't bother confirming
+            this.onConfirmLanguageRemoval();
+            return;
+        }
         this.selectedLanguageName = name;
         this.selectedLanguageTotalWordsCount = totalWordsCount;
-        this.selectedLanguageId = id;
     }
 
     public onConfirmLanguageRemoval() {
