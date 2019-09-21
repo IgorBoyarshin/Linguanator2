@@ -18,7 +18,7 @@ export class StatefulTag {
     providedIn: 'root'
 })
 export class SettingsService {
-    private languageIndexer: LanguageIndexer;
+    private selfLanguagesIndexer: LanguageIndexer;
     private currentLanguagePair: LanguagePair;
 
     private tags: string[];
@@ -29,12 +29,12 @@ export class SettingsService {
         private dataProviderFactory: DataProviderFactoryService
     ) {
         this.authService.loginNotificator().subscribe(() =>
-            this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer()
-                .subscribe(languageIndexer => {
-                    this.languageIndexer = languageIndexer;
+            this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer()
+                .subscribe(selfLanguagesIndexer => {
+                    this.selfLanguagesIndexer = selfLanguagesIndexer;
                     this.currentLanguagePair = new LanguagePair(
-                        languageIndexer.idOf("German"),
-                        languageIndexer.idOf("English")
+                        selfLanguagesIndexer.idOf("German"),
+                        selfLanguagesIndexer.idOf("English")
                     );
                 })
         );
@@ -109,11 +109,11 @@ export class SettingsService {
     public languagePairInUse(): Observable<LanguagePair> {
         if (!this.currentLanguagePair) {
             return Observable.create(subscriber => {
-                this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer().subscribe(languageIndexer => {
-                    this.languageIndexer = languageIndexer;
+                this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer().subscribe(selfLanguagesIndexer => {
+                    this.selfLanguagesIndexer = selfLanguagesIndexer;
                     this.currentLanguagePair = new LanguagePair(
-                        languageIndexer.idOf("German"),
-                        languageIndexer.idOf("English")
+                        selfLanguagesIndexer.idOf("German"),
+                        selfLanguagesIndexer.idOf("English")
                     );
                     subscriber.next(this.currentLanguagePair);
                 });
@@ -123,10 +123,10 @@ export class SettingsService {
     }
 
     // It makes little sense to make the changeLanguageTo functions family
-    // to return an Observable (which we need because we depend on languageIndexer
+    // to return an Observable (which we need because we depend on selfLanguagesIndexer
     // in order to perform the change). The way we manage to pull off the lack
     // of return is by retrieving LanguageIndexer early (upon user login) and
-    // then we HOPE that by the time the user changes the language the languageIndexer
+    // then we HOPE that by the time the user changes the language the selfLanguagesIndexer
     // is already resolved and ready (this is probable since these methods are triggered
     // by user and not by application init logic, so we take advantage of the
     // user's slow interaction with our application).
@@ -139,12 +139,12 @@ export class SettingsService {
     }
 
     private changeLanguageTo(changeSrc: boolean, language: string) {
-        if (!this.languageIndexer || !this.currentLanguagePair) {
+        if (!this.selfLanguagesIndexer || !this.currentLanguagePair) {
             console.error('===== ASSERTION FAILED =======');
             return;
         }
 
-        const newIndex = this.languageIndexer.idOf(language);
+        const newIndex = this.selfLanguagesIndexer.idOf(language);
         const theOtherIndex = changeSrc ? this.currentLanguagePair.dst
                                         : this.currentLanguagePair.src;
         if (newIndex == theOtherIndex) { // then just flip

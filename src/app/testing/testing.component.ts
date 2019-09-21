@@ -57,7 +57,7 @@ export class TestingComponent {
     public result: Match | undefined = undefined;
     public resultDelta: number;
 
-    private languageIndexer: LanguageIndexer;
+    private selfLanguagesIndexer: LanguageIndexer;
     public languages: string[];
 
     public doTestBothWays: boolean = true;
@@ -67,23 +67,23 @@ export class TestingComponent {
             private dataProviderFactory: DataProviderFactoryService,
             private entriesDatabaseService: EntriesDatabaseService,
             private settingsService: SettingsService) {
-        dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer()
-            .subscribe(languageIndexer => {
-                this.languageIndexer = languageIndexer;
-                this.languages = languageIndexer.allNames();
+        dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer()
+            .subscribe(selfLanguagesIndexer => {
+                this.selfLanguagesIndexer = selfLanguagesIndexer;
+                this.languages = selfLanguagesIndexer.allNames();
             });
         this.reloadEntry();
         this.state = State.UserInput;
     }
 
     private maybeLanguageSrc(): string {
-        if (!this.languageIndexer || !this.languagePair) return "";
-        return this.languageIndexer.nameOf(this.languagePair.src);
+        if (!this.selfLanguagesIndexer || !this.languagePair) return "";
+        return this.selfLanguagesIndexer.nameOf(this.languagePair.src);
     }
 
     private maybeLanguageDst(): string {
-        if (!this.languageIndexer || !this.languagePair) return "";
-        return this.languageIndexer.nameOf(this.languagePair.dst);
+        if (!this.selfLanguagesIndexer || !this.languagePair) return "";
+        return this.selfLanguagesIndexer.nameOf(this.languagePair.dst);
     }
 
     public submit() {

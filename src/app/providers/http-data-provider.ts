@@ -29,28 +29,28 @@ class DbWordEntry {
 
 
 export class HttpDataProvider implements DataProvider {
+    // We take advantage of the 'lazy loading' because this way we do not refetch
+    // the data on every access.
     private entriesObservable: Observable<WordEntry[]>;
-    private languageIndexerObservable: Observable<LanguageIndexer>;
-    private allLanguagesObservable: Observable<string[]>;
+    private selfLanguagesIndexerObservable: Observable<LanguageIndexer>;
+    private allLanguagesIndexerObservable: Observable<LanguageIndexer>;
 
     private statisticsUsersUrl = 'https://whateveryouwannacallit.tk/stats/users';
-    private statisticsLanguagesUrl = 'https://whateveryouwannacallit.tk/stats/languages';
+    private statisticsAllLanguagesUrl = 'https://whateveryouwannacallit.tk/stats/alllanguages';
     private entriesUrl = 'https://whateveryouwannacallit.tk/entries';
-    private languageIndexerUrl = 'https://whateveryouwannacallit.tk/languages';
+    private selfLanguagesUrl = 'https://whateveryouwannacallit.tk/selflanguages';
     private allLanguagesUrl = 'https://whateveryouwannacallit.tk/alllanguages';
+
 
     constructor(private http: HttpClient, private authService: AuthService) {}
 
-    public toWordEntry({userId, id, fromlanguage, tolanguage, word, translations, score, tags}: DbWordEntry): WordEntry {
-        // DB allows for multiple null translations and stores them as such
-        if (!translations) translations = [];
-        return new WordEntry(userId, id, fromlanguage, tolanguage, word, translations, score, tags);
-    }
+
+    // ------------------------------- Entries --------------------------------
 
     public retrieveEntries(): Observable<WordEntry[]> {
-        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting retrieveEntries() from admin user!');
-        // We take advantage of the 'lazy loading' because this way we do not refetch
-        // the data on every access.
+        console.assert(!this.authService.currentUserIsAdmin(),
+            'Requesting retrieveEntries() from admin user!');
+
         if (!this.entriesObservable) {
             this.entriesObservable = this.http.get<Response<DbWordEntry[]>>(this.entriesUrl).pipe(
                 tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
@@ -61,73 +61,12 @@ export class HttpDataProvider implements DataProvider {
         return this.entriesObservable;
     }
 
-    public retrieveLanguageIndexer(): Observable<LanguageIndexer> {
-        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting retrieveLanguageIndexer() from admin user!');
-        // We take advantage of the 'lazy loading' because this way we do not refetch
-        // the data on every access.
-        if (!this.languageIndexerObservable) {
-            this.languageIndexerObservable = this.http.get<Response<Language[]>>(this.languageIndexerUrl).pipe(
-                tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
-                map(({ data: languages }) => new LanguageIndexer(languages)),
-                shareReplay()
-            );
-        }
-        return this.languageIndexerObservable;
-    }
-
-    public addSelfLanguage(name: string): Observable<void> {
-        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting retrieveLanguageIndexer() from admin user!');
-        const payload = { name };
-        return this.http.post<Response<any>>(this.languageIndexerUrl, payload).pipe(
-            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
-            tap(_ => this.resetLanguageIndexer()),
-            map(_ => void(0)),
-            shareReplay()
-        );
-    }
-
-    public removeSelfLanguage(id: number): Observable<void> {
-        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting retrieveLanguageIndexer() from admin user!');
-        const url = this.languageIndexerUrl + `/${id}`;
-        return this.http.delete<Response<any>>(url).pipe(
-            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
-            tap(_ => this.resetLanguageIndexer()),
-            map(_ => void(0)),
-            shareReplay()
-        );
-    }
-
-    public retrieveAllLanguages(): Observable<string[]> {
-        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting retrieveLanguageIndexer() from admin user!');
-        // We take advantage of the 'lazy loading' because this way we do not refetch
-        // the data on every access.
-        if (!this.allLanguagesObservable) {
-            this.allLanguagesObservable = this.http.get<Response<string[]>>(this.allLanguagesUrl).pipe(
-                tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
-                map(({ data: languages }) => languages),
-                shareReplay()
-            );
-        }
-        return this.allLanguagesObservable;
-    }
-
-    private resetEntries() {
-        this.entriesObservable = null;
-    }
-
-    private resetAllLanguages() {
-        this.allLanguagesObservable = null;
-    }
-
-    private resetLanguageIndexer() {
-        this.languageIndexerObservable = null;
-    }
-
     public addWordEntry({ src, dst }: LanguagePair,
                         word: string,
                         translations: string[],
                         tags: string[]): Observable<void> {
-        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting addWordEntry() from admin user!');
+        console.assert(!this.authService.currentUserIsAdmin(),
+            'Requesting addWordEntry() from admin user!');
         // DB allows for multiple null translations and stores them as such
         if (translations.length == 0) translations = null;
         const payload = { fromLanguage: src, toLanguage: dst, word, translations, tags };
@@ -144,7 +83,8 @@ export class HttpDataProvider implements DataProvider {
                            translations: string[],
                            score: number,
                            tags: string[]): Observable<void> {
-        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting updateWordEntry() from admin user!');
+        console.assert(!this.authService.currentUserIsAdmin(),
+            'Requesting updateWordEntry() from admin user!');
         // DB allows for multiple null translations and stores them as such
         if (translations.length == 0) translations = null;
         const url = this.entriesUrl + `/${id}`;
@@ -157,7 +97,8 @@ export class HttpDataProvider implements DataProvider {
     }
 
     public removeWordEntry(id: number): Observable<void> {
-        console.assert(!this.authService.currentUserIsAdmin(), 'Requesting removeWordEntry() from admin user!');
+        console.assert(!this.authService.currentUserIsAdmin(),
+            'Requesting removeWordEntry() from admin user!');
         const url = this.entriesUrl + `/${id}`;
         return this.http.delete<Response<any>>(url).pipe(
             tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
@@ -166,14 +107,81 @@ export class HttpDataProvider implements DataProvider {
         );
     }
 
-    private indexValidIn(array: any[], index: number): boolean {
-        return (0 <= index) && (index < array.length);
+    private resetEntries() {
+        this.entriesObservable = null;
     }
 
+    // ------------------------------ Self Languages --------------------------
 
-    // For Admin
+    public retrieveSelfLanguagesIndexer(): Observable<LanguageIndexer> {
+        console.assert(!this.authService.currentUserIsAdmin(),
+            'Requesting retrieveSelfLanguagesIndexer() from admin user!');
+
+        if (!this.selfLanguagesIndexerObservable) {
+            this.selfLanguagesIndexerObservable = this.http.get<Response<Language[]>>(this.selfLanguagesUrl).pipe(
+                tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
+                map(({ data: languages }) => new LanguageIndexer(languages)),
+                shareReplay()
+            );
+        }
+        return this.selfLanguagesIndexerObservable;
+    }
+
+    public addSelfLanguage(name: string): Observable<void> {
+        console.assert(!this.authService.currentUserIsAdmin(),
+            'Requesting addSelfLanguage() from admin user!');
+
+        const payload = { name };
+        return this.http.post<Response<any>>(this.selfLanguagesUrl, payload).pipe(
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
+            tap(_ => this.resetSelfLanguagesIndexer()),
+            map(_ => void(0)),
+            shareReplay()
+        );
+    }
+
+    public removeSelfLanguage(id: number): Observable<void> {
+        console.assert(!this.authService.currentUserIsAdmin(),
+            'Requesting removeSelfLanguage() from admin user!');
+
+        const url = this.selfLanguagesUrl + `/${id}`;
+        return this.http.delete<Response<any>>(url).pipe(
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
+            tap(_ => this.resetSelfLanguagesIndexer()),
+            map(_ => void(0)),
+            shareReplay()
+        );
+    }
+
+    private resetSelfLanguagesIndexer() {
+        this.selfLanguagesIndexerObservable = null;
+    }
+
+    // ------------------------------- All Languages --------------------------
+
+    public retrieveAllLanguagesIndexer(): Observable<LanguageIndexer> {
+        console.assert(!this.authService.currentUserIsAdmin(),
+            'Requesting retrieveAllLanguagesIndexer() from admin user!');
+
+        if (!this.allLanguagesIndexerObservable) {
+            this.allLanguagesIndexerObservable = this.http.get<Response<Language[]>>(this.allLanguagesUrl).pipe(
+                tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
+                map(({ data: languages }) => new LanguageIndexer(languages)),
+                shareReplay()
+            );
+        }
+        return this.allLanguagesIndexerObservable;
+    }
+
+    private resetAllLanguagesIndexer() {
+        this.allLanguagesIndexerObservable = null;
+    }
+
+    // ------------------------------ For Admin -------------------------------
+
     public retrieveStatisticsUsers(): Observable<StatisticsUser[]> {
-        console.assert(this.authService.currentUserIsAdmin(), 'Requesting retrieveStatisticsUsers() from non-admin user!');
+        console.assert(this.authService.currentUserIsAdmin(),
+            'Requesting retrieveStatisticsUsers() from non-admin user!');
         return this.http.get<Response<StatisticsUser[]>>(this.statisticsUsersUrl).pipe(
             tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
             map(({ data }) => data),
@@ -182,33 +190,44 @@ export class HttpDataProvider implements DataProvider {
     }
 
     public retrieveStatisticsLanguages(): Observable<StatisticsLanguage[]> {
-        console.assert(this.authService.currentUserIsAdmin(), 'Requesting retrieveStatisticsLanguages() from non-admin user!');
-        return this.http.get<Response<StatisticsLanguage[]>>(this.statisticsLanguagesUrl).pipe(
+        console.assert(this.authService.currentUserIsAdmin(),
+            'Requesting retrieveStatisticsLanguages() from non-admin user!');
+        return this.http.get<Response<StatisticsLanguage[]>>(this.statisticsAllLanguagesUrl).pipe(
             tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
             map(({ data }) => data),
             shareReplay()
         );
     }
 
-    public addLanguage(name: string): Observable<void> {
-        console.assert(this.authService.currentUserIsAdmin(), 'Requesting retrieveStatisticsLanguages() from non-admin user!');
+    public addAllLanguage(name: string): Observable<void> {
+        console.assert(this.authService.currentUserIsAdmin(),
+            'Requesting addAllLanguage() from non-admin user!');
         const payload = { name };
-        return this.http.post<Response<any>>(this.statisticsLanguagesUrl, payload).pipe(
+        return this.http.post<Response<any>>(this.statisticsAllLanguagesUrl, payload).pipe(
             tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
-            tap(_ => this.resetAllLanguages()),
+            tap(_ => this.resetAllLanguagesIndexer()),
             map(_ => void(0)),
             shareReplay()
         );
     }
 
-    public removeLanguage(id: number): Observable<void> {
-        console.assert(this.authService.currentUserIsAdmin(), 'Requesting retrieveStatisticsLanguages() from non-admin user!');
+    public removeAllLanguage(id: number): Observable<void> {
+        console.assert(this.authService.currentUserIsAdmin(),
+            'Requesting removeAllLanguage() from non-admin user!');
         const url = this.allLanguagesUrl + `/${id}`;
         return this.http.delete<Response<any>>(url).pipe(
             tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
-            tap(_ => this.resetAllLanguages()),
+            tap(_ => this.resetAllLanguagesIndexer()),
             map(_ => void(0)),
             shareReplay()
         );
+    }
+
+    // ------------------------------- Util -----------------------------------
+
+    public toWordEntry({ userId, id, fromlanguage, tolanguage, word, translations, score, tags }: DbWordEntry): WordEntry {
+        // DB allows for multiple null translations and stores them as such
+        if (!translations) translations = [];
+        return new WordEntry(userId, id, fromlanguage, tolanguage, word, translations, score, tags);
     }
 }

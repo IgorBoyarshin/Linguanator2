@@ -24,15 +24,15 @@ class UserWithEntries {
 export class StaticDataProvider implements DataProvider {
     private nextWordEntryIdToUse: number;
     private entries: WordEntry[];
-    private languageIndexer: LanguageIndexer;
+    private selfLanguagesIndexer: LanguageIndexer;
 
     private users: UserWithEntries[];
 
     public retrieveEntries(): Observable<WordEntry[]> {
         if (!this.entries) {
             return Observable.create(subscriber => {
-                this.retrieveLanguageIndexer().subscribe(languageIndexer => {
-                    const allEntries = this.initEntries(languageIndexer);
+                this.retrieveSelfLanguagesIndexer().subscribe(selfLanguagesIndexer => {
+                    const allEntries = this.initEntries(selfLanguagesIndexer);
                     this.nextWordEntryIdToUse = this.nextAvailableId(allEntries);
                     this.users = this.wordEntriesIntoUsers(allEntries);
                     const targetUsername = this.currentUser();
@@ -45,11 +45,11 @@ export class StaticDataProvider implements DataProvider {
         return of(this.entries);
     }
 
-    public retrieveLanguageIndexer(): Observable<LanguageIndexer> {
-        if (!this.languageIndexer) {
-            this.languageIndexer = this.initLanguageIndexer();
+    public retrieveSelfLanguagesIndexer(): Observable<LanguageIndexer> {
+        if (!this.selfLanguagesIndexer) {
+            this.selfLanguagesIndexer = this.initLanguageIndexer();
         }
-        return of(this.languageIndexer);
+        return of(this.selfLanguagesIndexer);
     }
 
     public addWordEntry({ src, dst }: LanguagePair,
@@ -109,9 +109,9 @@ export class StaticDataProvider implements DataProvider {
         return -1;
     }
 
-    private initEntries(languageIndexer: LanguageIndexer): WordEntry[] {
-        const ger = languageIndexer.idOf("German");
-        const eng = languageIndexer.idOf("English");
+    private initEntries(selfLanguagesIndexer: LanguageIndexer): WordEntry[] {
+        const ger = selfLanguagesIndexer.idOf("German");
+        const eng = selfLanguagesIndexer.idOf("English");
         const userId1 = 1;
         const userId2 = 2;
         let id = 1;
@@ -212,7 +212,7 @@ export class StaticDataProvider implements DataProvider {
         return of();
     }
 
-    public retrieveAllLanguages(): Observable<string[]> {
+    public retrieveAllLanguagesIndexer(): Observable<LanguageIndexer> {
         // TODO
         return of();
     }
@@ -228,12 +228,12 @@ export class StaticDataProvider implements DataProvider {
         return of();
     }
 
-    public addLanguage(name: string): Observable<void> {
+    public addAllLanguage(name: string): Observable<void> {
         // TODO
         return of();
     }
 
-    public removeLanguage(id: number): Observable<void> {
+    public removeAllLanguage(id: number): Observable<void> {
         // TODO
         return of();
     }

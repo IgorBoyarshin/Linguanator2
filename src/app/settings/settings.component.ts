@@ -93,14 +93,16 @@ export class SettingsComponent {
 
     private reloadUnselectedEntries() {
         this.unselectedLanguageEntries = combineLatest(
-            this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer(),
-            this.dataProviderFactory.dataProviderInUse().retrieveAllLanguages()
+            this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer(),
+            this.dataProviderFactory.dataProviderInUse().retrieveAllLanguagesIndexer()
         ).pipe(
-            map(([languageIndexer, allNames]) => {
-                const usedNames = languageIndexer.allNames();
-                return allNames.filter(name => !usedNames.includes(name));
+            map(([selfLanguagesIndexer, allLanguagesIndexer]) => {
+                const usedIds = selfLanguagesIndexer.allIds();
+                return allLanguagesIndexer.allLanguages()
+                    .filter(({ id }) => !usedIds.includes(id))
+                    .map(({ name }) => name);
             }),
-            tap(languages => this.noUnselectedLanguages = languages.length == 0)
+            tap(languages => this.noUnselectedLanguages = (languages.length == 0))
         );
     }
 
@@ -118,11 +120,10 @@ export class SettingsComponent {
 
     private reloadLanguageEntries() {
         this.languageEntries = combineLatest(
-            this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer(),
+            this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer(),
             this.dataProviderFactory.dataProviderInUse().retrieveEntries()
-        ).pipe(map(([languageIndexer, entries]) =>
-            languageIndexer.allIds().map(id => {
-                const name = languageIndexer.nameOf(id);
+        ).pipe(map(([selfLanguagesIndexer, entries]) =>
+            selfLanguagesIndexer.allLanguages().map(({ id, name }) => {
                 const wordsCountFrom = entries.filter(({ from }) => from == id).length;
                 const wordsCountTo   = entries.filter(({ to   }) => to   == id).length;
                 const totalWordsCount = wordsCountFrom + wordsCountTo;
@@ -135,10 +136,10 @@ export class SettingsComponent {
         this.tagEntries = combineLatest(
             this.settingsService.allTags(),
             this.dataProviderFactory.dataProviderInUse().retrieveEntries(),
-            this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer()
-        ).pipe(map(([allTags, entries, languageIndexer]) =>
+            this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer()
+        ).pipe(map(([allTags, entries, selfLanguagesIndexer]) =>
             allTags.map(tagName => {
-                const wordsCountInLanguages = languageIndexer.allIds().map(id =>
+                const wordsCountInLanguages = selfLanguagesIndexer.allIds().map(id =>
                     entries.filter(({ tags }) => tags.includes(tagName))
                            .filter(({ from }) => from == id)
                            .length

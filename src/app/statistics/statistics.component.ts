@@ -41,7 +41,7 @@ export class StatisticsComponent {
     }
 
     public submitNewLanguage() {
-        this.dataProviderFactory.dataProviderInUse().addLanguage(this.newLanguageName).subscribe(_ => {
+        this.dataProviderFactory.dataProviderInUse().addAllLanguage(this.newLanguageName).subscribe(_ => {
             this.reloadLanguages();
             this.resetNewLanguage();
         }, err => {
@@ -77,7 +77,7 @@ export class StatisticsComponent {
     public removeLanguage(id: number) {
         // Assume it is same to remove it (otherwise the button should not have
         // been clickable).
-        this.dataProviderFactory.dataProviderInUse().removeLanguage(id)
+        this.dataProviderFactory.dataProviderInUse().removeAllLanguage(id)
             .subscribe(_ => this.reloadLanguages(), err => console.error(err));
     }
 

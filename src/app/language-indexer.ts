@@ -1,7 +1,9 @@
 import { Language } from './language-model';
 
+// The purpose of this class is just to provide a wrapper around a list of
+// Languages (entities that have an ID and a Name) and to conveniently index them.
 export class LanguageIndexer {
-    constructor(private languages: Language[]) {}
+    constructor(public languages: Language[]) {}
 
     public nameOf(id: number): string {
         for (let language of this.languages) {
@@ -25,5 +27,9 @@ export class LanguageIndexer {
 
     public allIds(): number[] {
         return this.languages.map(language => language.id);
+    }
+
+    public allLanguages(): Language[] {
+        return this.languages;
     }
 }

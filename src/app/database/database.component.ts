@@ -40,22 +40,22 @@ export class DatabaseComponent {
     public errorDescription: string = "stuff";
     public displayErrorDescription: boolean = false;
 
-    private languageIndexer: LanguageIndexer;
+    private selfLanguagesIndexer: LanguageIndexer;
 
     constructor(
             private dataProviderFactory: DataProviderFactoryService,
             private entriesDatabaseService: EntriesDatabaseService,
             private settingsService: SettingsService) {
-        this.reloadLanguageIndexerAndLanguages();
+        this.reloadSelfLanguagesIndexerAndLanguages();
         this.reloadLanguagePairAndTagsAndEntries();
         this.reloadPrimaryAndSecondaryLanguages();
         this.allStatefulTagsObservable = settingsService.allStatefulTags();
     }
 
-    private reloadLanguageIndexerAndLanguages() {
-        this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer().subscribe(languageIndexer => {
-            this.languageIndexer = languageIndexer;
-            this.languages = this.languageIndexer.allNames();
+    private reloadSelfLanguagesIndexerAndLanguages() {
+        this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer().subscribe(selfLanguagesIndexer => {
+            this.selfLanguagesIndexer = selfLanguagesIndexer;
+            this.languages = this.selfLanguagesIndexer.allNames();
         });
     }
 
@@ -68,10 +68,10 @@ export class DatabaseComponent {
 
     private reloadPrimaryAndSecondaryLanguages() {
         combineLatest(this.settingsService.languagePairInUse(),
-                      this.dataProviderFactory.dataProviderInUse().retrieveLanguageIndexer())
-            .subscribe(([languagePair, languageIndexer]) => {
-                this.primaryLanguage = this.languageIndexer.nameOf(this.languagePair.src);
-                this.secondaryLanguage = this.languageIndexer.nameOf(this.languagePair.dst);
+                      this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer())
+            .subscribe(([languagePair, selfLanguagesIndexer]) => {
+                this.primaryLanguage = this.selfLanguagesIndexer.nameOf(this.languagePair.src);
+                this.secondaryLanguage = this.selfLanguagesIndexer.nameOf(this.languagePair.dst);
             });
     }
 
