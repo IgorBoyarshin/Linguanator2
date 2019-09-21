@@ -159,14 +159,16 @@ export class DatabaseComponent {
     }
 
     public changeSrcLanguageTo(language: string) {
-        this.settingsService.changeSrcLanguageTo(language);
-        this.reloadLanguagePairAndTagsAndEntries();
-        this.reloadPrimaryAndSecondaryLanguages();
+        this.settingsService.changeSrcLanguageTo(language).subscribe(_ => {
+            this.reloadLanguagePairAndTagsAndEntries();
+            this.reloadPrimaryAndSecondaryLanguages();
+        });
     }
 
     public changeDstLanguageTo(language: string) {
-        this.settingsService.changeDstLanguageTo(language);
-        this.reloadLanguagePairAndTagsAndEntries();
-        this.reloadPrimaryAndSecondaryLanguages();
+        this.settingsService.changeDstLanguageTo(language).subscribe(_ => {
+            this.reloadLanguagePairAndTagsAndEntries();
+            this.reloadPrimaryAndSecondaryLanguages();
+        });
     }
 }

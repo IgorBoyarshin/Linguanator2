@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 
 import { Injectable } from '@angular/core';
@@ -18,8 +18,8 @@ export class StatefulTag {
     providedIn: 'root'
 })
 export class SettingsService {
-    private selfLanguagesIndexer: LanguageIndexer;
-    private currentLanguagePair: LanguagePair;
+    // private selfLanguagesIndexer: LanguageIndexer;
+    private currentLanguagePairObservable: Observable<LanguagePair>;
 
     private tags: string[];
     private currentTags: string[];
@@ -28,16 +28,16 @@ export class SettingsService {
         private authService: AuthService,
         private dataProviderFactory: DataProviderFactoryService
     ) {
-        this.authService.loginNotificator().subscribe(() =>
-            this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer()
-                .subscribe(selfLanguagesIndexer => {
-                    this.selfLanguagesIndexer = selfLanguagesIndexer;
-                    this.currentLanguagePair = new LanguagePair(
-                        selfLanguagesIndexer.idOf("German"),
-                        selfLanguagesIndexer.idOf("English")
-                    );
-                })
-        );
+        // combineLatest(
+        //     this.authService.loginNotificator(),
+        //     this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer()
+        // ).subscribe(([_, selfLanguagesIndexer]) => {
+        //     // this.selfLanguagesIndexer = selfLanguagesIndexer;
+        //     this.currentLanguagePair = new LanguagePair(
+        //         selfLanguagesIndexer.idOf("German"),
+        //         selfLanguagesIndexer.idOf("English")
+        //     );
+        // });
     }
 
     public resetTagsCache() {
@@ -47,7 +47,7 @@ export class SettingsService {
 
     public toggleAllTags(): Observable<void> {
         return Observable.create(subscriber => {
-            const allChecked = this.currentTags.length == this.tags.length; // XXX: hack
+            const allChecked = this.currentTags.length == this.tags.length; // (hack)
             if (allChecked) this.currentTags = [];
             else            this.currentTags = [...this.tags];
 
@@ -107,19 +107,15 @@ export class SettingsService {
     }
 
     public languagePairInUse(): Observable<LanguagePair> {
-        if (!this.currentLanguagePair) {
-            return Observable.create(subscriber => {
-                this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer().subscribe(selfLanguagesIndexer => {
-                    this.selfLanguagesIndexer = selfLanguagesIndexer;
-                    this.currentLanguagePair = new LanguagePair(
-                        selfLanguagesIndexer.idOf("German"),
-                        selfLanguagesIndexer.idOf("English")
-                    );
-                    subscriber.next(this.currentLanguagePair);
-                });
-            });
+        if (!this.currentLanguagePairObservable) {
+            this.currentLanguagePairObservable = this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer().pipe(
+                map(selfLanguagesIndexer => new LanguagePair(
+                    selfLanguagesIndexer.idOf("German"),
+                    selfLanguagesIndexer.idOf("English")
+                ))
+            );
         }
-        return of(this.currentLanguagePair);
+        return this.currentLanguagePairObservable;
     }
 
     // It makes little sense to make the changeLanguageTo functions family
@@ -130,30 +126,33 @@ export class SettingsService {
     // is already resolved and ready (this is probable since these methods are triggered
     // by user and not by application init logic, so we take advantage of the
     // user's slow interaction with our application).
-    public changeSrcLanguageTo(language: string) {
-        this.changeLanguageTo(true, language);
+    public changeSrcLanguageTo(language: string): Observable<void> {
+        return this.changeLanguageTo(true, language);
     }
 
-    public changeDstLanguageTo(language: string) {
-        this.changeLanguageTo(false, language);
+    public changeDstLanguageTo(language: string): Observable<void> {
+        return this.changeLanguageTo(false, language);
     }
 
-    private changeLanguageTo(changeSrc: boolean, language: string) {
-        if (!this.selfLanguagesIndexer || !this.currentLanguagePair) {
-            console.error('===== ASSERTION FAILED =======');
-            return;
-        }
-
-        const newIndex = this.selfLanguagesIndexer.idOf(language);
-        const theOtherIndex = changeSrc ? this.currentLanguagePair.dst
-                                        : this.currentLanguagePair.src;
-        if (newIndex == theOtherIndex) { // then just flip
-            const {src, dst} = this.currentLanguagePair;
-            this.currentLanguagePair = new LanguagePair(dst, src);
-        } else {
-            this.currentLanguagePair =
-                changeSrc   ? new LanguagePair(newIndex, theOtherIndex)
-             /* changeDst */: new LanguagePair(theOtherIndex, newIndex);
-        }
+    private changeLanguageTo(changeSrc: boolean, language: string): Observable<void> {
+        return combineLatest(
+            this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer(),
+            this.currentLanguagePairObservable
+        ).pipe(
+            map(([selfLanguagesIndexer, currentLanguagePair]) => {
+                const newIndex = selfLanguagesIndexer.idOf(language);
+                const theOtherIndex = changeSrc ? currentLanguagePair.dst
+                                                : currentLanguagePair.src;
+                if (newIndex == theOtherIndex) { // then just flip
+                    const { src, dst } = currentLanguagePair;
+                    return new LanguagePair(dst, src);
+                } else {
+                    return changeSrc   ? new LanguagePair(newIndex, theOtherIndex)
+                        /* changeDst */: new LanguagePair(theOtherIndex, newIndex);
+                }
+            }),
+            tap(newLanguagePair => this.currentLanguagePairObservable = of(newLanguagePair)),
+            map(_ => void(0))
+        );
     }
 }

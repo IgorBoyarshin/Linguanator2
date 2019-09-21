@@ -228,13 +228,11 @@ export class TestingComponent {
     }
 
     public changeSrcLanguageTo(language: string) {
-        this.settingsService.changeSrcLanguageTo(language);
-        this.reloadEntry();
+        this.settingsService.changeSrcLanguageTo(language).subscribe(_ => this.reloadEntry());
     }
 
     public changeDstLanguageTo(language: string) {
-        this.settingsService.changeDstLanguageTo(language);
-        this.reloadEntry();
+        this.settingsService.changeDstLanguageTo(language).subscribe(_ => this.reloadEntry());
     }
 
     public submitButtonText(): string {
