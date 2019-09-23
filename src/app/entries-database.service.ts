@@ -23,11 +23,11 @@ export class EntriesDatabaseService {
     // dictionary and let the user indicate us when the dictionary is no longer
     // valid and needs to be updated.
     // So the dictionary variable is sort of cached
-    resetCache() {
+    public resetCache() {
         this.dictionary = null;
     }
 
-    entriesFor({src, dst}: LanguagePair): Observable<WordEntry[]> {
+    public entriesFor({src, dst}: LanguagePair): Observable<WordEntry[]> {
         if (!this.dictionary) {
             return Observable.create(subscriber => {
                 this.dataProviderFactory.dataProviderInUse().retrieveEntries().subscribe(entries => {
@@ -40,7 +40,7 @@ export class EntriesDatabaseService {
         return of(this.dictionary.from(src).to(dst));
     }
 
-    entriesForWithStatefulTags(languagePair: LanguagePair, statefulTags: StatefulTag[]): Observable<WordEntry[]> {
+    public entriesForWithStatefulTags(languagePair: LanguagePair, statefulTags: StatefulTag[]): Observable<WordEntry[]> {
         const includedTags = statefulTags.filter(({tag, checked}) => checked).map(({tag}) => tag);
         return this.entriesFor(languagePair).pipe(
             map(entries => entries.filter(entry =>
@@ -59,7 +59,7 @@ export class EntriesDatabaseService {
         return arr[this.randomInt(arr.length)];
     }
 
-    randomWordEntryFor(languagePair: LanguagePair): Observable<WordEntry> {
+    public randomWordEntryFor(languagePair: LanguagePair): Observable<WordEntry> {
         return Observable.create(subscriber => {
             this.entriesFor(languagePair).subscribe(entries => {
                 subscriber.next(this.randomOf(entries));
@@ -67,7 +67,7 @@ export class EntriesDatabaseService {
         });
     }
 
-    randomWordEntryForWithStatefulTags(languagePair: LanguagePair, statefulTags: StatefulTag[]): Observable<WordEntry> {
+    public randomWordEntryForWithStatefulTags(languagePair: LanguagePair, statefulTags: StatefulTag[]): Observable<WordEntry> {
         return Observable.create(subscriber => {
             this.entriesForWithStatefulTags(languagePair, statefulTags).subscribe(entries => {
                 subscriber.next(this.randomOf(entries));

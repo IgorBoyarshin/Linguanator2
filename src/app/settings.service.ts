@@ -18,7 +18,6 @@ export class StatefulTag {
     providedIn: 'root'
 })
 export class SettingsService {
-    // private selfLanguagesIndexer: LanguageIndexer;
     private currentLanguagePairObservable: Observable<LanguagePair>;
 
     private tags: string[];
@@ -27,18 +26,7 @@ export class SettingsService {
     constructor(
         private authService: AuthService,
         private dataProviderFactory: DataProviderFactoryService
-    ) {
-        // combineLatest(
-        //     this.authService.loginNotificator(),
-        //     this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer()
-        // ).subscribe(([_, selfLanguagesIndexer]) => {
-        //     // this.selfLanguagesIndexer = selfLanguagesIndexer;
-        //     this.currentLanguagePair = new LanguagePair(
-        //         selfLanguagesIndexer.idOf("German"),
-        //         selfLanguagesIndexer.idOf("English")
-        //     );
-        // });
-    }
+    ) {}
 
     public resetTagsCache() {
         this.tags = null;
@@ -118,14 +106,6 @@ export class SettingsService {
         return this.currentLanguagePairObservable;
     }
 
-    // It makes little sense to make the changeLanguageTo functions family
-    // to return an Observable (which we need because we depend on selfLanguagesIndexer
-    // in order to perform the change). The way we manage to pull off the lack
-    // of return is by retrieving LanguageIndexer early (upon user login) and
-    // then we HOPE that by the time the user changes the language the selfLanguagesIndexer
-    // is already resolved and ready (this is probable since these methods are triggered
-    // by user and not by application init logic, so we take advantage of the
-    // user's slow interaction with our application).
     public changeSrcLanguageTo(language: string): Observable<void> {
         return this.changeLanguageTo(true, language);
     }
