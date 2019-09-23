@@ -23,6 +23,6 @@ p {
 p:first-child{
     margin-bottom: 0.5em;
 }
-#cancel-removal {
+#remove-tag {
     margin-left: 1rem;
 }

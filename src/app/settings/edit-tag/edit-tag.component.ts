@@ -14,10 +14,12 @@ export class EditTagComponent {
 
     public rename() {
         this.doRename.emit(this.newName);
+        this.newName = "";
     }
 
     public cancel() {
         this.cancelRename.emit();
+        this.newName = "";
     }
 
     public display(): boolean {

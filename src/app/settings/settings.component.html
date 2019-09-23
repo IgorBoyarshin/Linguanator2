@@ -108,13 +108,6 @@
 ></confirm-language-removal>
 
 
-<edit-language
-    [languageName]="editedLanguageName"
-    (doRename)="onConfirmLanguageRename($event)"
-    (cancelRename)="onCancelLanguageRename()"
-></edit-language>
-
-
 <confirm-tag-removal
     [tagName]="selectedTagName"
     [totalWordsCount]="selectedTagTotalWordsCount"

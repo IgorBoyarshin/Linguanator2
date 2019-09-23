@@ -4,8 +4,8 @@
             <p>Change tag name from {{ name }} to</p>
             <input class="my-input" type="text" placeholder="new name" [(ngModel)]="newName"/>
         </div>
+        <button class="button button-small dark" id="cancel-rename" (click)="cancel()">Cancel</button>
         <button class="button button-small yellow" id="rename-tag"
             [disabled]="newName.length == 0" (click)="rename()">Rename</button>
-        <button class="button button-small green" id="cancel-rename" (click)="cancel()">Cancel</button>
     </div>
 </div>
