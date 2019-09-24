@@ -49,10 +49,10 @@ export class SettingsComponent {
 
     public unselectedLanguageEntries: Observable<string[]>;
 
+    // This variable specifies whether or not to display the addLanguage panel,
+    // or notify the user that he has already selected all available languages.
     // This needs to default to false, so that the div gets displayed and so the
     // ul with the for-loop gets displayed and thus the async call gets executed.
-    // This variable specifies whether or not to display the addLanguage prompt,
-    // or notify the user that he has already selected all available languages.
     public noUnselectedLanguages = false;
 
     public dropdownOpen: boolean = false;
@@ -164,6 +164,12 @@ export class SettingsComponent {
     public onConfirmLanguageRemoval() {
         this.dataProviderFactory.dataProviderInUse().removeSelfLanguage(this.selectedLanguageId)
             .subscribe(_ => {
+                // Give it a brief time to display the ul and thus trigger
+                // the async call. Unless something strange happens, it will
+                // remain false anyway (because we've just made one more
+                // unselected language).
+                this.noUnselectedLanguages = false;
+
                 this.reloadUnselectedEntries();
                 this.reloadLanguageEntries();
                 this.entriesDatabaseService.resetCache();
