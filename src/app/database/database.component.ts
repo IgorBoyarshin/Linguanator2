@@ -171,4 +171,9 @@ export class DatabaseComponent {
             this.reloadPrimaryAndSecondaryLanguages();
         });
     }
+
+    public displayNoWordsMessage(): Observable<boolean> {
+        if (!this.entries) return of(true);
+        return this.entries.pipe(map(entries => entries.length == 0));
+    }
 }

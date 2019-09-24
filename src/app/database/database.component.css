@@ -115,3 +115,13 @@ tbody > :last-child {
 .dropdown-menu a.disabled {
     color: #888;
 }
+
+.the-table div {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #eee;
+    padding: 0.4em;
+    border-top: 6px solid rgba(255, 0, 0, 0.7);
+    border-bottom: 6px solid rgba(255, 0, 0, 0.7);
+}
