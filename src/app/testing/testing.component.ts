@@ -103,11 +103,15 @@ export class TestingComponent {
             this.state = State.DisplayResult;
         } else if (this.state == State.DisplayResult) { // Go to the next Test
             this.state = State.UserInput;
-            this.userInput = "";
-            this.result = undefined;
-            this.resultDelta = 0;
             this.reloadEntry();
         }
+    }
+
+    private resetResult() {
+        this.userInput = "";
+        this.result = undefined;
+        this.resultDelta = 0;
+        this.state = State.UserInput;
     }
 
     private reloadEntry() {
@@ -119,6 +123,7 @@ export class TestingComponent {
                     .subscribe(entry => this.wordEntry = entry);
                 if (this.doTestBothWays) this.testingReverse = Math.random() < 0.5;
                 else                     this.testingReverse = false;
+                this.resetResult();
             });
     }
 
