@@ -1,4 +1,8 @@
+.main-container {
+    padding: 0px;
+}
 .main-container > * {
+    margin: 0px;
     margin-bottom: 1rem;
 }
 .edited-word-entry-container {
@@ -124,4 +128,30 @@ tbody > :last-child {
     padding: 0.4em;
     border-top: 6px solid rgba(255, 0, 0, 0.7);
     border-bottom: 6px solid rgba(255, 0, 0, 0.7);
+}
+
+
+#insufficient-languages {
+    max-width: 58.333333%;
+    margin: auto;
+    font-size: 1.2rem;
+    text-align: center;
+    font-weight: bold;
+    background-color: #d00;
+    color: black;
+    height: 3rem;
+    line-height: 3rem; /* must be the same as height */
+    vertical-align: middle;
+
+    margin-bottom: 1rem !important;
+
+    transition: margin 0.5s ease-out;
+
+    position: relative;
+    z-index: -10;
+
+    margin-top: -4rem !important;
+}
+#insufficient-languages.visible {
+    margin-top: -1rem !important;
 }

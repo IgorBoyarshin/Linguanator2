@@ -2,6 +2,10 @@
     <div class="block " id="testing-top">
         TRANSLATE WORDS FROM YOUR DICTIONARY
     </div>
+    <div id="insufficient-languages"
+            [ngClass]="{'visible': (displayInsufficientLanguages() | async)}">
+        Please add at least 2 Languages in the Settings panel
+    </div>
 
 
     <section class="settings">

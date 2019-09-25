@@ -85,6 +85,7 @@ export class SettingsComponent {
         this.dropdownSelectedName = null;
         this.dataProviderFactory.dataProviderInUse().addSelfLanguage(languageName)
             .subscribe(_ => {
+                this.settingsService.resetLanguagePairCache();
                 this.reloadUnselectedEntries();
                 this.reloadLanguageEntries();
             }, err => console.error(err));
@@ -173,6 +174,7 @@ export class SettingsComponent {
                 this.reloadUnselectedEntries();
                 this.reloadLanguageEntries();
                 this.entriesDatabaseService.resetCache();
+                this.settingsService.resetLanguagePairCache();
             }, err => console.error(err));
         this.onCancelLanguageRemoval(); // clean-up
     }
@@ -221,5 +223,9 @@ export class SettingsComponent {
 
     public resetDropdowns() {
         this.dropdownOpen = false;
+    }
+
+    public displayInsufficientLanguages(): Observable<boolean> {
+        return this.settingsService.insufficientLanguages();
     }
 }

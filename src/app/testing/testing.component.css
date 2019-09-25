@@ -144,3 +144,27 @@ span#answer-delta {
     margin-left: 1rem;
     margin-bottom: 1rem;
 }
+
+
+#insufficient-languages {
+    font-size: 1.2rem;
+    text-align: center;
+    font-weight: bold;
+    background-color: #d00;
+    color: black;
+    height: 3rem;
+    line-height: 3rem; /* must be the same as height */
+    vertical-align: middle;
+
+    margin-bottom: 1rem !important;
+
+    transition: margin 0.5s ease-out;
+
+    position: relative;
+    z-index: -10;
+
+    margin-top: -4rem !important;
+}
+#insufficient-languages.visible {
+    margin-top: -1rem !important;
+}

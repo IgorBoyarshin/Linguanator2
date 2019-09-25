@@ -4,6 +4,10 @@
             MANIPULATE YOUR DICTIONARY
         </div>
     </div>
+    <div id="insufficient-languages"
+            [ngClass]="{'visible': (displayInsufficientLanguages() | async)}">
+        Please add at least 2 Languages in the Settings panel
+    </div>
 
 
     <div class="row">

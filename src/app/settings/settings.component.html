@@ -3,6 +3,10 @@
         <div class="header block">
             MANIPULATE YOUR LANGUAGES
         </div>
+        <div id="insufficient-languages"
+                [ngClass]="{'visible': (displayInsufficientLanguages() | async)}">
+            Please add at least 2 Languages in the Settings panel
+        </div>
 
 
         <section class="block the-table">

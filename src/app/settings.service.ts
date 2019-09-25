@@ -19,7 +19,6 @@ export class StatefulTag {
 })
 export class SettingsService {
     private currentLanguagePairObservable: Observable<LanguagePair>;
-
     private tags: string[];
     private currentTags: string[];
 
@@ -27,6 +26,10 @@ export class SettingsService {
         private authService: AuthService,
         private dataProviderFactory: DataProviderFactoryService
     ) {}
+
+    public resetLanguagePairCache() {
+        this.currentLanguagePairObservable = null;
+    }
 
     public resetTagsCache() {
         this.tags = null;
@@ -94,16 +97,22 @@ export class SettingsService {
         return of(this.currentTags);
     }
 
-    public languagePairInUse(): Observable<LanguagePair> {
+    public languagePairInUse(): Observable<LanguagePair | null> {
         if (!this.currentLanguagePairObservable) {
             this.currentLanguagePairObservable = this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer().pipe(
-                map(selfLanguagesIndexer => new LanguagePair(
-                    selfLanguagesIndexer.idOf("German"),
-                    selfLanguagesIndexer.idOf("English")
-                ))
+                map(selfLanguagesIndexer => {
+                    const [id1, id2] = selfLanguagesIndexer.allIds();
+                    if (!id2) return null; // less than 2 languages available
+                    return new LanguagePair(id1, id2);
+                })
             );
         }
         return this.currentLanguagePairObservable;
+    }
+
+    public insufficientLanguages(): Observable<boolean> {
+        return this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer()
+            .pipe(map(indexer => indexer.allLanguages().length < 2));
     }
 
     public changeSrcLanguageTo(language: string): Observable<void> {
@@ -117,9 +126,10 @@ export class SettingsService {
     private changeLanguageTo(changeSrc: boolean, language: string): Observable<void> {
         return combineLatest(
             this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer(),
-            this.currentLanguagePairObservable
+            this.languagePairInUse()
         ).pipe(
             map(([selfLanguagesIndexer, currentLanguagePair]) => {
+                if (!currentLanguagePair) return null;
                 const newIndex = selfLanguagesIndexer.idOf(language);
                 const theOtherIndex = changeSrc ? currentLanguagePair.dst
                                                 : currentLanguagePair.src;
@@ -131,7 +141,7 @@ export class SettingsService {
                         /* changeDst */: new LanguagePair(theOtherIndex, newIndex);
                 }
             }),
-            tap(newLanguagePair => this.currentLanguagePairObservable = of(newLanguagePair)),
+            tap(languagePair => this.currentLanguagePairObservable = of(languagePair)),
             map(_ => void(0))
         );
     }

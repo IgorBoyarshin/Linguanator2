@@ -70,13 +70,19 @@ export class DatabaseComponent {
         combineLatest(this.settingsService.languagePairInUse(),
                       this.dataProviderFactory.dataProviderInUse().retrieveSelfLanguagesIndexer())
             .subscribe(([languagePair, selfLanguagesIndexer]) => {
-                this.primaryLanguage = this.selfLanguagesIndexer.nameOf(this.languagePair.src);
-                this.secondaryLanguage = this.selfLanguagesIndexer.nameOf(this.languagePair.dst);
+                if (languagePair) {
+                    this.primaryLanguage = this.selfLanguagesIndexer.nameOf(languagePair.src);
+                    this.secondaryLanguage = this.selfLanguagesIndexer.nameOf(languagePair.dst);
+                } else {
+                    this.primaryLanguage = "---";
+                    this.secondaryLanguage = "---";
+                }
             });
     }
 
     private reloadTagsAndEntries(languagePair: LanguagePair) {
         this.allStatefulTagsObservable = this.settingsService.allStatefulTags();
+        if (!this.languagePair) return;
         this.settingsService.allStatefulTags().subscribe(statefulTags => {
             this.entries = this.entriesDatabaseService.entriesForWithStatefulTags(languagePair, statefulTags)
                 .pipe(map(entries => entries.reverse()));
@@ -122,6 +128,7 @@ export class DatabaseComponent {
     }
 
     public submitEntry({ word, translations, tags }: EditedWordEntry) {
+        if (!this.languagePair) return;
         this.entryUnique(word, translations, this.editedEntryId).subscribe(unique => {
             if (!unique) {
                 this.errorDescription = "Entry with such word or translations already exists!";
@@ -175,5 +182,9 @@ export class DatabaseComponent {
     public displayNoWordsMessage(): Observable<boolean> {
         if (!this.entries) return of(true);
         return this.entries.pipe(map(entries => entries.length == 0));
+    }
+
+    public displayInsufficientLanguages(): Observable<boolean> {
+        return this.settingsService.insufficientLanguages();
     }
 }

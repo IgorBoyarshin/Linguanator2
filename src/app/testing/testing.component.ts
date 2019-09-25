@@ -77,12 +77,12 @@ export class TestingComponent {
     }
 
     private maybeLanguageSrc(): string {
-        if (!this.selfLanguagesIndexer || !this.languagePair) return "";
+        if (!this.selfLanguagesIndexer || !this.languagePair) return "---";
         return this.selfLanguagesIndexer.nameOf(this.languagePair.src);
     }
 
     private maybeLanguageDst(): string {
-        if (!this.selfLanguagesIndexer || !this.languagePair) return "";
+        if (!this.selfLanguagesIndexer || !this.languagePair) return "---";
         return this.selfLanguagesIndexer.nameOf(this.languagePair.dst);
     }
 
@@ -117,6 +117,7 @@ export class TestingComponent {
     private reloadEntry() {
         combineLatest(this.settingsService.languagePairInUse(), this.settingsService.allStatefulTags())
             .subscribe(([languagePair, statefulTags]) => {
+                if (!languagePair) return;
                 this.languagePair = languagePair;
                 this.statefulTags = statefulTags;
                 this.entriesDatabaseService.randomWordEntryForWithStatefulTags(languagePair, statefulTags)
@@ -304,5 +305,9 @@ export class TestingComponent {
         if (!this.wordEntry) return "";
         if (this.testingReverse) return this.wordEntry.word;
         else                     return this.wordEntry.translations.join("; ")
+    }
+
+    public displayInsufficientLanguages(): Observable<boolean> {
+        return this.settingsService.insufficientLanguages();
     }
 }

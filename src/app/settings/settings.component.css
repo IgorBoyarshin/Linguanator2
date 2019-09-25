@@ -161,3 +161,28 @@ tbody > :last-child {
 .add-language > input:focus {
     border: 2px solid #f24a07;
 }
+
+
+#insufficient-languages {
+    margin: auto;
+    font-size: 1.2rem;
+    text-align: center;
+    font-weight: bold;
+    background-color: #d00;
+    color: black;
+    height: 3rem;
+    line-height: 3rem; /* must be the same as height */
+    vertical-align: middle;
+
+    margin-bottom: 1rem !important;
+
+    transition: margin 0.5s ease-out;
+
+    position: relative;
+    z-index: -10;
+
+    margin-top: -4rem !important;
+}
+#insufficient-languages.visible {
+    margin-top: -1rem !important;
+}
