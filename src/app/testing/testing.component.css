@@ -132,6 +132,7 @@ span#answer-delta {
     border-bottom: 0.6rem solid rgba(255, 0, 0, 0.7) !important;
 }
 
+
 #settings-block-from .dropdown-menu li:hover,
 #settings-block-into .dropdown-menu li:hover {
     cursor: pointer;
@@ -139,9 +140,16 @@ span#answer-delta {
 .dropdown-menu a.disabled {
     color: #888;
 }
+#settings-block-tags ul.dropdown-menu .my-checkbox {
+    padding-left: 1.4rem;
+}
+#settings-block-tags ul.dropdown-menu .my-checkbox>*:hover {
+    background-color: #eee;
+}
 
 #button-toggle-all-tags {
-    margin-left: 1rem;
+    margin-top: 0.6rem;
+    margin-left: 1.2rem;
     margin-bottom: 1rem;
 }
 

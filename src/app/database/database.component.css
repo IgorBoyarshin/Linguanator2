@@ -113,11 +113,24 @@ tbody > :last-child {
     border-bottom: 4px solid black;
 }
 
-.dropdown-menu li:hover {
+#settings-block-from .dropdown-menu li:hover,
+#settings-block-into .dropdown-menu li:hover {
     cursor: pointer;
 }
 .dropdown-menu a.disabled {
     color: #888;
+}
+#settings-block-tags ul.dropdown-menu .my-checkbox {
+    padding-left: 1.4rem;
+}
+#settings-block-tags ul.dropdown-menu .my-checkbox>*:hover {
+    background-color: #eee;
+}
+
+#button-toggle-all-tags {
+    margin-top: 0.6rem;
+    margin-left: 1.2rem;
+    margin-bottom: 1rem;
 }
 
 .the-table div {

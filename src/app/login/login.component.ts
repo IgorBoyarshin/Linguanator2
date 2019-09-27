@@ -45,7 +45,6 @@ export class LoginComponent {
             } else {
                 this.router.navigateByUrl('/testing');
             }
-            console.log('done nagivation');
         }, err => {
             switch (err.error.code) {
                 case 'ERR_INVALID_CREDENTIALS':
