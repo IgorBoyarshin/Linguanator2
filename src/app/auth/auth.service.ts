@@ -46,7 +46,6 @@ export class AuthService {
     }
 
     public refreshedJwt() {
-        console.log('-------- updating last JWT Refresh');
         this.lastJwtRefresh = moment();
     }
 

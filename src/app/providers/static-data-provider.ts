@@ -202,6 +202,11 @@ export class StaticDataProvider implements DataProvider {
         ];
     }
 
+    public renameTag(oldName: string, newName: string): Observable<void> {
+        // TODO
+        return of();
+    }
+
     public addSelfLanguage(name: string): Observable<void> {
         // TODO
         return of();

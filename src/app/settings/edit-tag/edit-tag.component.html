@@ -2,10 +2,13 @@
     <div class="box">
         <div id="the-text">
             <p>Change tag name from {{ name }} to</p>
-            <input class="my-input" type="text" placeholder="new name" [(ngModel)]="newName"/>
+            <input class="my-input" type="text" placeholder="new name"
+                   (input)="checkIfUnique($event.target.value)" [(ngModel)]="newName"/>
         </div>
         <button class="button button-small dark" id="cancel-rename" (click)="cancel()">Cancel</button>
         <button class="button button-small yellow" id="rename-tag"
-            [disabled]="newName.length == 0" (click)="rename()">Rename</button>
+            [disabled]="renameButtonDisabled()" (click)="rename()">Rename</button>
+
+        <p *ngIf="!newNameUnique" id="not-unique-tag">Such tag already exists!</p>
     </div>
 </div>

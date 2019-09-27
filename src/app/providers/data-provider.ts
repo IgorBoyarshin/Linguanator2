@@ -20,6 +20,8 @@ export interface DataProvider {
                     tags: string[]): Observable<void>;
     removeWordEntry(id: number): Observable<void>;
 
+    renameTag(oldName: string, newName: string): Observable<void>;
+
     retrieveSelfLanguagesIndexer(): Observable<LanguageIndexer>;
     addSelfLanguage(name: string): Observable<void>;
     removeSelfLanguage(id: number): Observable<void>;

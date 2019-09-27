@@ -194,7 +194,15 @@ export class SettingsComponent {
 
     public onConfirmTagRename(newName: string) {
         console.log('Renaming tag to ', newName);
-        // TODO
+        const oldName = this.editedTagName;
+
+        this.dataProviderFactory.dataProviderInUse().renameTag(oldName, newName)
+            .subscribe(_ => {
+                this.entriesDatabaseService.resetCache();
+                this.settingsService.resetTagsCache();
+                this.reloadTagEntries();
+            });
+
         this.onCancelTagRename(); // clean-up
     }
 

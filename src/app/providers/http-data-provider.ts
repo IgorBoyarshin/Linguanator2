@@ -35,6 +35,8 @@ export class HttpDataProvider implements DataProvider {
     private selfLanguagesIndexerObservable: Observable<LanguageIndexer>;
     private allLanguagesIndexerObservable: Observable<LanguageIndexer>;
 
+    // TODO: exclude domain name into a separate variable
+    private tagsRenameUrl = 'https://whateveryouwannacallit.tk/tags/rename';
     private statisticsUsersUrl = 'https://whateveryouwannacallit.tk/stats/users';
     private statisticsAllLanguagesUrl = 'https://whateveryouwannacallit.tk/stats/alllanguages';
     private entriesUrl = 'https://whateveryouwannacallit.tk/entries';
@@ -109,6 +111,19 @@ export class HttpDataProvider implements DataProvider {
 
     private resetEntries() {
         this.entriesObservable = null;
+    }
+
+    // ------------------------------- Tags --------------------------------
+
+    public renameTag(oldName: string, newName: string): Observable<void> {
+        console.assert(!this.authService.currentUserIsAdmin(),
+            'Requesting renameTag() from admin user!');
+        const payload = { oldName, newName };
+        return this.http.put<Response<any>>(this.tagsRenameUrl, payload).pipe(
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
+            tap(_ => this.resetEntries()),
+            map(_ => void(0))
+        );
     }
 
     // ------------------------------ Self Languages --------------------------

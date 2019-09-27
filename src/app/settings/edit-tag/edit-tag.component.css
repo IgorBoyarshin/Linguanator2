@@ -45,3 +45,7 @@ p {
 .my-input:focus {
     border-bottom: 2px solid black;
 }
+
+#not-unique-tag {
+    color: red;
+}
