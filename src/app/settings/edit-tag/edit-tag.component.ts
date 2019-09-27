@@ -15,7 +15,7 @@ export class EditTagComponent {
     @Output() public doRename = new EventEmitter<string>();
     @Output() public cancelRename = new EventEmitter<void>();
 
-    public newNameUnique = false;
+    public newNameUnique = true;
 
     constructor(private settingsService: SettingsService) {}
 

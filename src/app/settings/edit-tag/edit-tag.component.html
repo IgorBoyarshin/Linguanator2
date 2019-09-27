@@ -1,7 +1,7 @@
 <div class="main" *ngIf="display()">
     <div class="box">
         <div id="the-text">
-            <p>Change tag name from {{ name }} to</p>
+            <p>Change tag name from <em>{{ name }}</em> to</p>
             <input class="my-input" type="text" placeholder="new name"
                    (input)="checkIfUnique($event.target.value)" [(ngModel)]="newName"/>
         </div>

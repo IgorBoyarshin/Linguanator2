@@ -194,8 +194,8 @@ export class SettingsComponent {
 
     public onConfirmTagRename(newName: string) {
         console.log('Renaming tag to ', newName);
-        const oldName = this.editedTagName;
 
+        const oldName = this.editedTagName;
         this.dataProviderFactory.dataProviderInUse().renameTag(oldName, newName)
             .subscribe(_ => {
                 this.entriesDatabaseService.resetCache();
@@ -219,7 +219,15 @@ export class SettingsComponent {
 
     public onConfirmTagRemoval() {
         console.log('Removing tag');
-        // TODO
+
+        const name = this.selectedTagName;
+        this.dataProviderFactory.dataProviderInUse().removeTag(name)
+            .subscribe(_ => {
+                this.entriesDatabaseService.resetCache();
+                this.settingsService.resetTagsCache();
+                this.reloadTagEntries();
+            });
+
         this.onCancelTagRemoval(); // clean-up
     }
 

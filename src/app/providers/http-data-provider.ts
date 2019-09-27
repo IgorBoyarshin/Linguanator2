@@ -37,6 +37,7 @@ export class HttpDataProvider implements DataProvider {
 
     // TODO: exclude domain name into a separate variable
     private tagsRenameUrl = 'https://whateveryouwannacallit.tk/tags/rename';
+    private tagsRemoveUrl = 'https://whateveryouwannacallit.tk/tags';
     private statisticsUsersUrl = 'https://whateveryouwannacallit.tk/stats/users';
     private statisticsAllLanguagesUrl = 'https://whateveryouwannacallit.tk/stats/alllanguages';
     private entriesUrl = 'https://whateveryouwannacallit.tk/entries';
@@ -120,6 +121,17 @@ export class HttpDataProvider implements DataProvider {
             'Requesting renameTag() from admin user!');
         const payload = { oldName, newName };
         return this.http.put<Response<any>>(this.tagsRenameUrl, payload).pipe(
+            tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
+            tap(_ => this.resetEntries()),
+            map(_ => void(0))
+        );
+    }
+
+    public removeTag(name: string): Observable<void> {
+        console.assert(!this.authService.currentUserIsAdmin(),
+            'Requesting removeTag() from admin user!');
+        const url = this.tagsRemoveUrl + `/${name}`;
+        return this.http.delete<Response<any>>(url).pipe(
             tap(({ tokenEntry, isAdmin }) => this.authService.updateSession(tokenEntry, isAdmin)),
             tap(_ => this.resetEntries()),
             map(_ => void(0))

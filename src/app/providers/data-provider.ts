@@ -27,6 +27,7 @@ export interface DataProvider {
     removeSelfLanguage(id: number): Observable<void>;
 
     retrieveAllLanguagesIndexer(): Observable<LanguageIndexer>;
+    removeTag(name: string): Observable<void>;
 
     // For Admin
     retrieveStatisticsUsers(): Observable<StatisticsUser[]>;
