@@ -13,10 +13,10 @@ import * as moment from 'moment';
     providedIn: 'root'
 })
 export class AuthService {
-    private createAccountUrl = 'https://whateveryouwannacallit.tk/create';
-    private loginUrl = 'https://whateveryouwannacallit.tk/login';
-    private logoutUrl = 'https://whateveryouwannacallit.tk/logout';
-    private reloginUrl = 'https://whateveryouwannacallit.tk/relogin';
+    private createAccountUrl = 'http://localhost:1234/create';
+    private loginUrl = 'http://localhost:1234/login';
+    private logoutUrl = 'http://localhost:1234/logout';
+    private reloginUrl = 'http://localhost:1234/relogin';
     private loginNotificatorSubject = new Subject<void>();
 
     private presenceTimer: Subscription;

@@ -16,7 +16,7 @@ const {
 } = require('./endpoint-handlers.js');
 
 
-// dbClearAndLoadDefault();
+dbClearAndLoadDefault();
 
 
 app.use(bodyParser.json());

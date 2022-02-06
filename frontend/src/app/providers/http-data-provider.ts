@@ -36,13 +36,13 @@ export class HttpDataProvider implements DataProvider {
     private allLanguagesIndexerObservable: Observable<LanguageIndexer>;
 
     // TODO: exclude domain name into a separate variable
-    private tagsRenameUrl = 'https://whateveryouwannacallit.tk/tags/rename';
-    private tagsRemoveUrl = 'https://whateveryouwannacallit.tk/tags';
-    private statisticsUsersUrl = 'https://whateveryouwannacallit.tk/stats/users';
-    private statisticsAllLanguagesUrl = 'https://whateveryouwannacallit.tk/stats/alllanguages';
-    private entriesUrl = 'https://whateveryouwannacallit.tk/entries';
-    private selfLanguagesUrl = 'https://whateveryouwannacallit.tk/selflanguages';
-    private allLanguagesUrl = 'https://whateveryouwannacallit.tk/alllanguages';
+    private tagsRenameUrl = 'http://localhost:1234/tags/rename';
+    private tagsRemoveUrl = 'http://localhost:1234/tags';
+    private statisticsUsersUrl = 'http://localhost:1234/stats/users';
+    private statisticsAllLanguagesUrl = 'http://localhost:1234/stats/alllanguages';
+    private entriesUrl = 'http://localhost:1234/entries';
+    private selfLanguagesUrl = 'http://localhost:1234/selflanguages';
+    private allLanguagesUrl = 'http://localhost:1234/alllanguages';
 
 
     constructor(private http: HttpClient, private authService: AuthService) {}
